@@ -218,29 +218,9 @@ namespace NeverBounce.Services
             {
                 data["filename"] = model.filename;
             }
-            if (model.completed != 0)
+            if (model.job_status != null&& model.job_status!="")
             {
-                data["completed"] = model.completed;
-            }
-            if (model.processing != 0)
-            {
-                data["processing"] = model.processing;
-            }
-            if (model.indexing != 0)
-            {
-                data["indexing"] = model.indexing;
-            }
-            if (model.failed != 0)
-            {
-                data["failed"] = model.failed;
-            }
-            if (model.manual_review != 0)
-            {
-                data["manual_review"] = model.manual_review;
-            }
-            if (model.unpurchased != 0)
-            {
-                data["unpurchased"] = model.unpurchased;
+                data["job_status"] = model.job_status;
             }
             if (model.page != 0)
             {

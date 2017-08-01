@@ -11,12 +11,7 @@ namespace NeverBounce.Models
         public string key { get; set; }
         public int job_id { get; set; }
         public string filename { get; set; }
-        public int completed { get; set; }
-        public int processing { get; set; }
-        public int indexing { get; set; }
-        public int failed { get; set; }
-        public int manual_review { get; set; }
-        public int unpurchased { get; set; }
+        public string job_status { get; set; }
         public int page { get; set; }
         public int items_per_page { get; set; }
     }
@@ -120,28 +115,32 @@ namespace NeverBounce.Models
         public string key { get; set; }
         public int job_id { get; set; }
     }
+    public class Total
+    {
+        public int records { get; set; }
+        public int billable { get; set; }
+        public object processed { get; set; }
+        public object valid { get; set; }
+        public int invalid { get; set; }
+        public object catchall { get; set; }
+        public object disposable { get; set; }
+        public object unknown { get; set; }
+        public object duplicates { get; set; }
+        public object bad_syntax {get; set;  }
+    }
     public class JobStatusResponseModel
     {
         public string message { get; set; }
         public string status { get; set; }
-        public string id { get; set; }
+        public int id { get; set; }
+        public string job_status { get; set; }
         public string filename { get; set; }
-        public string created { get; set; }
-        public object started { get; set; }
-        public object finished { get; set; }
-        public int total_records { get; set; }
-        public int total_billable { get; set; }
-        public object total_processed { get; set; }
-        public object total_valid { get; set; }
-        public int total_invalid { get; set; }
-        public object total_catchall { get; set; }
-        public object total_disposable { get; set; }
-        public object total_unknown { get; set; }
-        public object total_duplicates { get; set; }
-        public object total_bad_syntax { get; set; }
+        public string created_at { get; set; }
+        public object started_at { get; set; }
+        public object finished_at { get; set; }
+        public Total total { get; set; }
         public int bounce_estimate { get; set; }
         public int percent_complete { get; set; }
-        public string job_status { get; set; }
         public int execution_time { get; set; }
     }
     public class JobResultsRequestModel
@@ -156,17 +155,12 @@ namespace NeverBounce.Models
         public string status { get; set; }
         public int total_results { get; set; }
         public int total_pages { get; set; }
-        public JobResultsQuery query { get; set; }
-        public List<JobResult> results { get; set; }
+        public Query query { get; set; }
+        public List<Result> results { get; set; }
         public int execution_time { get; set; }
         public string message { get; set; }
     }
-    public class JobResult
-    {
-        public JobResultsData data { get; set; }
-        public JobResultsVerification verification { get; set; }
-    }
-    public class JobResultsQuery
+    public class Query
     {
         public int job_id { get; set; }
         public int valids { get; set; }
@@ -177,13 +171,13 @@ namespace NeverBounce.Models
         public int page { get; set; }
         public int items_per_page { get; set; }
     }
-    public class JobResultsData
+    public class Data
     {
         public string email { get; set; }
         public string id { get; set; }
         public string name { get; set; }
     }
-    public class JobResultsAddressInfo
+    public class AddressInfo
     {
         public string original_email { get; set; }
         public string normalized_email { get; set; }
@@ -195,13 +189,17 @@ namespace NeverBounce.Models
         public string subdomain { get; set; }
         public string tld { get; set; }
     }
-    public class JobResultsVerification
+    public class Verification
     {
-        public string status { get; set; }
         public string result { get; set; }
-        public List<String> flags { get; set; }
+        public List<object> flags { get; set; }
         public string suggested_correction { get; set; }
-        public JobResultsAddressInfo address_info { get; set; }
+        public AddressInfo address_info { get; set; }
+    }
+    public class Result
+    {
+        public Data data { get; set; }
+        public Verification verification { get; set; }
     }
     public class JobDeleteRequestModel
     {
