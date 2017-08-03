@@ -1,7 +1,7 @@
 <p align="center"><img src="https://neverbounce-marketing.s3.amazonaws.com/neverbounce_color_600px.png"></p>
 
 <p align="center">
-<a href="https://travis-ci.org/NeverBounce/NeverBounceApi-DotNet"><img src="https://travis-ci.org/NeverBounceApi-DotNet.svg" alt="Build Status"></a>
+<a href="https://travis-ci.org/NeverBounce/NeverBounceApi-DotNet"><img src="https://travis-ci.org/NeverBounce/NeverBounceApi-DotNet.svg" alt="Build Status"></a>
 </p>
 
 > This version of the wrapper is for the V4 API currently in beta
