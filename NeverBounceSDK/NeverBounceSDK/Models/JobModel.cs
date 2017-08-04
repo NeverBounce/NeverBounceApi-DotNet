@@ -61,8 +61,8 @@ namespace NeverBounce.Models
         public string key { get; set; }
         public string input_location { get; set; }
         public string filename { get; set; }
-        public Nullable<int> auto_start { get; set; }
-        public int? auto_parse { get; set; }
+        public int auto_start { get; set; }
+        public int auto_parse { get; set; }
         public List<object> input { get; set; }
         public string inputRemote_url { get; set; }
 
@@ -195,7 +195,6 @@ namespace NeverBounce.Models
         public int execution_time { get; set; }
         
     }
-
     public class JobDownloadRequestModel
     {
         public string key { get; set; }

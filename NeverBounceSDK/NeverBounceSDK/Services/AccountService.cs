@@ -18,7 +18,12 @@ namespace NeverBounce.Services
     class AccountService
     {
         private static string api = "/account/info?key=";
-        static WebClient client = new WebClient();
+        /// <summary>
+        /// Account Info method allow to programmatically check your account's balance and how many jobs are currently running on your account.
+        /// </summary>
+        /// <param name="serverAddress">containg api url like https://api.neverbounce.com/v4 </param>
+        /// <param name="app_key">this parameter authenticate your requests</param>
+        /// <returns>AccountInfoModel</returns>
         public static async Task<AccountInfoModel> AccountInfo(string serverAddress, string app_key)
         {
             SDKUtility uitylity = new Utilities.SDKUtility(serverAddress);

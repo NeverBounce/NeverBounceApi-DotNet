@@ -15,10 +15,13 @@ namespace NeverBounce.Services
     {
         private static string api = "/single/check";
         /// <summary>
-        /// 
+        ///Single verification allows you verify individual emails and gather additional information pertaining to the email.
         /// </summary>
-        /// <param name="parameter"></param>
-        /// <returns></returns>
+        /// <param name="parameter">emailid required </param>
+        ///   <param name="parameter">address_info </param>
+        ///   <param name="parameter">credits_info </param>
+        ///   <param name="parameter">timeout </param>
+        /// <returns>SingleModel</returns>
         public static async Task<SingleModel> Check(string serverAddress, SingleRequestModel model)
         {
             SingleModel singleCheck = null;

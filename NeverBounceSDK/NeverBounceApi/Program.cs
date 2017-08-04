@@ -42,9 +42,9 @@ namespace NeverBounceApi
             JobCreateRequestModel model = new JobCreateRequestModel();
             model.input_location = "supplied";
             model.filename = "SampleNeverBounceAPI.csv";
-           // model.auto_parse = 0;
-           // model.auto_run = 0;
-            //model.auto_start = 0;
+            model.auto_parse = 0;
+            model.auto_run = 0;
+            model.auto_start = 0;
             List<object> s = new List<object>();
             s.Add(new  { id = "3", email = "support@neverbounce.com", name = "Fred McValid" });
             model.input = s;
