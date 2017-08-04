@@ -47,9 +47,9 @@
     <Compile Include="Classes\enumeration.cs" />
     <Compile Include="Interface\IAccountService.cs" />
     <Compile Include="Models\JobModel.cs" />
+    <Compile Include="Models\ResponseModel.cs" />
     <Compile Include="Models\SingleModel.cs" />
     <Compile Include="Models\AccountInfoModel.cs" />
-    <Compile Include="Models\ErrorResponseModel.cs" />
     <Compile Include="Models\Validation.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\AccountService.cs" />

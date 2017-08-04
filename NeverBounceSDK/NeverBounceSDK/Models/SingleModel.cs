@@ -16,7 +16,7 @@ namespace NeverBounce.Models
         public string retry_token { get; set; }
         public CreditsInfo credits_info { get; set; }
         public int execution_time { get; set; }
-        public string message { get; set; }
+        
 
     }
     public class SingleRequestModel

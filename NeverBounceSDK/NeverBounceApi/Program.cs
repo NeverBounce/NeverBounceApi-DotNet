@@ -13,32 +13,26 @@ namespace NeverBounceApi
     {
         static void Main(string[] args)
         {
-            NeverBounceSdk neverBounceSdk = new NeverBounceSdk("http://52.90.42.81/v4", "secret_nvrbnc_dotnet");
+            NeverBounceSdk neverBounceSdk = new NeverBounceSdk("https://api.neverbounce.com/v4", "secret_nvrbnc_dotnet");
 
-            var AccountInfo = neverBounceSdk.AccountInfo();
-          //var SingleCheck = neverBounceSdk.SingleCheck(SingleChecktestMethod()).Result;
-           // var SearchJob = neverBounceSdk.SearchJob(SearchJobtestMethod()).Result;
-           //var CreateJob = neverBounceSdk.CreateJob(CreateJobtestMethod()).Result;
-            // var ParseJob = neverBounceSdk.ParseJob(ParseJobtestMethod()).Result;
-            //  var StartJob = neverBounceSdk.StartJob(StartJobtestMethod()).Result;
-           // var JobStatus = neverBounceSdk.JobStatus(JobStatustestMethod()).Result;
-           // var JobResultss = neverBounceSdk.JobResults(ResultJobtestMethod()).Result;
-            // var DeleteJobs = neverBounceSdk.DeleteJobs(DeleteJobtestMethod()).Result;
-          //  var DownloadJobs = neverBounceSdk.DownloadJob(DownloadTestMethod()).Result;
-            Console.WriteLine(AccountInfo.Status);
+            //var response = neverBounceSdk.AccountInfo();
+            var response = neverBounceSdk.SingleCheck(SingleChecktestMethod()).Result;
+           // var response = neverBounceSdk.SearchJob(SearchJobtestMethod()).Result;
+            //var response = neverBounceSdk.CreateJob(CreateJobtestMethod()).Result;
+            //var response = neverBounceSdk.ParseJob(ParseJobtestMethod()).Result;
+            //var response = neverBounceSdk.StartJob(StartJobtestMethod()).Result;
+            //var response = neverBounceSdk.JobStatus(JobStatustestMethod()).Result;
+            //var response = neverBounceSdk.JobResults(ResultJobtestMethod()).Result;
+            //var response = neverBounceSdk.DeleteJobs(DeleteJobtestMethod()).Result;
+            //var response = neverBounceSdk.DownloadJob(DownloadTestMethod()).Result;
+            Console.WriteLine(response.status);
             Console.ReadLine();
         }
         static JobSearchRequestModel SearchJobtestMethod()
         {
             JobSearchRequestModel model = new JobSearchRequestModel();
-            model.job_id = 0;
+            model.job_id = 288025;
             model.filename = "";
-            //model.completed = 0;
-            //model.processing = 0;
-            //model.indexing = 0;
-            //model.failed = 0;
-            //model.manual_review = 0;
-            //model.unpurchased = 0;
             model.page = 0;
             model.items_per_page = 0;
             return model;
@@ -48,13 +42,11 @@ namespace NeverBounceApi
             JobCreateRequestModel model = new JobCreateRequestModel();
             model.input_location = "supplied";
             model.filename = "SampleNeverBounceAPI.csv";
-            model.auto_parse = 0;
-            model.auto_run = 0;
-            model.auto_start = 0;
-          //  List<List<Input>> sub = new List<List<Input>>();
-            List<Input> s = new List<Input>();
-            s.Add(new Input { id = "3", email = "support@neverbounce.com", name = "Fred McValid" });
-           // sub.Add(s);
+           // model.auto_parse = 0;
+           // model.auto_run = 0;
+            //model.auto_start = 0;
+            List<object> s = new List<object>();
+            s.Add(new  { id = "3", email = "support@neverbounce.com", name = "Fred McValid" });
             model.input = s;
             return model;
         }
@@ -62,13 +54,13 @@ namespace NeverBounceApi
         {
             JobParseRequestModel model = new JobParseRequestModel();
             model.auto_start = 1;
-            model.job_id = 280350;
+            model.job_id = 288024;
             return model;
         }
         static JobStartRequestModel StartJobtestMethod()
         {
             JobStartRequestModel model = new JobStartRequestModel();
-            model.job_id = 279047;
+            model.job_id = 288025;
             model.run_sample = "";
             return model;
         }
@@ -82,7 +74,6 @@ namespace NeverBounceApi
         static JobResultsRequestModel ResultJobtestMethod()
         {
             JobResultsRequestModel model = new JobResultsRequestModel();
-           // model.key = "secret_nvrbnc_dotnet";
             model.job_id = 280580;
             return model;
         }
@@ -96,8 +87,6 @@ namespace NeverBounceApi
         {
 
             SingleRequestModel model = new SingleRequestModel();
-            //model.key = "secret_nvrbnc_dotnet";
-            //modelS.job_id = 279047;
             model.email = "support@neverbounce.com";
             model.credits_info = 1;
             return model;
@@ -106,7 +95,6 @@ namespace NeverBounceApi
         {
 
             JobDownloadRequestModel model = new JobDownloadRequestModel();
-            //model.key = "secret_nvrbnc_dotnet";
             model.job_id = 280580;
             model.valids = true;
             model.invalids = true;

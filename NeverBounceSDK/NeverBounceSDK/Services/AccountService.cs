@@ -21,23 +21,21 @@ namespace NeverBounce.Services
         static WebClient client = new WebClient();
         public static async Task<AccountInfoModel> AccountInfo(string serverAddress, string app_key)
         {
-            try
+            SDKUtility uitylity = new Utilities.SDKUtility(serverAddress);
+            AccountInfoModel accountInfo = null;
+            var result = await uitylity.GetNeverBounce(serverAddress + api, app_key);
+            if (result.Status == "success")
             {
-                SDKUtility uitylity = new Utilities.SDKUtility(serverAddress);
-                var result = await uitylity.GetNeverBounce(serverAddress + api, app_key);
-                AccountInfoModel accountInfo = JsonConvert.DeserializeObject<AccountInfoModel>(result.ToString());
-                Log.WriteLog(": " + result.ToString());
-                return accountInfo;
-           
+                accountInfo = JsonConvert.DeserializeObject<AccountInfoModel>(result.ToString());
             }
-            catch (Exception ex)
+            else
             {
-                throw;
+                throw new Exception(result.Data.ToString());
             }
-
-
+            return accountInfo;
         }
-        
-
     }
+
+
 }
+

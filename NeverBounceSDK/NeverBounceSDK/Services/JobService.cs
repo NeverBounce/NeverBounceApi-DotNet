@@ -19,188 +19,138 @@ namespace NeverBounce.Services
         private static string jobResult = "/jobs/results";
         private static string jobDownload = "/jobs/download";
         private static string jobDelete = "/jobs/delete";
-      
+
         public static async Task<JobSearchResponseModel> SearchJob(string serverAddress, JobSearchRequestModel model)
         {
-            try
+            JobSearchResponseModel startJob = null;
+            SDKUtility uitylity = new Utilities.SDKUtility(serverAddress);
+            var json = ConvertDictionary(model);
+            var result = await uitylity.GetNeverBounce(serverAddress + jobSearch, GenerateQuerstring(json));
+            if (result.Status == "success")
             {
-                SDKUtility uitylity = new Utilities.SDKUtility(serverAddress);
-                var json = ConvertDictionary(model);
-                var result = await uitylity.GetNeverBounce(serverAddress + jobSearch, GenerateQuerstring(json));
-                JobSearchResponseModel startJob = JsonConvert.DeserializeObject<JobSearchResponseModel>(result.ToString());
-                Log.WriteLog(": " + result.ToString());
-                return startJob;
+                startJob = JsonConvert.DeserializeObject<JobSearchResponseModel>(result.Data.ToString());
             }
-            catch (Exception ex)
+            else
             {
-                throw;
+                throw new Exception(result.Data.ToString());
             }
+            return startJob;
+
         }
         public static async Task<JobCreateResponseModel> CreateJob(string serverAddress, JobCreateRequestModel model)
         {
-            try
+            JobCreateResponseModel createJob = null;
+            SDKUtility uitylity = new Utilities.SDKUtility(serverAddress);
+            var json = JsonConvert.SerializeObject(model);
+            var result = await uitylity.PostNeverBounce(serverAddress + jobcreate, json);
+            if (result.Status == "success")
             {
-                JobCreateResponseModel createJob = null;
-                if (Validation.JobCreateValidation(model))
-                {
-                    SDKUtility uitylity = new Utilities.SDKUtility(serverAddress);
-                    var json = JsonConvert.SerializeObject(model);
-                    var result = await uitylity.PostNeverBounce(serverAddress + jobcreate, json);
-                    createJob = JsonConvert.DeserializeObject<JobCreateResponseModel>(result.ToString());
-                }
-                else
-                {
-                    createJob = new JobCreateResponseModel();
-                    createJob.message = "Missing required parameters";
-                    createJob.status = "general_failure";
-                }
-                return createJob;
+                createJob = JsonConvert.DeserializeObject<JobCreateResponseModel>(result.Data.ToString());
             }
-            catch (Exception ex)
+            else
             {
-                throw;
+                throw new Exception(result.Data.ToString());
             }
-
-
+            return createJob;
         }
         public static async Task<JobParseResponseModel> ParseJob(string serverAddress, JobParseRequestModel model)
         {
-            try
+            JobParseResponseModel parseJob = null;
+            SDKUtility uitylity = new Utilities.SDKUtility(serverAddress);
+            var json = JsonConvert.SerializeObject(model);
+            var result = await uitylity.PostNeverBounce(serverAddress + jobParse, json);
+            if (result.Status == "success")
             {
-                JobParseResponseModel parseJob = null;
-                if (Validation.JobParseValidation(model))
-                {
-                    SDKUtility uitylity = new Utilities.SDKUtility(serverAddress);
-                    var json = JsonConvert.SerializeObject(model);
-                    var result = await uitylity.PostNeverBounce(serverAddress + jobParse, json);
-                    parseJob = JsonConvert.DeserializeObject<JobParseResponseModel>(result.ToString());
-                }
-                else
-                {
-                    parseJob = new JobParseResponseModel();
-                    parseJob.message = "Missing required parameters";
-                    parseJob.status = "general_failure";
-                }
-                return parseJob;
+                parseJob = JsonConvert.DeserializeObject<JobParseResponseModel>(result.Data.ToString());
             }
-            catch (Exception ex)
+            else
             {
-                throw;
+                throw new Exception(result.Data.ToString());
             }
-
-
+            return parseJob;
         }
         public static async Task<JobStartResponseModel> StartJob(string serverAddress, JobStartRequestModel model)
         {
-            try
+            JobStartResponseModel startJob = null;
+            SDKUtility uitylity = new Utilities.SDKUtility(serverAddress);
+            var json = JsonConvert.SerializeObject(model);
+            var result = await uitylity.PostNeverBounce(serverAddress + jobStart, json);
+            if (result.Status == "success")
             {
-                JobStartResponseModel startJob = null;
-                if (Validation.JobIdValidation(model.job_id))
-                {
-                    SDKUtility uitylity = new Utilities.SDKUtility(serverAddress);
-                    var json = JsonConvert.SerializeObject(model);
-                    var result = await uitylity.PostNeverBounce(serverAddress + jobStart, json);
-                    startJob = JsonConvert.DeserializeObject<JobStartResponseModel>(result.ToString());
-                }
-                else
-                {
-                    startJob = new JobStartResponseModel();
-                    startJob.message = "Missing required parameter 'job_id'";
-                    startJob.status = "general_failure";
-                }
-                return startJob;
+                startJob = JsonConvert.DeserializeObject<JobStartResponseModel>(result.Data.ToString());
             }
-            catch (Exception ex)
+            else
             {
-                throw;
+                throw new Exception(result.Data.ToString());
             }
-
-
+            return startJob;
         }
         public static async Task<JobStatusResponseModel> JobStatus(string serverAddress, JobStatusRequestModel model)
         {
-            try
-            {
-                JobStatusResponseModel statusJob = null;
-                if (Validation.JobIdValidation(model.job_id))
-                {
-                    SDKUtility uitylity = new Utilities.SDKUtility(serverAddress);
-                    var json = JsonConvert.SerializeObject(model);
-                    //string queryString = "?";
-                    //queryString += json.Replace(":", "=").Replace("{", "").
-                    //            Replace("}", "").Replace(",", "&").
-                    //                Replace("\"", "");
-                    var result = await uitylity.GetNeverBounce(serverAddress + jobStatus, GenerateQuerstring(json));
-                    statusJob = JsonConvert.DeserializeObject<JobStatusResponseModel>(result.ToString());
-                }
-                else
-                {
-                    statusJob = new JobStatusResponseModel();
-                    statusJob.message = "Missing required parameter 'job_id'";
-                    statusJob.status = "general_failure";
-                }
-                return statusJob;
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
 
-
+            JobStatusResponseModel statusJob = null;
+            SDKUtility uitylity = new Utilities.SDKUtility(serverAddress);
+            var json = JsonConvert.SerializeObject(model);
+            var result = await uitylity.GetNeverBounce(serverAddress + jobStatus, GenerateQuerstring(json));
+            if (result.Status == "success")
+            {
+                statusJob = JsonConvert.DeserializeObject<JobStatusResponseModel>(result.Data.ToString());
+            }
+            else
+            {
+                throw new Exception(result.Data.ToString());
+            }
+            return statusJob;
         }
         public static async Task<JobResultsResponseModel> JobResults(string serverAddress, JobResultsRequestModel model)
         {
-            try
+            JobResultsResponseModel jobResults = null;
+            SDKUtility uitylity = new Utilities.SDKUtility(serverAddress);
+            var json = ConvertResultDictionary(model);
+            var result = await uitylity.GetNeverBounce(serverAddress + jobResult, GenerateQuerstring(json));
+            if (result.Status == "success")
             {
-                JobResultsResponseModel jobResults = null;
-                if (Validation.JobIdValidation(model.job_id))
-                {
-                    SDKUtility uitylity = new Utilities.SDKUtility(serverAddress);
-                    var json = ConvertResultDictionary(model);
-                    var result = await uitylity.GetNeverBounce(serverAddress + jobResult, GenerateQuerstring(json));
-                    jobResults = JsonConvert.DeserializeObject<JobResultsResponseModel>(result.ToString());
-                }
-                else
-                {
-
-                    jobResults = new JobResultsResponseModel();
-                    jobResults.message = "Missing required parameter 'job_id'";
-                    jobResults.status = "general_failure";
-                }
-                return jobResults;
+                jobResults = JsonConvert.DeserializeObject<JobResultsResponseModel>(result.Data.ToString());
             }
-            catch (Exception ex)
+            else
             {
-                throw;
+                throw new Exception(result.Data.ToString());
             }
-
-
+            return jobResults;
         }
         public static async Task<JobDeleteResponseModel> DeleteJobs(string serverAddress, JobDeleteRequestModel model)
         {
-            try
+
+            JobDeleteResponseModel deleteJob = null;
+            SDKUtility uitylity = new Utilities.SDKUtility(serverAddress);
+            var json = JsonConvert.SerializeObject(model);
+            var result = await uitylity.PostNeverBounce(serverAddress + jobDelete, json);
+            if (result.Status == "success")
             {
-                JobDeleteResponseModel deleteJob = null;
-                if (Validation.JobIdValidation(model.job_id))
-                {
-                    SDKUtility uitylity = new Utilities.SDKUtility(serverAddress);
-                    var json = JsonConvert.SerializeObject(model);
-                    var result = await uitylity.PostNeverBounce(serverAddress + jobDelete, json);
-                    deleteJob = JsonConvert.DeserializeObject<JobDeleteResponseModel>(result.ToString());
-                }
-                else
-                {
-                    deleteJob = new JobDeleteResponseModel();
-                    deleteJob.message = "Missing required parameter 'job_id'";
-                    deleteJob.status = "general_failure";
-                }
-                return deleteJob;
+                deleteJob = JsonConvert.DeserializeObject<JobDeleteResponseModel>(result.ToString());
             }
-            catch (Exception ex)
+            else
             {
-                throw;
+                throw new Exception(result.Data.ToString());
             }
 
+            return deleteJob;
+        }
+        public static async Task<String> DownloadJobData(string serverAddress, JobDownloadRequestModel model)
+        {
+            string downloadJob = null;
+            SDKUtility uitylity = new Utilities.SDKUtility(serverAddress);
+            var json = JsonConvert.SerializeObject(model);
+            var result = await uitylity.PostNeverBouncedownload(serverAddress + jobDownload, json);
+            if (result.Status == "success")
+            {
+                downloadJob = result.downloadResponse;
+            }
+            else
+            {
+                throw new Exception(result.Data.ToString());
+            }
+            return downloadJob;
 
         }
         private static string ConvertDictionary(JobSearchRequestModel model)
@@ -214,11 +164,11 @@ namespace NeverBounce.Services
             {
                 data["job_id"] = model.job_id;
             }
-            if (!string.IsNullOrEmpty(model.filename)) 
+            if (!string.IsNullOrEmpty(model.filename))
             {
                 data["filename"] = model.filename;
             }
-            if (model.job_status != null&& model.job_status!="")
+            if (model.job_status != null && model.job_status != "")
             {
                 data["job_status"] = model.job_status;
             }
@@ -256,7 +206,6 @@ namespace NeverBounce.Services
         }
         private static string GenerateQuerstring(string parameters)
         {
-            //var json = JsonConvert.SerializeObject(model);
             string str = "?";
             str += parameters.Replace(":", "=").Replace("{", "").
                         Replace("}", "").Replace(",", "&").
@@ -265,28 +214,7 @@ namespace NeverBounce.Services
             return str;
         }
 
-        public static async Task<String> DownloadJobData(string serverAddress, JobDownloadRequestModel model) {
-            try
-            {
-                string downloadJob = null;
-                if (Validation.JobIdValidation(model.job_id))
-                {
-                    SDKUtility uitylity = new Utilities.SDKUtility(serverAddress);
 
-                    var json = JsonConvert.SerializeObject(model);
-                    var result = await uitylity.PostNeverBouncedownload(serverAddress + jobDownload, json);
-                    
-                    downloadJob = result.ToString();
-                }
-                
-                return downloadJob;
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
 
-        }
-       
     }
 }
