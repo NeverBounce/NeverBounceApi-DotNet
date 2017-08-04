@@ -1,3 +1,9 @@
-# NeverBounceApi-DotNet
+<p align="center"><img src="https://neverbounce-marketing.s3.amazonaws.com/neverbounce_color_600px.png"></p>
 
-[![Build Status](https://travis-ci.org/NeverBounce/NeverBounceApi-DotNet.svg?branch=master)](https://travis-ci.org/NeverBounce/NeverBounceApi-DotNet)
+<p align="center">
+<a href="https://travis-ci.org/NeverBounce/NeverBounceApi-DotNet"><img src="https://travis-ci.org/NeverBounce/NeverBounceApi-DotNet.svg" alt="Build Status"></a>
+</p>
+
+> This version of the wrapper is for the V4 API currently in beta
+
+This is the official NeverBounce API .NET wrapper. It provides helpful methods to quickly implement our API in your .NET applications.
