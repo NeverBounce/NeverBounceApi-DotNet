@@ -24,8 +24,8 @@ namespace NeverBounce.Services
         /// <returns>SingleModel</returns>
         public static async Task<SingleModel> Check(string serverAddress, SingleRequestModel model)
         {
-            NeverBounceHttpClient uitylity = new NeverBounceHttpClient(serverAddress);
-            var result = await uitylity.MakeRequest("GET", "/single/check", model);
+            NeverBounceHttpClient client = new NeverBounceHttpClient(serverAddress);
+            var result = await client.MakeRequest("GET", "/single/check", model);
             return JsonConvert.DeserializeObject<SingleModel>(result.json.ToString());
         }
     }

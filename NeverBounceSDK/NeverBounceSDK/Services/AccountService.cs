@@ -25,8 +25,8 @@ namespace NeverBounce.Services
         /// <returns>AccountInfoModel</returns>
         public static async Task<AccountInfoModel> AccountInfo(string serverAddress, RequestModel model)
         {
-			NeverBounceHttpClient uitylity = new Utilities.NeverBounceHttpClient(serverAddress);
-			var result = await uitylity.MakeRequest("POST", "/account/info", model);
+			NeverBounceHttpClient client = new Utilities.NeverBounceHttpClient(serverAddress);
+			var result = await client.MakeRequest("POST", "/account/info", model);
             return JsonConvert.DeserializeObject<AccountInfoModel>(result.json.ToString());
         }
     }
