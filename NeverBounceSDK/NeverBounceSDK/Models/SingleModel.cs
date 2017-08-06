@@ -16,17 +16,15 @@ namespace NeverBounce.Models
         public string retry_token { get; set; }
         public CreditsInfo credits_info { get; set; }
         public int execution_time { get; set; }
-        
+        public string message { get; set; }
 
     }
-    public class SingleRequestModel
+    public class SingleRequestModel : RequestModel
     {       
         public string email { get; set; }
-        public Nullable<int> address_info { get; set; } 
-        public Nullable<int> credits_info { get; set; }
-        public Nullable<int> timeout { get; set; } 
-        public string key { get; set; }
-
+        public Nullable<bool> address_info { get; set; } = false;
+        public Nullable<bool> credits_info { get; set; } = false;
+        public Nullable<int> timeout { get; set; }
     }
   
 }
