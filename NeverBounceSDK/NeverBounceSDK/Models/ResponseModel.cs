@@ -12,5 +12,8 @@ namespace NeverBounce.Models
         public object Data { get; set; }
         public string Message { get; set; }
         public string downloadResponse { get; set; }
+
+		public object json { get; set; }
+		public string plaintext { get; set;  }
     }
 }
