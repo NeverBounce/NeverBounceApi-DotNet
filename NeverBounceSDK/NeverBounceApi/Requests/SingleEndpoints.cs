@@ -4,7 +4,7 @@ using NeverBounce.Models;
 
 namespace NeverBounceSdkExamples.Requests
 {
-    public class Single
+    public class SingleEndpoints
     {
         public static ResponseModel Check(NeverBounceSdk sdk)
         {

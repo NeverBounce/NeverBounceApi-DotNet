@@ -49,9 +49,9 @@
   <ItemGroup>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Requests\Single.cs" />
-    <Compile Include="Requests\Account.cs" />
-    <Compile Include="Requests\Jobs.cs" />
+    <Compile Include="Requests\SingleEndpoints.cs" />
+    <Compile Include="Requests\AccountEndpoint.cs" />
+    <Compile Include="Requests\JobsEndpoint.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

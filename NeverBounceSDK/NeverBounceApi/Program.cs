@@ -17,8 +17,8 @@ namespace NeverBounceSdkExamples
         {
             NeverBounceSdk sdk = new NeverBounceSdk("https://api.neverbounce.com/v4", "secret_nvrbnc_dotnet");
 
-			var response = Account.Info(sdk);
-			//var response = Single.Check(sdk);
+			//var response = AccountEndpoint.Info(sdk);
+            var response = SingleEndpoints.Check(sdk);
 
             //var response = neverBounceSdk.SearchJob(SearchJobtestMethod()).Result;
             //var response = neverBounceSdk.CreateJob(CreateJobtestMethod()).Result;
