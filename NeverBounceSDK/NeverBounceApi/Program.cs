@@ -1,23 +1,26 @@
 ﻿using System;
+using System.Reflection;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using NeverBounce;
 using NeverBounce.Models;
+using NeverBounceSdkExamples.Requests;
 using NLog;
 
-namespace NeverBounceApi
+namespace NeverBounceSdkExamples
 {
     class Program
     {
         static void Main(string[] args)
         {
-            NeverBounceSdk neverBounceSdk = new NeverBounceSdk("https://api.neverbounce.com/v4", "secret_nvrbnc_dotnet");
+            NeverBounceSdk sdk = new NeverBounceSdk("https://api.neverbounce.com/v4", "secret_nvrbnc_dotnet");
 
-            //var response = neverBounceSdk.AccountInfo();
-            var response = neverBounceSdk.SingleCheck(SingleChecktestMethod()).Result;
-           // var response = neverBounceSdk.SearchJob(SearchJobtestMethod()).Result;
+			var response = Account.Info(sdk);
+			//var response = Single.Check(sdk);
+
+            //var response = neverBounceSdk.SearchJob(SearchJobtestMethod()).Result;
             //var response = neverBounceSdk.CreateJob(CreateJobtestMethod()).Result;
             //var response = neverBounceSdk.ParseJob(ParseJobtestMethod()).Result;
             //var response = neverBounceSdk.StartJob(StartJobtestMethod()).Result;
@@ -25,9 +28,35 @@ namespace NeverBounceApi
             //var response = neverBounceSdk.JobResults(ResultJobtestMethod()).Result;
             //var response = neverBounceSdk.DeleteJobs(DeleteJobtestMethod()).Result;
             //var response = neverBounceSdk.DownloadJob(DownloadTestMethod()).Result;
-            Console.WriteLine(response.status);
+            var_dump(response);
             Console.ReadLine();
         }
+
+		public static void var_dump(object obj)
+		{
+			Console.WriteLine("{0,-18} {1}", "Name", "Value");
+			string ln = @"-------------------------------------   
+               ----------------------------";
+			Console.WriteLine(ln);
+
+			Type t = obj.GetType();
+			PropertyInfo[] props = t.GetProperties();
+
+			for (int i = 0; i < props.Length; i++)
+			{
+				try
+				{
+					Console.WriteLine("{0,-18} {1}",
+						  props[i].Name, props[i].GetValue(obj, null));
+				}
+				catch (Exception e)
+				{
+					Console.WriteLine(e);   
+				}
+			}
+			Console.WriteLine();
+		}
+
         static JobSearchRequestModel SearchJobtestMethod()
         {
             JobSearchRequestModel model = new JobSearchRequestModel();
@@ -83,14 +112,7 @@ namespace NeverBounceApi
             model.job_id= 280350;
             return model;
         }
-        static SingleRequestModel SingleChecktestMethod()
-        {
 
-            SingleRequestModel model = new SingleRequestModel();
-            model.email = "support@neverbounce.com";
-            model.credits_info = 1;
-            return model;
-        }
         static JobDownloadRequestModel DownloadTestMethod()
         {
 
