@@ -17,27 +17,17 @@ namespace NeverBounce.Services
 {
     class AccountService
     {
-        private static string api = "/account/info?key=";
         /// <summary>
         /// Account Info method allow to programmatically check your account's balance and how many jobs are currently running on your account.
         /// </summary>
         /// <param name="serverAddress">containg api url like https://api.neverbounce.com/v4 </param>
         /// <param name="app_key">this parameter authenticate your requests</param>
         /// <returns>AccountInfoModel</returns>
-        public static async Task<AccountInfoModel> AccountInfo(string serverAddress, string app_key)
+        public static async Task<AccountInfoModel> AccountInfo(string serverAddress, RequestModel model)
         {
-            SDKUtility uitylity = new Utilities.SDKUtility(serverAddress);
-            AccountInfoModel accountInfo = null;
-            var result = await uitylity.GetNeverBounce(serverAddress + api, app_key);
-            if (result.Status == "success")
-            {
-                accountInfo = JsonConvert.DeserializeObject<AccountInfoModel>(result.ToString());
-            }
-            else
-            {
-                throw new Exception(result.Data.ToString());
-            }
-            return accountInfo;
+			NeverBounceHttpClient uitylity = new Utilities.NeverBounceHttpClient(serverAddress);
+			var result = await uitylity.MakeRequest("POST", "/account/info", model);
+            return JsonConvert.DeserializeObject<AccountInfoModel>(result.json.ToString());
         }
     }
 

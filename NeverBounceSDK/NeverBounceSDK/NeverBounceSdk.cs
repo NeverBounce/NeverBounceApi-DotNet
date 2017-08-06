@@ -29,7 +29,9 @@ namespace NeverBounce
         /// <returns>AccountInfoModel</returns>
         public async Task<AccountInfoModel> AccountInfo()
         {
-           return await AccountService.AccountInfo(ServerAddress, ApiKey);
+            RequestModel model = new RequestModel();
+			model.key = ApiKey;
+			return await AccountService.AccountInfo(ServerAddress, model);
         }
         /// <summary>
         /// This method call the single/check end points "https://api.neverbounce.com/v4/single/check
