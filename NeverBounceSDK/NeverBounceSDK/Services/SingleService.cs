@@ -19,16 +19,14 @@ namespace NeverBounce.Services
 			if (Host != null)
 				this.Host = Host;
 		}
-        
-        /// <summary>
-        ///Single verification allows you verify individual emails and gather additional information pertaining to the email.
-        /// </summary>
-        /// <param name="parameter">emailid required </param>
-        ///   <param name="parameter">address_info </param>
-        ///   <param name="parameter">credits_info </param>
-        ///   <param name="parameter">timeout </param>
-        /// <returns>SingleModel</returns>
-        public async Task<SingleResponseModel> Check(SingleRequestModel model)
+
+		/// <summary>
+		/// Single verification allows you verify individual emails and gather additional information pertaining to the email.
+		/// See: "https://api.neverbounce.com/v4/single/check"
+		/// </summary>
+		/// <param name="model"> SingleRequestModel</param>
+		/// <returns>SingleResponseModel</returns>
+		public async Task<SingleResponseModel> Check(SingleRequestModel model)
         {
             NeverBounceHttpClient client = new NeverBounceHttpClient(ApiKey, Host);
             var result = await client.MakeRequest("GET", "/single/check", model);

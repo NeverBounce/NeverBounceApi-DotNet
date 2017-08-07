@@ -20,13 +20,12 @@ namespace NeverBounce.Services
 				this.Host = Host;
 		}
 
-        /// <summary>
-        /// Account Info method allow to programmatically check your account's balance and how many jobs are currently running on your account.
-        /// </summary>
-        /// <param name="serverAddress">containg api url like https://api.neverbounce.com/v4 </param>
-        /// <param name="app_key">this parameter authenticate your requests</param>
-        /// <returns>AccountInfoModel</returns>
-        public async Task<AccountInfoResponseModel> Info()
+		/// <summary>
+		/// Account Info method allow to programmatically check your account's balance and how many jobs are currently running on your account.
+		/// See: "https://api.neverbounce.com/v4/account/info"
+		/// </summary>
+		/// <returns>AccountInfoResponseModel</returns>
+		public async Task<AccountInfoResponseModel> Info()
         {
             RequestModel model = new RequestModel();
 			NeverBounceHttpClient client = new Utilities.NeverBounceHttpClient(ApiKey, Host);
