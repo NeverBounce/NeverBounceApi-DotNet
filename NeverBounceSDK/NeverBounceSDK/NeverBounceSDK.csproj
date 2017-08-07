@@ -45,24 +45,30 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Classes\enumeration.cs" />
-    <Compile Include="Interface\IAccountService.cs" />
-    <Compile Include="Models\JobModel.cs" />
+    <Compile Include="Models\JobModels.cs" />
     <Compile Include="Models\ResponseModel.cs" />
-    <Compile Include="Models\SingleModel.cs" />
-    <Compile Include="Models\AccountInfoModel.cs" />
-    <Compile Include="Models\Validation.cs" />
+    <Compile Include="Models\SingleModels.cs" />
+    <Compile Include="Models\AccountModels.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\AccountService.cs" />
-    <Compile Include="Services\JobService.cs" />
+    <Compile Include="Services\JobsService.cs" />
     <Compile Include="Services\SingleService.cs" />
     <Compile Include="NeverBounceSdk.cs" />
-    <Compile Include="Utilities\Log.cs" />
-    <Compile Include="Utilities\SDKUtility.cs" />
+    <Compile Include="Models\RequestModel.cs" />
+    <Compile Include="Utilities\NeverBounceHttpClient.cs" />
+    <Compile Include="Exceptions\HttpClientException.cs" />
+    <Compile Include="Exceptions\ThrottleException.cs" />
+    <Compile Include="Exceptions\AuthException.cs" />
+    <Compile Include="Exceptions\BadReferrerException.cs" />
+    <Compile Include="Exceptions\GeneralException.cs" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Exceptions\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
