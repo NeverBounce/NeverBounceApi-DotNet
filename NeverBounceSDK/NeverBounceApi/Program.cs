@@ -1,13 +1,7 @@
 ﻿using System;
 using System.Reflection;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using NeverBounce;
-using NeverBounce.Models;
 using NeverBounceSdkExamples.Requests;
-using NLog;
 
 namespace NeverBounceSdkExamples
 {
