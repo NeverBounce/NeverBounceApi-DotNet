@@ -1,4 +1,5 @@
 ﻿﻿using System;
+
 namespace NeverBounce.Models
 {
     public class RequestModel

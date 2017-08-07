@@ -35,11 +35,11 @@ namespace NeverBounce.Services
         ///   <param name="parameter">credits_info </param>
         ///   <param name="parameter">timeout </param>
         /// <returns>SingleModel</returns>
-        public async Task<SingleModel> Check(SingleRequestModel model)
+        public async Task<SingleResponseModel> Check(SingleRequestModel model)
         {
             NeverBounceHttpClient client = new NeverBounceHttpClient(ApiKey, Host);
             var result = await client.MakeRequest("GET", "/single/check", model);
-            return JsonConvert.DeserializeObject<SingleModel>(result.json.ToString());
+            return JsonConvert.DeserializeObject<SingleResponseModel>(result.json.ToString());
         }
     }
 }

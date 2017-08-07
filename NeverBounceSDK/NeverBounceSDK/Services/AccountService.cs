@@ -34,12 +34,12 @@ namespace NeverBounce.Services
         /// <param name="serverAddress">containg api url like https://api.neverbounce.com/v4 </param>
         /// <param name="app_key">this parameter authenticate your requests</param>
         /// <returns>AccountInfoModel</returns>
-        public async Task<AccountInfoModel> Info()
+        public async Task<AccountInfoResponseModel> Info()
         {
             RequestModel model = new RequestModel();
 			NeverBounceHttpClient client = new Utilities.NeverBounceHttpClient(ApiKey, Host);
 			var result = await client.MakeRequest("POST", "/account/info", model);
-            return JsonConvert.DeserializeObject<AccountInfoModel>(result.json.ToString());
+            return JsonConvert.DeserializeObject<AccountInfoResponseModel>(result.json.ToString());
         }
     }
 

@@ -45,10 +45,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Classes\enumeration.cs" />
-    <Compile Include="Models\JobModel.cs" />
+    <Compile Include="Models\JobModels.cs" />
     <Compile Include="Models\ResponseModel.cs" />
-    <Compile Include="Models\SingleModel.cs" />
-    <Compile Include="Models\AccountInfoModel.cs" />
+    <Compile Include="Models\SingleModels.cs" />
+    <Compile Include="Models\AccountModels.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\AccountService.cs" />
     <Compile Include="Services\JobsService.cs" />

@@ -7,14 +7,14 @@ namespace NeverBounceSdkExamples.Requests
 {
     public class JobsEndpoint
     {
-        public static ResponseModel Search(NeverBounceSdk sdk)
+        public static JobSearchResponseModel Search(NeverBounceSdk sdk)
         {
             JobSearchRequestModel model = new JobSearchRequestModel();
 			model.job_id = 288025;
             return sdk.Jobs.Search(model).Result;
 		}
 
-        public static ResponseModel Create(NeverBounceSdk sdk)
+        public static JobCreateResponseModel Create(NeverBounceSdk sdk)
         {
 			JobCreateRequestModel model = new JobCreateRequestModel();
 			model.input_location = "supplied";
@@ -28,45 +28,45 @@ namespace NeverBounceSdkExamples.Requests
             return sdk.Jobs.Create(model).Result;
 		}
 
-		public static ResponseModel Parse(NeverBounceSdk sdk)
+        public static JobParseResponseModel Parse(NeverBounceSdk sdk)
 		{
             JobParseRequestModel model = new JobParseRequestModel();
-            model.job_id = 290497;
+            model.job_id = 290561;
             return sdk.Jobs.Parse(model).Result;
 		}
 
-		public static ResponseModel Start(NeverBounceSdk sdk)
+        public static JobStartResponseModel Start(NeverBounceSdk sdk)
 		{
             JobStartRequestModel model = new JobStartRequestModel();
-			model.job_id = 290497;
+			model.job_id = 290561;
             return sdk.Jobs.Start(model).Result;
 		}
 
-		public static ResponseModel Status(NeverBounceSdk sdk)
+        public static JobStatusResponseModel Status(NeverBounceSdk sdk)
 		{
             JobStatusRequestModel model = new JobStatusRequestModel();
-			model.job_id = 290497;
+			model.job_id = 290561;
             return sdk.Jobs.Status(model).Result;
 		}
 
-		public static ResponseModel Results(NeverBounceSdk sdk)
+        public static JobResultsResponseModel Results(NeverBounceSdk sdk)
 		{
             JobResultsRequestModel model = new JobResultsRequestModel();
-			model.job_id = 290497;
+			model.job_id = 290561;
             return sdk.Jobs.Results(model).Result;
 		}
 
         public static String Download(NeverBounceSdk sdk)
 		{
             JobDownloadRequestModel model = new JobDownloadRequestModel();
-			model.job_id = 290497;
+			model.job_id = 290561;
             return sdk.Jobs.Download(model).Result;
 		}
 
-		public static ResponseModel Delete(NeverBounceSdk sdk)
+        public static JobDeleteResponseModel Delete(NeverBounceSdk sdk)
 		{
             JobDeleteRequestModel model = new JobDeleteRequestModel();
-			model.job_id = 290497;
+			model.job_id = 290561;
             return sdk.Jobs.Delete(model).Result;
 		}
     }

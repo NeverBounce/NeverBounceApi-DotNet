@@ -6,7 +6,7 @@ namespace NeverBounceSdkExamples.Requests
 {
     public class SingleEndpoints
     {
-        public static ResponseModel Check(NeverBounceSdk sdk)
+        public static SingleResponseModel Check(NeverBounceSdk sdk)
         {
 			SingleRequestModel model = new SingleRequestModel();
 			model.email = "support@neverbounce.com";

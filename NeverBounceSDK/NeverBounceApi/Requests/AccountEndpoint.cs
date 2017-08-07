@@ -6,7 +6,7 @@ namespace NeverBounceSdkExamples.Requests
 {
     public class AccountEndpoint
     {
-        public static ResponseModel Info(NeverBounceSdk sdk)
+        public static AccountInfoResponseModel Info(NeverBounceSdk sdk)
         {
             return sdk.Account.Info().Result;
 		}
