@@ -45,7 +45,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Classes\enumeration.cs" />
-    <Compile Include="Interface\IAccountService.cs" />
     <Compile Include="Models\JobModel.cs" />
     <Compile Include="Models\ResponseModel.cs" />
     <Compile Include="Models\SingleModel.cs" />
@@ -55,8 +54,6 @@
     <Compile Include="Services\JobService.cs" />
     <Compile Include="Services\SingleService.cs" />
     <Compile Include="NeverBounceSdk.cs" />
-    <Compile Include="Utilities\Log.cs" />
-    <Compile Include="Utilities\SDKUtility.cs" />
     <Compile Include="Models\RequestModel.cs" />
     <Compile Include="Utilities\NeverBounceHttpClient.cs" />
     <Compile Include="Exceptions\HttpClientException.cs" />
