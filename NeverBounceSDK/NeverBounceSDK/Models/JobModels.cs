@@ -83,7 +83,7 @@ namespace NeverBounce.Models
     public class JobStartRequestModel : RequestModel
     {
         public int job_id { get; set; }
-        public string run_sample { get; set; }
+        public bool run_sample { get; set; }
     }
 
     public class JobStartResponseModel : ResponseModel
