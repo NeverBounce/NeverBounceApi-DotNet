@@ -12,8 +12,21 @@ using System.Net.Http;
 
 namespace NeverBounce.Services
 {
-    class SingleService
+    public class SingleService
     {
+		protected string ApiKey;
+
+		protected string Host;
+
+		public SingleService(string ApiKey, string Host = null)
+		{
+			this.ApiKey = ApiKey;
+
+			// Accept debug host
+			if (Host != null)
+				this.Host = Host;
+		}
+        
         /// <summary>
         ///Single verification allows you verify individual emails and gather additional information pertaining to the email.
         /// </summary>
@@ -22,9 +35,9 @@ namespace NeverBounce.Services
         ///   <param name="parameter">credits_info </param>
         ///   <param name="parameter">timeout </param>
         /// <returns>SingleModel</returns>
-        public static async Task<SingleModel> Check(string serverAddress, SingleRequestModel model)
+        public async Task<SingleModel> Check(SingleRequestModel model)
         {
-            NeverBounceHttpClient client = new NeverBounceHttpClient(serverAddress);
+            NeverBounceHttpClient client = new NeverBounceHttpClient(ApiKey, Host);
             var result = await client.MakeRequest("GET", "/single/check", model);
             return JsonConvert.DeserializeObject<SingleModel>(result.json.ToString());
         }

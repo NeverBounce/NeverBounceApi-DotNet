@@ -13,17 +13,31 @@ using NeverBounce.Utilities;
 
 namespace NeverBounce.Services
 {
-    class AccountService
+    public class AccountService
     {
+		protected string ApiKey;
+
+		protected string Host;
+
+		public AccountService(string ApiKey, string Host = null)
+		{
+			this.ApiKey = ApiKey;
+
+			// Accept debug host
+			if (Host != null)
+				this.Host = Host;
+		}
+
         /// <summary>
         /// Account Info method allow to programmatically check your account's balance and how many jobs are currently running on your account.
         /// </summary>
         /// <param name="serverAddress">containg api url like https://api.neverbounce.com/v4 </param>
         /// <param name="app_key">this parameter authenticate your requests</param>
         /// <returns>AccountInfoModel</returns>
-        public static async Task<AccountInfoModel> AccountInfo(string serverAddress, RequestModel model)
+        public async Task<AccountInfoModel> Info()
         {
-			NeverBounceHttpClient client = new Utilities.NeverBounceHttpClient(serverAddress);
+            RequestModel model = new RequestModel();
+			NeverBounceHttpClient client = new Utilities.NeverBounceHttpClient(ApiKey, Host);
 			var result = await client.MakeRequest("POST", "/account/info", model);
             return JsonConvert.DeserializeObject<AccountInfoModel>(result.json.ToString());
         }

@@ -12,7 +12,7 @@ namespace NeverBounceSdkExamples.Requests
 			model.email = "support@neverbounce.com";
 			model.credits_info = true;
             model.address_info = true;
-            return sdk.SingleCheck(model).Result;
+            return sdk.Single.Check(model).Result;
 		}
     }
 }

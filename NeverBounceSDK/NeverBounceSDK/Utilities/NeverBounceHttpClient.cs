@@ -16,25 +16,31 @@ namespace NeverBounce.Utilities
 
 		private HttpClient client;
 
-		private String host;
+		private String host = "https://api.neverbounce.com/v4/";
+
+        private String apiKey;
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="_ServerAddress"></param>
         /// <param name="ApiKey"></param>
-        public NeverBounceHttpClient(String host = "https://api.neverbounce.com/v4/")
+        public NeverBounceHttpClient(String apiKey, String host = null)
         {
-            this.host = host;
+            this.apiKey = apiKey;
+            if(host != null)
+                this.host = host;
+            
             client = new HttpClient();
             client.MaxResponseContentBufferSize = 256000;
         }
 
-        public async Task<RawResponseModel> MakeRequest(String method, String endpoint, object model)
+        public async Task<RawResponseModel> MakeRequest(String method, String endpoint, RequestModel model)
 		{
             client = new HttpClient();
             client.MaxResponseContentBufferSize = 256000;
 
+            model.key = apiKey;
 			HttpResponseMessage response;
 
             // Handle GET && POST methods differently

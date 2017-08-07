@@ -8,7 +8,7 @@ namespace NeverBounceSdkExamples.Requests
     {
         public static ResponseModel Info(NeverBounceSdk sdk)
         {
-            return sdk.AccountInfo().Result;
+            return sdk.Account.Info().Result;
 		}
     }
 }

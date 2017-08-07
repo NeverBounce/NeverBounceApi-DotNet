@@ -15,7 +15,7 @@ namespace NeverBounceSdkExamples
     {
         static void Main(string[] args)
         {
-            NeverBounceSdk sdk = new NeverBounceSdk("https://api.neverbounce.com/v4", "secret_nvrbnc_dotnet");
+            NeverBounceSdk sdk = new NeverBounceSdk("secret_nvrbnc_dotnet");
 
             //var response = AccountEndpoint.Info(sdk);
             //var response = SingleEndpoints.Check(sdk);
@@ -56,14 +56,5 @@ namespace NeverBounceSdkExamples
 			}
 			Console.WriteLine();
 		}
-
-    
-        static JobDeleteRequestModel DeleteJobtestMethod()
-        {
-            JobDeleteRequestModel model = new JobDeleteRequestModel();
-            model.job_id= 280350;
-            return model;
-        }
-
     }
 }
