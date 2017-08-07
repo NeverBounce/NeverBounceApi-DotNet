@@ -11,12 +11,6 @@ namespace NeverBounce.Services
 {
     class JobService
     {
-        private static string jobStart = "/jobs/start";
-        private static string jobStatus = "/jobs/status";
-        private static string jobResult = "/jobs/results";
-        private static string jobDownload = "/jobs/download";
-        private static string jobDelete = "/jobs/delete";
-
         public static async Task<JobSearchResponseModel> SearchJob(string serverAddress, JobSearchRequestModel model)
         {
             NeverBounceHttpClient client = new NeverBounceHttpClient(serverAddress);
@@ -58,7 +52,6 @@ namespace NeverBounce.Services
 			var result = await client.MakeRequest("GET", "/jobs/results", model);
             return JsonConvert.DeserializeObject<JobResultsResponseModel>(result.json.ToString());
         }
-
 		public static async Task<JobDeleteResponseModel> DeleteJobs(string serverAddress, JobDeleteRequestModel model)
 		{
 			NeverBounceHttpClient client = new NeverBounceHttpClient(serverAddress);
