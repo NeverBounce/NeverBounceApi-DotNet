@@ -23,7 +23,7 @@ namespace NeverBounce.Models
         public int processing { get; set; }
     }
 
-    public class AccountInfoModel
+    public class AccountInfoModel : ResponseModel
     {
         public string status { get; set; }
         public CreditsInfo credits_info { get; set; }

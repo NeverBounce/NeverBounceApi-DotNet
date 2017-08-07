@@ -6,16 +6,16 @@ using System.Threading.Tasks;
 
 namespace NeverBounce.Models
 {
-    public class JobSearchRequestModel
+    public class JobSearchRequestModel : RequestModel
     {
-        public string key { get; set; }
         public int job_id { get; set; }
         public string filename { get; set; }
         public string job_status { get; set; }
-        public int page { get; set; }
-        public int items_per_page { get; set; }
+        public int page { get; set; } = 1;
+        public int items_per_page { get; set; } = 10;
     }
-    public class JobSearchResponseModel
+
+    public class JobSearchResponseModel : ResponseModel
     {
         public string status { get; set; }
         public int total_results { get; set; }
@@ -24,6 +24,7 @@ namespace NeverBounce.Models
         public List<JobSearchResult> results { get; set; }
         public int execution_time { get; set; }
     }
+
     public class JobSearchQuery
     {
         public int page { get; set; }
@@ -31,20 +32,22 @@ namespace NeverBounce.Models
         public int job_id { get; set; }
 
     }
+
     public class Total
     {
-        public int records { get; set; }
-        public int billable { get; set; }
-        public int processed { get; set; }
-        public int valid { get; set; }
-        public int invalid { get; set; }
-        public int catchall { get; set; }
-        public int disposable { get; set; }
-        public int unknown { get; set; }
-        public int duplicates { get; set; }
-        public int bad_syntax { get; set; }
+        public Nullable<int> records { get; set; }
+        public Nullable<int> billable { get; set; }
+        public Nullable<int> processed { get; set; }
+        public Nullable<int> valid { get; set; }
+        public Nullable<int> invalid { get; set; }
+        public Nullable<int> catchall { get; set; }
+        public Nullable<int> disposable { get; set; }
+        public Nullable<int> unknown { get; set; }
+        public Nullable<int> duplicates { get; set; }
+        public Nullable<int> bad_syntax { get; set; }
     }
-    public class JobSearchResult
+
+    public class JobSearchResult : ResponseModel
     {
         public int id { get; set; }
         public string job_status { get; set; }
@@ -56,84 +59,81 @@ namespace NeverBounce.Models
         public int bounce_estimate { get; set; }
         public int percent_complete { get; set; }
     }
-    public class JobCreateRequestModel
+
+    public class JobCreateRequestModel : RequestModel
     {
-        public string key { get; set; }
         public string input_location { get; set; }
         public string filename { get; set; }
-        public int auto_start { get; set; }
-        public int auto_parse { get; set; }
-        public List<object> input { get; set; }
-        public string inputRemote_url { get; set; }
-
-        public Int32 auto_run { get; set; }
-        public Nullable<Int32> run_sample { get; set; }
+        public bool auto_start { get; set; } = false;
+        public bool auto_parse { get; set; } = false;
+		public bool run_sample { get; set; } = false;
+ 		public List<object> input { get; set; }
 
     }
-    public class JobCreateResponseModel
+    public class JobCreateResponseModel : ResponseModel
     {
         public string status { get; set; }
         public int job_id { get; set; }
         
         public int execution_time { get; set; }
     }
-    public class JobParseRequestModel
+
+    public class JobParseRequestModel : RequestModel
     {
-        public string key { get; set; }
         public int job_id { get; set; }
-        public int auto_start { get; set; }
-
-
+        public bool auto_start { get; set; } = false;
     }
-    public class JobParseResponseModel
+
+    public class JobParseResponseModel : ResponseModel
     {
         public string status { get; set; }
         public string queue_id { get; set; }
         public int execution_time { get; set; }
         
     }
-    public class JobStartRequestModel
+
+    public class JobStartRequestModel : RequestModel
     {
         public int job_id { get; set; }
         public string run_sample { get; set; }
-        public string key { get; set; }
     }
-    public class JobStartResponseModel
+
+    public class JobStartResponseModel : ResponseModel
     {
 
         public string status { get; set; }
         public string queue_id { get; set; }
         public int execution_time { get; set; }
-      
-
     }
-    public class JobStatusRequestModel
+
+    public class JobStatusRequestModel : RequestModel
     {
-        public string key { get; set; }
         public int job_id { get; set; }
     }
-    public class JobStatusResponseModel
+
+    public class JobStatusResponseModel : ResponseModel
     {
         public string status { get; set; }
         public int id { get; set; }
         public string job_status { get; set; }
         public string filename { get; set; }
         public string created_at { get; set; }
-        public object started_at { get; set; }
-        public object finished_at { get; set; }
+        public string started_at { get; set; }
+        public string finished_at { get; set; }
         public Total total { get; set; }
         public int bounce_estimate { get; set; }
         public int percent_complete { get; set; }
         public int execution_time { get; set; }
     }
-    public class JobResultsRequestModel
+
+    public class JobResultsRequestModel : RequestModel
     {
         public int job_id { get; set; }
-        public string key { get; set; }
-        public int page { get; set; }
-        public int items_per_page { get; set; }
+        public int page { get; set; } = 1;
+        public int items_per_page { get; set; } = 10;
     }
-    public class JobResultsResponseModel
+
+    public class JobResultsResponseModel : ResponseModel 
     {
         public string status { get; set; }
         public int total_results { get; set; }
@@ -143,6 +143,7 @@ namespace NeverBounce.Models
         public int execution_time { get; set; }
        
     }
+
     public class Query
     {
         public int job_id { get; set; }
@@ -154,12 +155,14 @@ namespace NeverBounce.Models
         public int page { get; set; }
         public int items_per_page { get; set; }
     }
+
     public class Data
     {
         public string email { get; set; }
         public string id { get; set; }
         public string name { get; set; }
     }
+
     public class AddressInfo
     {
         public string original_email { get; set; }
@@ -172,6 +175,7 @@ namespace NeverBounce.Models
         public string subdomain { get; set; }
         public string tld { get; set; }
     }
+
     public class Verification
     {
         public string result { get; set; }
@@ -179,33 +183,33 @@ namespace NeverBounce.Models
         public string suggested_correction { get; set; }
         public AddressInfo address_info { get; set; }
     }
+
     public class Result
     {
         public Data data { get; set; }
         public Verification verification { get; set; }
     }
-    public class JobDeleteRequestModel
+
+	public class JobDownloadRequestModel : RequestModel
+	{
+		public int job_id { get; set; }
+		public bool valids { get; set; } = true;
+		public bool invalids { get; set; } = true;
+		public bool catchalls { get; set; } = true;
+		public bool unknowns { get; set; } = true;
+		public bool disposables { get; set; } = true;
+	}
+
+    public class JobDeleteRequestModel : RequestModel
     {
-        public string key { get; set; }
         public int job_id { get; set; }
     }
-    public class JobDeleteResponseModel
-    {
-        public string status { get; set; }
-        public int execution_time { get; set; }
-        
-    }
-    public class JobDownloadRequestModel
-    {
-        public string key { get; set; }
-        public int job_id { get; set; }
-        public bool valids { get; set; }
-        public bool invalids { get; set; }
-        public bool catchalls { get; set; }
-        public bool unknowns { get; set; }
-        public bool disposables { get; set; }
-        public bool include_duplicates { get; set; }
-        public bool email_status { get; set; }
-    }
+
+	public class JobDeleteResponseModel : ResponseModel
+	{
+		public string status { get; set; }
+		public int execution_time { get; set; }
+
+	}
 
 }

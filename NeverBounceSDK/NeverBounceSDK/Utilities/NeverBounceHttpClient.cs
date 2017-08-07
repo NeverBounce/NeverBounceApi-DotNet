@@ -30,7 +30,7 @@ namespace NeverBounce.Utilities
             client.MaxResponseContentBufferSize = 256000;
         }
 
-        public async Task<ResponseModel> MakeRequest(String method, String endpoint, object model)
+        public async Task<RawResponseModel> MakeRequest(String method, String endpoint, object model)
 		{
             client = new HttpClient();
             client.MaxResponseContentBufferSize = 256000;
@@ -53,7 +53,7 @@ namespace NeverBounce.Utilities
             return await ParseResponse(response);
 		}
 
-        protected async Task<ResponseModel> ParseResponse(HttpResponseMessage response)
+        protected async Task<RawResponseModel> ParseResponse(HttpResponseMessage response)
         {
             String contentType = response.Content.Headers.ContentType.ToString();
 			String data = await response.Content.ReadAsStringAsync();
@@ -84,11 +84,13 @@ namespace NeverBounce.Utilities
                 {
                     token = JObject.Parse(data);
                 } catch (Exception) {
-					throw new ThrottleException("The response from NeverBounce was unable "
-							+ "to be parsed as json. Try the request "
-							+ "again, if this error persists"
-							+ " let us know at support@neverbounce.com."
-							+ "\n\n(Internal error)");
+                    throw new HttpClientException(String.Format(
+                        "The response from NeverBounce was unable "
+						+ "to be parsed as json. Try the request "
+						+ "again, if this error persists "
+                        + "let us know at support@neverbounce.com. "
+						+ "The following information was supplied: {0} "
+						+ "\n\n(Internal error)", data));
                 }
 
                 // Handle non 'success' statuses
@@ -128,11 +130,11 @@ namespace NeverBounce.Utilities
                 }
 
                 // Return good json responses in ResponseModel
-				return new ResponseModel { json = JsonConvert.DeserializeObject<object>(data) };
+				return new RawResponseModel { json = JsonConvert.DeserializeObject<object>(data) };
             }
 
             // Handle plain text/stream type responses
-            return new ResponseModel { plaintext = data };
+            return new RawResponseModel { plaintext = data };
         }
 
 		public string ToQueryString(object request, string separator = ",")

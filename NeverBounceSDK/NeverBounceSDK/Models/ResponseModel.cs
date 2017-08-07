@@ -8,11 +8,14 @@ namespace NeverBounce.Models
 {
     public class ResponseModel
     {
-        public string Status { get; set; }
-        public object Data { get; set; }
-        public string Message { get; set; }
-        public string downloadResponse { get; set; }
+		public string Status { get; set; }
+		public object Data { get; set; }
+		public string Message { get; set; }
+		public string downloadResponse { get; set; }
+	}
 
+    public class RawResponseModel
+    {
 		public object json { get; set; }
 		public string plaintext { get; set;  }
     }

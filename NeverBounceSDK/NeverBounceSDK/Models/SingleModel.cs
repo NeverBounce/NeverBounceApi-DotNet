@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace NeverBounce.Models
 {
       
-    public class SingleModel
+    public class SingleModel : ResponseModel
     {
         public string status { get; set; }
         public string result { get; set; }
