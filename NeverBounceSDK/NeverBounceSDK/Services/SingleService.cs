@@ -22,7 +22,7 @@ namespace NeverBounce.Services
 
 		/// <summary>
 		/// Single verification allows you verify individual emails and gather additional information pertaining to the email.
-		/// See: "https://api.neverbounce.com/v4/single/check"
+		/// See: "https://developers.neverbounce.com/v4.0/reference#single-check"
 		/// </summary>
 		/// <param name="model"> SingleRequestModel</param>
 		/// <returns>SingleResponseModel</returns>

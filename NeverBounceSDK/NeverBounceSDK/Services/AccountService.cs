@@ -22,7 +22,7 @@ namespace NeverBounce.Services
 
 		/// <summary>
 		/// Account Info method allow to programmatically check your account's balance and how many jobs are currently running on your account.
-		/// See: "https://api.neverbounce.com/v4/account/info"
+		/// See: "https://developers.neverbounce.com/v4.0/reference#account-info"
 		/// </summary>
 		/// <returns>AccountInfoResponseModel</returns>
 		public async Task<AccountInfoResponseModel> Info()

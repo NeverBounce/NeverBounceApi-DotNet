@@ -22,8 +22,8 @@ namespace NeverBounce.Services
 		}
 
 		/// <summary>
-        /// This method calls the search job end points.
-        /// See: "https://api.neverbounce.com/v4/jobs/search"
+		/// This method calls the search job end points.
+		/// See: "https://developers.neverbounce.com/v4.0/reference#jobs-search"
 		/// </summary>
 		/// <param name="model">JobSearchRequestModel</param>
 		/// <returns>JobSearchResponseModel</returns>
@@ -36,7 +36,7 @@ namespace NeverBounce.Services
 
 		/// <summary>
 		/// This method calls the create job end point.
-		/// See: "https://api.neverbounce.com/v4/jobs/create"
+		/// See: "https://developers.neverbounce.com/v4.0/reference#jobs-create"
 		/// </summary>
 		/// <param name="model">JobCreateRequestModel</param>
 		/// <returns>JobCreateResponseModel</returns>
@@ -49,7 +49,7 @@ namespace NeverBounce.Services
 
 		/// <summary>
 		/// This method calls the parse job end point
-		/// See: "https://api.neverbounce.com/v4/jobs/parse"
+		/// See: "https://developers.neverbounce.com/v4.0/reference#jobs-parse"
 		/// </summary>
 		/// <param name="model">JobParseRequestModel</param>
 		/// <returns>JobParseResponseModel</returns>
@@ -62,7 +62,7 @@ namespace NeverBounce.Services
 
 		/// <summary>
 		/// This method calls the start job end point
-		/// See: "https://api.neverbounce.com/v4/jobs/start"
+		/// See: "https://developers.neverbounce.com/v4.0/reference#jobs-start"
 		/// </summary>
 		/// <param name="model">JobStartRequestModel</param>
 		/// <returns>JobStartResponseModel</returns>
@@ -75,7 +75,7 @@ namespace NeverBounce.Services
 
 		/// <summary>
 		/// This method calls the job status endpoint
-		/// See: "https://api.neverbounce.com/v4/jobs/status"
+		/// See: "https://developers.neverbounce.com/v4.0/reference#jobs-status"
 		/// </summary>
 		/// <param name="model">JobStatusRequestModel</param>
 		/// <returns>JobStatusResponseModel</returns>
@@ -88,7 +88,7 @@ namespace NeverBounce.Services
 
 		/// <summary>
 		/// This method calls the job results endpoint
-		/// See: "https://api.neverbounce.com/v4/jobs/results"
+		/// See: "https://developers.neverbounce.com/v4.0/reference#jobs-results"
 		/// </summary>
 		/// <param name="model">JobResultsRequestModel</param>
 		/// <returns>JobResultsResponseModel</returns>
@@ -100,9 +100,9 @@ namespace NeverBounce.Services
         }
 
 		/// <summary>
-        /// This method calls the job download endpoint; this endpoint returns the
-        /// CSV data for the job
-		/// See: "https://api.neverbounce.com/v4/jobs/download"
+		/// This method calls the job download endpoint; this endpoint returns the
+		/// CSV data for the job
+		/// See: "https://developers.neverbounce.com/v4.0/reference#jobs-download"
 		/// </summary>
 		/// <param name="model">JobDownloadRequestModel</param>
 		/// <returns>string</returns>
@@ -115,7 +115,7 @@ namespace NeverBounce.Services
 
 		/// <summary>
 		/// This method calls the job delete endpoint
-		/// See: "https://api.neverbounce.com/v4/jobs/delete"
+		/// See: "https://developers.neverbounce.com/v4.0/reference#jobs-delete"
 		/// </summary>
 		/// <param name="model">JobDeleteRequestModel</param>
 		/// <returns>JobResultsResponseModel</returns>
