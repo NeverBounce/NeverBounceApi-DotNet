@@ -21,10 +21,10 @@ namespace NeverBounce.Utilities
         private String apiKey;
 
         /// <summary>
-        /// 
+        /// Creates the HttpClient instance as well as sets up the hostname to use
         /// </summary>
-        /// <param name="_ServerAddress"></param>
-        /// <param name="ApiKey"></param>
+        /// <param name="apiKey"></param>
+        /// <param name="host"></param>
         public NeverBounceHttpClient(String apiKey, String host = null)
         {
             this.apiKey = apiKey;
@@ -35,7 +35,14 @@ namespace NeverBounce.Utilities
             client.MaxResponseContentBufferSize = 256000;
         }
 
-        public async Task<RawResponseModel> MakeRequest(String method, String endpoint, RequestModel model)
+		/// <summary>
+		/// This method makes the actual request to the API
+        /// It currently only support GET and POST requests
+		/// </summary>
+		/// <param name="method">The HTTP method to use, either GET or POST</param>
+		/// <param name="endpoint">The endpoint to request</param>
+		/// <param name="model">The parameters to include with the request</param>
+		public async Task<RawResponseModel> MakeRequest(String method, String endpoint, RequestModel model)
 		{
             client = new HttpClient();
             client.MaxResponseContentBufferSize = 256000;
@@ -143,11 +150,13 @@ namespace NeverBounce.Utilities
             return new RawResponseModel { plaintext = data };
         }
 
+		/// <summary>
+		/// Creates a urlencoded query string of the parameters
+		/// </summary>
+		/// <param name="request">The request parameters to encode</param>
+		/// <param name="separator">The seperator to use for enumerated properties</param>
 		public string ToQueryString(object request, string separator = ",")
 		{
-			//if (request == null)
-			//throw new ArgumentNullException("request");
-
 			// Get all properties on the object
 			var properties = request.GetType().GetProperties()
 				.Where(x => x.CanRead)

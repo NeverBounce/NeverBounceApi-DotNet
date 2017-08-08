@@ -12,6 +12,11 @@ namespace NeverBounce
         public JobsService Jobs;
         public SingleService Single;
 
+		/// <summary>
+		/// This method initializes the NeverBounceSDK
+		/// </summary>
+		/// <param name="ApiKey">The api key to use to make the requests</param>
+        /// <param name="Host">Specify a different host to make the request to. Leave null to use 'https://api.neverbounce.com'</param>
 		public  NeverBounceSdk(string ApiKey, string Host = null)
         {
             this.ApiKey = ApiKey;
