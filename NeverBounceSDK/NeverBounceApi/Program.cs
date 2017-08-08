@@ -11,18 +11,19 @@ namespace NeverBounceSdkExamples
         {
             NeverBounceSdk sdk = new NeverBounceSdk("api_key");
 
-            var response = AccountEndpoint.Info(sdk);
-            //var response = SingleEndpoints.Check(sdk);
-            //var response = JobsEndpoint.Search(sdk);
-            //var response = JobsEndpoint.Create(sdk);
-            //var response = JobsEndpoint.Parse(sdk);
-            //var response = JobsEndpoint.Start(sdk);
-            //var response = JobsEndpoint.Status(sdk);
-            //var response = JobsEndpoint.Results(sdk);
-            //var response = JobsEndpoint.Download(sdk);
-            //var response = JobsEndpoint.Delete(sdk);
+            //var response = AccountEndpoint.Info(sdk);
+            var response = POEEndpoints.Confirm(sdk);
+			//var response = SingleEndpoints.Check(sdk);
+			//var response = JobsEndpoint.Search(sdk);
+			//var response = JobsEndpoint.Create(sdk);
+			//var response = JobsEndpoint.Parse(sdk);
+			//var response = JobsEndpoint.Start(sdk);
+			//var response = JobsEndpoint.Status(sdk);
+			//var response = JobsEndpoint.Results(sdk);
+			//var response = JobsEndpoint.Download(sdk);
+			//var response = JobsEndpoint.Delete(sdk);
 
-            var_dump(response);
+			var_dump(response);
             Console.ReadLine();
         }
 

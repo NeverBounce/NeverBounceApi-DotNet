@@ -52,6 +52,7 @@
     <Compile Include="Requests\SingleEndpoints.cs" />
     <Compile Include="Requests\AccountEndpoint.cs" />
     <Compile Include="Requests\JobsEndpoint.cs" />
+    <Compile Include="Requests\POEEndpoints.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

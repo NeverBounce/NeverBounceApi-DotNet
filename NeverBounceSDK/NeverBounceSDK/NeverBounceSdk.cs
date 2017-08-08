@@ -10,6 +10,7 @@ namespace NeverBounce
 
         public AccountService Account;
         public JobsService Jobs;
+        public POEService POE;
         public SingleService Single;
 
 		/// <summary>
@@ -27,6 +28,7 @@ namespace NeverBounce
 
             Account = new AccountService(ApiKey, Host);
             Jobs = new JobsService(ApiKey, Host);
+            POE = new POEService(ApiKey, Host);
 			Single = new SingleService(ApiKey, Host);
 		}
     }
