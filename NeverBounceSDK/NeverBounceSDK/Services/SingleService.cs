@@ -33,7 +33,7 @@ namespace NeverBounce.Services
         {
             NeverBounceHttpClient client = new NeverBounceHttpClient(_client, _apiKey, _host);
             var result = await client.MakeRequest("GET", "/single/check", model);
-            return JsonConvert.DeserializeObject<SingleResponseModel>(result.json.ToString());
+            return JsonConvert.DeserializeObject<SingleResponseModel>(result);
         }
     }
 }

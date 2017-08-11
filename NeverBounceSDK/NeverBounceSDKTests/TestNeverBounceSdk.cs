@@ -19,35 +19,28 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
+
+using Moq;
+using NUnit.Framework;
+using NeverBounce;
+using NeverBounce.Services;
+using NeverBounce.Models;
+using NeverBounce.Utilities;
 using System;
-using System.Net.Http;
-using System.Threading.Tasks;
 
-namespace NeverBounce.Utilities
+namespace NeverBounceSDKTests
 {
-    public interface IHttpClient
+    [TestFixture()]
+    public class TestNeverBounceSdk
     {
-        Task<HttpResponseMessage> GetAsync(Uri uri);
-        Task<HttpResponseMessage> PostAsync(Uri uri, HttpContent content);
-    }
-
-    public class HttpClientWrapper : IHttpClient
-    {
-        private readonly HttpClient _client;
-
-        public HttpClientWrapper()
+        [Test()]
+        public void TestNeverBounceSdkSetup()
         {
-            _client = new HttpClient();
-        }
-
-        public Task<HttpResponseMessage> GetAsync(Uri uri)
-        {
-            return _client.GetAsync(uri);
-        }
-
-        public Task<HttpResponseMessage> PostAsync(Uri uri, HttpContent content)
-        {
-            return _client.PostAsync(uri, content);
+            var nb = new NeverBounceSdk("fake_api_key");
+            Assert.IsNotNull(nb.Account);
+            Assert.IsNotNull(nb.Jobs);
+            Assert.IsNotNull(nb.POE);
+            Assert.IsNotNull(nb.Single);
         }
     }
 }

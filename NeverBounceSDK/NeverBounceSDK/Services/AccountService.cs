@@ -32,8 +32,8 @@ namespace NeverBounce.Services
         {
             RequestModel model = new RequestModel();
 	        NeverBounceHttpClient client = new NeverBounceHttpClient(_client, _apiKey, _host);
-			var result = await client.MakeRequest("POST", "/account/info", model);
-            return JsonConvert.DeserializeObject<AccountInfoResponseModel>(result.json.ToString());
+			var result = await client.MakeRequest("GET", "/account/info", model);
+            return JsonConvert.DeserializeObject<AccountInfoResponseModel>(result);
         }
     }
 

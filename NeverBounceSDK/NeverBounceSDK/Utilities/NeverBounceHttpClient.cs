@@ -1,6 +1,7 @@
 ﻿﻿using System;
 using System.Collections;
-using System.Linq;
+ using System.Collections.Generic;
+ using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
@@ -41,7 +42,7 @@ namespace NeverBounce.Utilities
 		/// <param name="method">The HTTP method to use, either GET or POST</param>
 		/// <param name="endpoint">The endpoint to request</param>
 		/// <param name="model">The parameters to include with the request</param>
-		public async Task<RawResponseModel> MakeRequest(String method, String endpoint, RequestModel model)
+		public async Task<string> MakeRequest(String method, String endpoint, RequestModel model)
 		{
             model.key = _apiKey;
 			HttpResponseMessage response;
@@ -50,23 +51,20 @@ namespace NeverBounce.Utilities
 			if (method.ToUpper() == "GET")
 			{
                 Uri uri = new Uri(_host + endpoint + "?" + ToQueryString(model));
-				response = _client.GetAsync(uri);
+				response = await _client.GetAsync(uri);
 			}
 			else
 			{
                 Uri uri = new Uri(_host + endpoint);
 				StringContent content = new StringContent(JsonConvert.SerializeObject(model), Encoding.UTF8, "application/json");
-				response = _client.PostAsync(uri, content);
+				response = await _client.PostAsync(uri, content);
 			}
 
             return await ParseResponse(response);
 		}
 
-        protected async Task<RawResponseModel> ParseResponse(HttpResponseMessage response)
+        protected async Task<string> ParseResponse(HttpResponseMessage response)
         {
-            String contentType = response.Content.Headers.ContentType.ToString();
-			String data = await response.Content.ReadAsStringAsync();
-
             // Handle 5xx HTTP errors
             if(response.StatusCode.GetHashCode() > 500) {
 				throw new HttpClientException(String.Format(
@@ -84,6 +82,9 @@ namespace NeverBounce.Utilities
                     + "\n\n(Request error[status {1}])", response.StatusCode.ToString(), response.StatusCode.GetHashCode()
                 ));
             }
+	        
+	        String contentType = response.Content.Headers.ContentType.ToString();
+	        String data = await response.Content.ReadAsStringAsync();
 
             // Handle application/json responses
 			if(contentType == "application/json") {
@@ -137,13 +138,10 @@ namespace NeverBounce.Utilities
                                 + "\n\n({1})", token.SelectToken("message"), token.SelectToken("status")));
                     }
                 }
+			}
 
-                // Return good json responses in ResponseModel
-				return new RawResponseModel { json = JsonConvert.DeserializeObject<object>(data) };
-            }
-
-            // Handle plain text/stream type responses
-            return new RawResponseModel { plaintext = data };
+            // Return response data for passthrough/marshalling
+	        return data;
         }
 
 		/// <summary>
@@ -162,7 +160,7 @@ namespace NeverBounce.Utilities
 								x => x.PropertyType.ToString().Contains("System.Boolean")
 										? Convert.ToInt32(x.GetValue(request, null)) : x.GetValue(request, null)
 							   );
-
+			
 			// Get names for all IEnumerable properties (excl. string)
 			var propertyNames = properties
 				.Where(x => !(x.Value is string) && x.Value is IEnumerable)
@@ -172,17 +170,18 @@ namespace NeverBounce.Utilities
 			// Concat all IEnumerable properties into a comma separated string
 			foreach (var key in propertyNames)
 			{
+				var value = properties[key];
 				var valueType = properties[key].GetType();
 				var valueElemType = valueType.IsGenericType
-										? valueType.GetGenericArguments()[0]
-										: valueType.GetElementType();
+					? valueType.GetGenericArguments()[0]
+					: valueType.GetElementType();
 				if (valueElemType.IsPrimitive || valueElemType == typeof(string))
 				{
 					var enumerable = properties[key] as IEnumerable;
-					properties[key] = string.Join(separator, enumerable.Cast<object>());
+					properties[key] = string.Join(",", enumerable.Cast<object>());
 				}
 			}
-
+			
 			// Concat all key/value pairs into a string separated by ampersand
 			return string.Join("&", properties
 				.Select(x => string.Concat(

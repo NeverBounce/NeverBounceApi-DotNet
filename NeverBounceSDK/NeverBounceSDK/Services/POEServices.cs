@@ -33,7 +33,7 @@ namespace NeverBounce.Services
         {
 	        NeverBounceHttpClient client = new NeverBounceHttpClient(_client, _apiKey, _host);
 			var result = await client.MakeRequest("POST", "/poe/confirm", model);
-            return JsonConvert.DeserializeObject<POEConfirmResponseModel>(result.json.ToString());
+            return JsonConvert.DeserializeObject<POEConfirmResponseModel>(result);
         }
     }
 
