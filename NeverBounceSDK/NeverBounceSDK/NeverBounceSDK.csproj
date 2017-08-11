@@ -79,6 +79,7 @@ This SDK provides convenient methods for integrating our API into your existing 
     <Compile Include="Exceptions\GeneralException.cs" />
     <Compile Include="Services\POEServices.cs" />
     <Compile Include="Models\POEModels.cs" />
+    <Compile Include="Utilities\HttpClientWrapper.cs" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

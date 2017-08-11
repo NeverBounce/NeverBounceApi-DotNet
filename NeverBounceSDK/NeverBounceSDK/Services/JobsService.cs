@@ -8,18 +8,21 @@ namespace NeverBounce.Services
 {
     public class JobsService
     {
-		protected string ApiKey;
+	    protected string _apiKey;
 
-		protected string Host;
+	    protected string _host;
 
-        public JobsService(string ApiKey, string Host = null)
-		{
-			this.ApiKey = ApiKey;
+	    protected IHttpClient _client;
 
-			// Accept debug host
-			if (Host != null)
-				this.Host = Host;
-		}
+	    public JobsService(IHttpClient Client, string ApiKey, string Host = null)
+	    {
+		    _client = Client;
+		    _apiKey = ApiKey;
+
+		    // Accept debug host
+		    if (Host != null)
+			    _host = Host;
+	    }
 
 		/// <summary>
 		/// This method calls the search job end points.
@@ -29,7 +32,7 @@ namespace NeverBounce.Services
 		/// <returns>JobSearchResponseModel</returns>
 		public async Task<JobSearchResponseModel> Search(JobSearchRequestModel model)
         {
-            NeverBounceHttpClient client = new NeverBounceHttpClient(ApiKey, Host);
+	        NeverBounceHttpClient client = new NeverBounceHttpClient(_client, _apiKey, _host);
             var result = await client.MakeRequest("GET", "/jobs/search", model);
             return JsonConvert.DeserializeObject<JobSearchResponseModel>(result.json.ToString());
         }
@@ -42,7 +45,7 @@ namespace NeverBounce.Services
 		/// <returns>JobCreateResponseModel</returns>
 		public async Task<JobCreateResponseModel> CreateFromSuppliedData(JobCreateSuppliedDataRequestModel model)
         {
-			NeverBounceHttpClient client = new NeverBounceHttpClient(ApiKey, Host);
+            NeverBounceHttpClient client = new NeverBounceHttpClient(_client, _apiKey, _host);
             var result = await client.MakeRequest("POST", "/jobs/create",  model);
             return JsonConvert.DeserializeObject<JobCreateResponseModel>(result.json.ToString());
         }
@@ -55,7 +58,7 @@ namespace NeverBounce.Services
 		/// <returns>JobCreateResponseModel</returns>
 		public async Task<JobCreateResponseModel> CreateFromRemoteUrl(JobCreateRemoteUrlRequestModel model)
 		{
-			NeverBounceHttpClient client = new NeverBounceHttpClient(ApiKey, Host);
+            NeverBounceHttpClient client = new NeverBounceHttpClient(_client, _apiKey, _host);
 			var result = await client.MakeRequest("POST", "/jobs/create", model);
 			return JsonConvert.DeserializeObject<JobCreateResponseModel>(result.json.ToString());
 		}
@@ -68,7 +71,7 @@ namespace NeverBounce.Services
 		/// <returns>JobParseResponseModel</returns>
 		public async Task<JobParseResponseModel> Parse(JobParseRequestModel model)
         {
-			NeverBounceHttpClient client = new NeverBounceHttpClient(ApiKey, Host);
+            NeverBounceHttpClient client = new NeverBounceHttpClient(_client, _apiKey, _host);
 			var result = await client.MakeRequest("POST", "/jobs/parse", model);
 			return JsonConvert.DeserializeObject<JobParseResponseModel>(result.json.ToString());
         }
@@ -81,7 +84,7 @@ namespace NeverBounce.Services
 		/// <returns>JobStartResponseModel</returns>
 		public async Task<JobStartResponseModel> Start(JobStartRequestModel model)
         {
-			NeverBounceHttpClient client = new NeverBounceHttpClient(ApiKey, Host);
+            NeverBounceHttpClient client = new NeverBounceHttpClient(_client, _apiKey, _host);
 			var result = await client.MakeRequest("POST", "/jobs/start", model);
 			return JsonConvert.DeserializeObject<JobStartResponseModel>(result.json.ToString());
         }
@@ -94,7 +97,7 @@ namespace NeverBounce.Services
 		/// <returns>JobStatusResponseModel</returns>
 		public async Task<JobStatusResponseModel> Status(JobStatusRequestModel model)
         {
-			NeverBounceHttpClient client = new NeverBounceHttpClient(ApiKey, Host);
+            NeverBounceHttpClient client = new NeverBounceHttpClient(_client, _apiKey, _host);
 			var result = await client.MakeRequest("GET", "/jobs/status", model);
             return JsonConvert.DeserializeObject<JobStatusResponseModel>(result.json.ToString());
         }
@@ -107,7 +110,7 @@ namespace NeverBounce.Services
 		/// <returns>JobResultsResponseModel</returns>
 		public async Task<JobResultsResponseModel> Results(JobResultsRequestModel model)
         {
-			NeverBounceHttpClient client = new NeverBounceHttpClient(ApiKey, Host);
+            NeverBounceHttpClient client = new NeverBounceHttpClient(_client, _apiKey, _host);
 			var result = await client.MakeRequest("GET", "/jobs/results", model);
             return JsonConvert.DeserializeObject<JobResultsResponseModel>(result.json.ToString());
         }
@@ -121,7 +124,7 @@ namespace NeverBounce.Services
 		/// <returns>string</returns>
 		public async Task<String> Download(JobDownloadRequestModel model)
 		{
-			NeverBounceHttpClient client = new NeverBounceHttpClient(ApiKey, Host);
+            NeverBounceHttpClient client = new NeverBounceHttpClient(_client, _apiKey, _host);
 			var result = await client.MakeRequest("GET", "/jobs/download", model);
 			return result.plaintext;
 		}
@@ -134,7 +137,7 @@ namespace NeverBounce.Services
 		/// <returns>JobResultsResponseModel</returns>
 		public async Task<JobDeleteResponseModel> Delete(JobDeleteRequestModel model)
 		{
-			NeverBounceHttpClient client = new NeverBounceHttpClient(ApiKey, Host);
+            NeverBounceHttpClient client = new NeverBounceHttpClient(_client, _apiKey, _host);
 			var result = await client.MakeRequest("GET", "/jobs/delete", model);
 			return JsonConvert.DeserializeObject<JobDeleteResponseModel>(result.json.ToString());
 		}

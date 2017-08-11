@@ -1,4 +1,4 @@
-﻿// Author: Mike Mollick <mike@neverbounce.com>
+﻿﻿// Author: Mike Mollick <mike@neverbounce.com>
 //
 // Copyright (c) 2017 NeverBounce
 //
@@ -21,35 +21,49 @@
 // THE SOFTWARE.
 
 using NeverBounce.Services;
+using NeverBounce.Utilities;
 
 namespace NeverBounce
 {
     public class NeverBounceSdk
     {
+        private string _apiKey;
+        private string _host = "https://api.neverbounce.com/v4";
+        private IHttpClient _client;
+
         public AccountService Account;
-        private string ApiKey;
-        private string Host = "https://api.neverbounce.com/v4";
         public JobsService Jobs;
         public POEService POE;
         public SingleService Single;
 
-	    /// <summary>
-	    ///     This method initializes the NeverBounceSDK
-	    /// </summary>
-	    /// <param name="ApiKey">The api key to use to make the requests</param>
-	    /// <param name="Host">Specify a different host to make the request to. Leave null to use 'https://api.neverbounce.com'</param>
-	    public NeverBounceSdk(string ApiKey, string Host = null)
+        /// <summary>
+        ///     This method initializes the NeverBounceSDK
+        /// </summary>
+        /// <param name="ApiKey">The api key to use to make the requests</param>
+        /// <param name="Host">Specify a different host to make the request to. Leave null to use 'https://api.neverbounce.com'</param>
+        /// <param name="Client">An instance of IHttpClient to use; useful for mocking HTTP requests</param>
+        public NeverBounceSdk(string ApiKey, string Host = null, IHttpClient Client = null)
         {
-            this.ApiKey = ApiKey;
+            _apiKey = ApiKey;
 
             // Accept debug host
             if (Host != null)
-                this.Host = Host;
+                _host = Host;
 
-            Account = new AccountService(ApiKey, Host);
-            Jobs = new JobsService(ApiKey, Host);
-            POE = new POEService(ApiKey, Host);
-            Single = new SingleService(ApiKey, Host);
+            // Check for mocked IHttpClient, if none exists create default
+            if (Client == null)
+            {
+                _client = new HttpClientWrapper();
+            }
+            else
+            {
+                _client = Client;
+            }
+
+            Account = new AccountService(_client, _apiKey, _host);
+            Jobs = new JobsService(_client, _apiKey, _host);
+            POE = new POEService(_client, _apiKey, _host);
+            Single = new SingleService(_client, _apiKey, _host);
         }
     }
 }

@@ -7,18 +7,21 @@ namespace NeverBounce.Services
 {
     public class POEService
     {
-		protected string ApiKey;
+	    protected string _apiKey;
 
-		protected string Host;
+	    protected string _host;
 
-		public POEService(string ApiKey, string Host = null)
-		{
-			this.ApiKey = ApiKey;
+	    protected IHttpClient _client;
 
-			// Accept debug host
-			if (Host != null)
-				this.Host = Host;
-		}
+	    public POEService(IHttpClient Client, string ApiKey, string Host = null)
+	    {
+		    _client = Client;
+		    _apiKey = ApiKey;
+
+		    // Accept debug host
+		    if (Host != null)
+			    _host = Host;
+	    }
 
 		/// <summary>
 		/// Allows you to confirm front end (Javascript Widget) verification results
@@ -28,7 +31,7 @@ namespace NeverBounce.Services
 		/// <returns>POEConfirmResponseModel</returns>
 		public async Task<POEConfirmResponseModel> Confirm(POEConfirmRequestModel model)
         {
-			NeverBounceHttpClient client = new Utilities.NeverBounceHttpClient(ApiKey, Host);
+	        NeverBounceHttpClient client = new NeverBounceHttpClient(_client, _apiKey, _host);
 			var result = await client.MakeRequest("POST", "/poe/confirm", model);
             return JsonConvert.DeserializeObject<POEConfirmResponseModel>(result.json.ToString());
         }

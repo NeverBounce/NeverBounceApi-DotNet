@@ -7,18 +7,21 @@ namespace NeverBounce.Services
 {
     public class AccountService
     {
-		protected string ApiKey;
+	    protected string _apiKey;
 
-		protected string Host;
+	    protected string _host;
 
-		public AccountService(string ApiKey, string Host = null)
-		{
-			this.ApiKey = ApiKey;
+	    protected IHttpClient _client;
 
-			// Accept debug host
-			if (Host != null)
-				this.Host = Host;
-		}
+	    public AccountService(IHttpClient Client, string ApiKey, string Host = null)
+	    {
+		    _client = Client;
+		    _apiKey = ApiKey;
+
+		    // Accept debug host
+		    if (Host != null)
+			    _host = Host;
+	    }
 
 		/// <summary>
 		/// Account Info method allow to programmatically check your account's balance and how many jobs are currently running on your account.
@@ -28,7 +31,7 @@ namespace NeverBounce.Services
 		public async Task<AccountInfoResponseModel> Info()
         {
             RequestModel model = new RequestModel();
-			NeverBounceHttpClient client = new Utilities.NeverBounceHttpClient(ApiKey, Host);
+	        NeverBounceHttpClient client = new NeverBounceHttpClient(_client, _apiKey, _host);
 			var result = await client.MakeRequest("POST", "/account/info", model);
             return JsonConvert.DeserializeObject<AccountInfoResponseModel>(result.json.ToString());
         }

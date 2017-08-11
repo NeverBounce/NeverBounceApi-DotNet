@@ -1,4 +1,4 @@
-﻿using System;
+﻿﻿using System;
 using System.Collections;
 using System.Linq;
 using System.Net.Http;
@@ -14,25 +14,24 @@ namespace NeverBounce.Utilities
     public class NeverBounceHttpClient
     {
 
-		private HttpClient client;
+        private IHttpClient _client;
 
-		private String host = "https://api.neverbounce.com/v4/";
+		private String _host = "https://api.neverbounce.com/v4/";
 
-        private String apiKey;
+        private String _apiKey;
 
         /// <summary>
         /// Creates the HttpClient instance as well as sets up the hostname to use
         /// </summary>
-        /// <param name="apiKey"></param>
-        /// <param name="host"></param>
-        public NeverBounceHttpClient(String apiKey, String host = null)
+        /// <param name="Client">The instance of IHttpClient to use to make requests</param>
+        /// <param name="ApiKey">The api key to use to authenticate requests</param>
+        /// <param name="Host">The url to make the API request to</param>
+        public NeverBounceHttpClient(IHttpClient Client, String ApiKey, String Host = null)
         {
-            this.apiKey = apiKey;
-            if(host != null)
-                this.host = host;
-            
-            client = new HttpClient();
-            client.MaxResponseContentBufferSize = 256000;
+	        _client = Client;
+            _apiKey = ApiKey;
+            if(Host != null)
+                _host = Host;
         }
 
 		/// <summary>
@@ -44,23 +43,20 @@ namespace NeverBounce.Utilities
 		/// <param name="model">The parameters to include with the request</param>
 		public async Task<RawResponseModel> MakeRequest(String method, String endpoint, RequestModel model)
 		{
-            client = new HttpClient();
-            client.MaxResponseContentBufferSize = 256000;
-
-            model.key = apiKey;
+            model.key = _apiKey;
 			HttpResponseMessage response;
 
             // Handle GET && POST methods differently
 			if (method.ToUpper() == "GET")
 			{
-                Uri uri = new Uri(host + endpoint + "?" + ToQueryString(model));
-				response = await client.GetAsync(uri);
+                Uri uri = new Uri(_host + endpoint + "?" + ToQueryString(model));
+				response = _client.GetAsync(uri);
 			}
 			else
 			{
-                Uri uri = new Uri(host + endpoint);
+                Uri uri = new Uri(_host + endpoint);
 				StringContent content = new StringContent(JsonConvert.SerializeObject(model), Encoding.UTF8, "application/json");
-				response = await client.PostAsync(uri, content);
+				response = _client.PostAsync(uri, content);
 			}
 
             return await ParseResponse(response);

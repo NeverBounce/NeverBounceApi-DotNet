@@ -7,17 +7,20 @@ namespace NeverBounce.Services
 {
     public class SingleService
     {
-		protected string ApiKey;
+		protected string _apiKey;
 
-		protected string Host;
+		protected string _host;
 
-		public SingleService(string ApiKey, string Host = null)
+        protected IHttpClient _client;
+
+        public SingleService(IHttpClient Client, string ApiKey, string Host = null)
 		{
-			this.ApiKey = ApiKey;
+			_client = Client;
+			_apiKey = ApiKey;
 
 			// Accept debug host
 			if (Host != null)
-				this.Host = Host;
+				_host = Host;
 		}
 
 		/// <summary>
@@ -28,7 +31,7 @@ namespace NeverBounce.Services
 		/// <returns>SingleResponseModel</returns>
 		public async Task<SingleResponseModel> Check(SingleRequestModel model)
         {
-            NeverBounceHttpClient client = new NeverBounceHttpClient(ApiKey, Host);
+            NeverBounceHttpClient client = new NeverBounceHttpClient(_client, _apiKey, _host);
             var result = await client.MakeRequest("GET", "/single/check", model);
             return JsonConvert.DeserializeObject<SingleResponseModel>(result.json.ToString());
         }
