@@ -9,8 +9,15 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>NeverBounce</RootNamespace>
     <AssemblyName>NeverBounce</AssemblyName>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <PackOnBuild>true</PackOnBuild>
+    <PackageVersion>1.0.0</PackageVersion>
+    <Authors>Mike Mollick</Authors>
+    <NeutralLanguage>en-US</NeutralLanguage>
+    <Owners>NeverBounce</Owners>
+    <PackageTags>email verification validation cleaning</PackageTags>
+    <Title>NeverBounceSDK</Title>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
