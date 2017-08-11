@@ -1,0 +1,12 @@
+language: csharp
+solution: NeverBounceSDK.sln
+install:
+- nuget restore NeverBounceSDK.sln
+- nuget install NUnit.Runners -Version 3.7.0 -OutputDirectory testrunner
+script:
+- xbuild /p:Configuration=Release NeverBounceSDK.sln
+- mono testrunner/NUnit.ConsoleRunner.3.7.0/tools/nunit3-console.exe ./NeverBounceSDKTests/bin/Release/NeverBounceSDKTests.dll
+notifications:
+  email: false
+  slack:
+    secure: mXo2UuIl82gryNEgfdlioTRP/u4YuHJC1LoU/QLDcgl3G0byi+O0VVLTG0a3HEK6epD4qe9ybwNHltesLrAv4d0g6GD/uRPG9z+oT5vz85naCbd4Go/Wc9RJavIsYuCPhx8r1T9/VZlaNJB7ayEjMYp/vUER+v06qkCWJW/mBLaLk+DrDmZnFSwxrAx2eQBUiij0lVJD3VG0QwPWzuzRN5rVOBAEyghDotoNP9RrZwYxQ/1f8VLyW4koQeHC9DWDEWoS6lMtg+TTDiYmq4b8ByJtGLl6uoNUmqi4f2PruivKbnHNIrwJsgr6ZEQaf3QcLjf54YXzSSvPEyEqZuA7rRDlqbRA4BDQSK7C3x7n45OP2reIU4Qo3MFI8VtSX04sUmPpq1xigV97oioxrwX3mnQ7zguC+N5+XQCzujXBAIZUBINXhe9H1nSgCKggpaTlMrpNx/MOL0qVnNrCNUfKF3PLUg5yixbsqd/EXYai1iZ6fz0dzm9DtPh18mFHHz3nkwxOGuJ3WATJX2I4pDsiitvdcFuknt4jo40Ev+kE+bg88AG0AVrZRm0lKhQFPiF8SjZ2EvDaUCRVJSykGoMnHyY+i80O8haOxzGS7a7afjZVHQI0xKWemYJWci9ENZEI4Y3j6DbDgmI/alvBqhXz6WiYzSIWJn9w3cIzVGl6qtE=
