@@ -5,7 +5,7 @@ namespace NeverBounce.Models
 {
     public class JobSearchRequestModel : RequestModel
     {
-        public int job_id { get; set; }
+        public Nullable<int> job_id { get; set; }
         public string filename { get; set; }
         public string job_status { get; set; }
         public int page { get; set; } = 1;
