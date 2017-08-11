@@ -14,10 +14,9 @@ namespace NeverBounceSdkExamples.Requests
             return sdk.Jobs.Search(model).Result;
 		}
 
-        public static JobCreateResponseModel Create(NeverBounceSdk sdk)
+        public static JobCreateResponseModel CreateSuppliedData(NeverBounceSdk sdk)
         {
-			JobCreateRequestModel model = new JobCreateRequestModel();
-			model.input_location = "supplied";
+			JobCreateSuppliedDataRequestModel model = new JobCreateSuppliedDataRequestModel();
 			model.filename = "Created From dotNET.csv";
             model.auto_parse = true;
             model.auto_start = false;
@@ -25,7 +24,17 @@ namespace NeverBounceSdkExamples.Requests
 			data.Add(new { id = "3", email = "support@neverbounce.com", name = "Fred McValid" });
 			data.Add(new { id = "4", email = "invalid@neverbounce.com", name = "Bob McInvalid" });
 			model.input = data;
-            return sdk.Jobs.Create(model).Result;
+            return sdk.Jobs.CreateFromSuppliedData(model).Result;
+		}
+
+		public static JobCreateResponseModel CreateRemoteUrl(NeverBounceSdk sdk)
+		{
+			JobCreateRemoteUrlRequestModel model = new JobCreateRemoteUrlRequestModel();
+			model.filename = "Created From dotNET.csv";
+			model.auto_parse = true;
+			model.auto_start = false;
+			model.input = "https://example.com/file.csv";
+			return sdk.Jobs.CreateFromRemoteUrl(model).Result;
 		}
 
         public static JobParseResponseModel Parse(NeverBounceSdk sdk)

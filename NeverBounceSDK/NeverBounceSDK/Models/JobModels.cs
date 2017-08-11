@@ -54,9 +54,9 @@ namespace NeverBounce.Models
         public Nullable<int> bad_syntax { get; set; }
     }
 
-    public class JobCreateRequestModel : RequestModel
+    public class JobCreateSuppliedDataRequestModel : RequestModel
     {
-        public string input_location { get; set; }
+        public string input_location { get; } = "supplied";
         public string filename { get; set; }
         public bool auto_start { get; set; } = false;
         public bool auto_parse { get; set; } = false;
@@ -64,6 +64,18 @@ namespace NeverBounce.Models
  		public List<object> input { get; set; }
 
     }
+
+	public class JobCreateRemoteUrlRequestModel : RequestModel
+	{
+        public string input_location { get; } = "remote_url";
+		public string filename { get; set; }
+		public bool auto_start { get; set; } = false;
+		public bool auto_parse { get; set; } = false;
+		public bool run_sample { get; set; } = false;
+		public string input { get; set; }
+
+	}
+
     public class JobCreateResponseModel : ResponseModel
     {
         public int job_id { get; set; }

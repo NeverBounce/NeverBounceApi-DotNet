@@ -35,17 +35,30 @@ namespace NeverBounce.Services
         }
 
 		/// <summary>
-		/// This method calls the create job end point.
+		/// This method calls the create job end point using supplied data for input
 		/// See: "https://developers.neverbounce.com/v4.0/reference#jobs-create"
 		/// </summary>
 		/// <param name="model">JobCreateRequestModel</param>
 		/// <returns>JobCreateResponseModel</returns>
-		public async Task<JobCreateResponseModel> Create(JobCreateRequestModel model)
+		public async Task<JobCreateResponseModel> CreateFromSuppliedData(JobCreateSuppliedDataRequestModel model)
         {
 			NeverBounceHttpClient client = new NeverBounceHttpClient(ApiKey, Host);
             var result = await client.MakeRequest("POST", "/jobs/create",  model);
             return JsonConvert.DeserializeObject<JobCreateResponseModel>(result.json.ToString());
         }
+
+		/// <summary>
+		/// This method calls the create job end point using a remote URL for the input
+		/// See: "https://developers.neverbounce.com/v4.0/reference#jobs-create"
+		/// </summary>
+		/// <param name="model">JobCreateRemoteUrlRequestModel</param>
+		/// <returns>JobCreateResponseModel</returns>
+		public async Task<JobCreateResponseModel> CreateFromRemoteUrl(JobCreateRemoteUrlRequestModel model)
+		{
+			NeverBounceHttpClient client = new NeverBounceHttpClient(ApiKey, Host);
+			var result = await client.MakeRequest("POST", "/jobs/create", model);
+			return JsonConvert.DeserializeObject<JobCreateResponseModel>(result.json.ToString());
+		}
 
 		/// <summary>
 		/// This method calls the parse job end point
