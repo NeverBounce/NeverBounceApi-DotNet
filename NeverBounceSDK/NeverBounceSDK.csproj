@@ -12,7 +12,6 @@
     <AssemblyName>NeverBounce</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <PackOnBuild>true</PackOnBuild>
     <PackageVersion>1.0.0</PackageVersion>
     <Authors>Mike Mollick</Authors>
     <NeutralLanguage>en-US</NeutralLanguage>
@@ -58,9 +57,6 @@ This SDK provides convenient methods for integrating our API into your existing 
     <Reference Include="System.Data" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
-    <Reference Include="NLog">
-      <HintPath>..\packages\NLog.4.4.12\lib\net45\NLog.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Classes\enumeration.cs" />
@@ -93,7 +89,7 @@ This SDK provides convenient methods for integrating our API into your existing 
     <Folder Include="Exceptions\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
   </Target>
