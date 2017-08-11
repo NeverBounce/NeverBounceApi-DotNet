@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\packages\NuGet.Build.Packaging.0.1.248\build\NuGet.Build.Packaging.props" Condition="Exists('..\packages\NuGet.Build.Packaging.0.1.248\build\NuGet.Build.Packaging.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -12,6 +13,20 @@
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <PackageId>NeverBounce.SDK.Samples</PackageId>
+    <PackageVersion>1.0.0</PackageVersion>
+    <Authors>Mike Mollick</Authors>
+    <PackageIconUrl>https://raw.githubusercontent.com/NeverBounce/NeverBounceApi-DotNet/master/neverbounce_white_square_64.png</PackageIconUrl>
+    <NeutralLanguage>en-US</NeutralLanguage>
+    <PackageLicenseUrl>https://raw.githubusercontent.com/NeverBounce/NeverBounceApi-DotNet/master/LICENSE</PackageLicenseUrl>
+    <Owners>NeverBounce</Owners>
+    <PackageProjectUrl>https://github.com/NeverBounce/NeverBounceApi-DotNet</PackageProjectUrl>
+    <Summary>This library provides samples for using the NeverBounce.SDK package.</Summary>
+    <PackageTags>email verification validation cleaning</PackageTags>
+    <Title>NeverBounce SDK Samples</Title>
+    <Description>NeverBounce is a realtime email verification service. Our verification API allows you to create Custom Integrations to add email verification to any part of your software. We offer solutions for verifying individual emails as well as lists containing hundreds or even millions of emails.
+
+This library provides samples for using the NeverBounce.SDK package.</Description>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -75,4 +90,5 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+  <Import Project="..\packages\NuGet.Build.Packaging.0.1.248\build\NuGet.Build.Packaging.targets" Condition="Exists('..\packages\NuGet.Build.Packaging.0.1.248\build\NuGet.Build.Packaging.targets')" />
 </Project>
