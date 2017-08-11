@@ -1,4 +1,4 @@
-﻿﻿// Author: Mike Mollick <mike@neverbounce.com>
+﻿// Author: Mike Mollick <mike@neverbounce.com>
 //
 // Copyright (c) 2017 NeverBounce
 //
@@ -27,9 +27,9 @@ namespace NeverBounce
 {
     public class NeverBounceSdk
     {
-        private string _apiKey;
-        private string _host = "https://api.neverbounce.com/v4";
-        private IHttpClient _client;
+        private readonly string _apiKey;
+        private readonly IHttpClient _client;
+        private readonly string _host = "https://api.neverbounce.com/v4";
 
         public AccountService Account;
         public JobsService Jobs;
@@ -52,13 +52,9 @@ namespace NeverBounce
 
             // Check for mocked IHttpClient, if none exists create default
             if (Client == null)
-            {
                 _client = new HttpClientWrapper();
-            }
             else
-            {
                 _client = Client;
-            }
 
             Account = new AccountService(_client, _apiKey, _host);
             Jobs = new JobsService(_client, _apiKey, _host);

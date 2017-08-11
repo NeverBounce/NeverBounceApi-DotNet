@@ -20,20 +20,15 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-using Moq;
-using NUnit.Framework;
 using NeverBounce;
-using NeverBounce.Services;
-using NeverBounce.Models;
-using NeverBounce.Utilities;
-using System;
+using NUnit.Framework;
 
 namespace NeverBounceSDKTests
 {
-    [TestFixture()]
+    [TestFixture]
     public class TestNeverBounceSdk
     {
-        [Test()]
+        [Test]
         public void TestNeverBounceSdkSetup()
         {
             var nb = new NeverBounceSdk("fake_api_key");

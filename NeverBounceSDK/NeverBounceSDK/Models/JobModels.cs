@@ -1,11 +1,32 @@
-﻿using System;
+﻿// Author: Mike Mollick <mike@neverbounce.com>
+//
+// Copyright (c) 2017 NeverBounce
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+
 using System.Collections.Generic;
 
 namespace NeverBounce.Models
 {
     public class JobSearchRequestModel : RequestModel
     {
-        public Nullable<int> job_id { get; set; }
+        public int? job_id { get; set; }
         public string filename { get; set; }
         public string job_status { get; set; }
         public int page { get; set; } = 1;
@@ -27,31 +48,31 @@ namespace NeverBounce.Models
         public int job_id { get; set; }
     }
 
-	public class JobStatus
-	{
-		public int id { get; set; }
-		public string job_status { get; set; }
-		public string filename { get; set; }
-		public string created_at { get; set; }
-		public object started_at { get; set; }
-		public object finished_at { get; set; }
-		public JobsTotals total { get; set; }
-		public int bounce_estimate { get; set; }
-		public int percent_complete { get; set; }
-	}
+    public class JobStatus
+    {
+        public int id { get; set; }
+        public string job_status { get; set; }
+        public string filename { get; set; }
+        public string created_at { get; set; }
+        public object started_at { get; set; }
+        public object finished_at { get; set; }
+        public JobsTotals total { get; set; }
+        public int bounce_estimate { get; set; }
+        public int percent_complete { get; set; }
+    }
 
     public class JobsTotals
     {
-        public Nullable<int> records { get; set; }
-        public Nullable<int> billable { get; set; }
-        public Nullable<int> processed { get; set; }
-        public Nullable<int> valid { get; set; }
-        public Nullable<int> invalid { get; set; }
-        public Nullable<int> catchall { get; set; }
-        public Nullable<int> disposable { get; set; }
-        public Nullable<int> unknown { get; set; }
-        public Nullable<int> duplicates { get; set; }
-        public Nullable<int> bad_syntax { get; set; }
+        public int? records { get; set; }
+        public int? billable { get; set; }
+        public int? processed { get; set; }
+        public int? valid { get; set; }
+        public int? invalid { get; set; }
+        public int? catchall { get; set; }
+        public int? disposable { get; set; }
+        public int? unknown { get; set; }
+        public int? duplicates { get; set; }
+        public int? bad_syntax { get; set; }
     }
 
     public class JobCreateSuppliedDataRequestModel : RequestModel
@@ -60,21 +81,19 @@ namespace NeverBounce.Models
         public string filename { get; set; }
         public bool auto_start { get; set; } = false;
         public bool auto_parse { get; set; } = false;
-		public bool run_sample { get; set; } = false;
- 		public List<object> input { get; set; }
-
+        public bool run_sample { get; set; } = false;
+        public List<object> input { get; set; }
     }
 
-	public class JobCreateRemoteUrlRequestModel : RequestModel
-	{
+    public class JobCreateRemoteUrlRequestModel : RequestModel
+    {
         public string input_location { get; } = "remote_url";
-		public string filename { get; set; }
-		public bool auto_start { get; set; } = false;
-		public bool auto_parse { get; set; } = false;
-		public bool run_sample { get; set; } = false;
-		public string input { get; set; }
-
-	}
+        public string filename { get; set; }
+        public bool auto_start { get; set; } = false;
+        public bool auto_parse { get; set; } = false;
+        public bool run_sample { get; set; } = false;
+        public string input { get; set; }
+    }
 
     public class JobCreateResponseModel : ResponseModel
     {
@@ -89,7 +108,7 @@ namespace NeverBounce.Models
 
     public class JobParseResponseModel : ResponseModel
     {
-        public string queue_id { get; set; }        
+        public string queue_id { get; set; }
     }
 
     public class JobStartRequestModel : RequestModel
@@ -100,7 +119,6 @@ namespace NeverBounce.Models
 
     public class JobStartResponseModel : ResponseModel
     {
-
         public string queue_id { get; set; }
     }
 
@@ -129,13 +147,12 @@ namespace NeverBounce.Models
         public int items_per_page { get; set; } = 10;
     }
 
-    public class JobResultsResponseModel : ResponseModel 
+    public class JobResultsResponseModel : ResponseModel
     {
         public int total_results { get; set; }
         public int total_pages { get; set; }
         public JobsResultsQuery query { get; set; }
         public List<Result> results { get; set; }
-       
     }
 
     public class JobsResultsQuery
@@ -156,23 +173,22 @@ namespace NeverBounce.Models
         public SingleResponseModel verification { get; set; }
     }
 
-	public class JobDownloadRequestModel : RequestModel
-	{
-		public int job_id { get; set; }
-		public bool valids { get; set; } = true;
-		public bool invalids { get; set; } = true;
-		public bool catchalls { get; set; } = true;
-		public bool unknowns { get; set; } = true;
-		public bool disposables { get; set; } = true;
-	}
+    public class JobDownloadRequestModel : RequestModel
+    {
+        public int job_id { get; set; }
+        public bool valids { get; set; } = true;
+        public bool invalids { get; set; } = true;
+        public bool catchalls { get; set; } = true;
+        public bool unknowns { get; set; } = true;
+        public bool disposables { get; set; } = true;
+    }
 
     public class JobDeleteRequestModel : RequestModel
     {
         public int job_id { get; set; }
     }
 
-	public class JobDeleteResponseModel : ResponseModel
-	{
-	}
-
+    public class JobDeleteResponseModel : ResponseModel
+    {
+    }
 }

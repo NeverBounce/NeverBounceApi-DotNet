@@ -1,14 +1,32 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿// Author: Mike Mollick <mike@neverbounce.com>
+//
+// Copyright (c) 2017 NeverBounce
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+
+using System;
 
 namespace NeverBounce.Classes
 {
     public class enumeration
     {
-        public static string StatusCodeDescription(String StatusCode)
+        public static string StatusCodeDescription(string StatusCode)
         {
             try
             {
@@ -19,7 +37,8 @@ namespace NeverBounce.Classes
                     case "general_failure":
                         return "Something went wrong with the request; check the message property for further details";
                     case "auth_failure":
-                        return "The request couldn't be authenticated; check the API key and make sure it's being sent correctly";
+                        return
+                            "The request couldn't be authenticated; check the API key and make sure it's being sent correctly";
                     case "temp_unavail":
                         return "An internal error has occurred; typically this indicates a service interruption";
                     case "throttle_triggered":
@@ -28,18 +47,16 @@ namespace NeverBounce.Classes
                         return "The referrer for this request is not trusted";
                     default:
                         return "Exception";
-
                 }
             }
             catch (Exception ex)
             {
                 return "Exception : " + ex.Message;
             }
-
         }
 
-        public static string ResultCodeDescription(String ResultCode)
-        { 
+        public static string ResultCodeDescription(string ResultCode)
+        {
             try
             {
                 switch (ResultCode)
@@ -56,17 +73,15 @@ namespace NeverBounce.Classes
                         return "The server cannot be reached";
                     default:
                         return "Exception";
-
                 }
             }
             catch (Exception ex)
             {
                 return "Exception : " + ex.Message;
             }
-
         }
 
-        public static string FlagDescription(String ResultCode)
+        public static string FlagDescription(string ResultCode)
         {
             try
             {
@@ -79,17 +94,15 @@ namespace NeverBounce.Classes
                     case "bad_syntax":
                         return "The input given doesn't appear to be an email.";
                     case "free_email_host":
-                        return "This email is registered on a free-mail host. (e.g: yahoo.com, hotmail.com)"; 
+                        return "This email is registered on a free-mail host. (e.g: yahoo.com, hotmail.com)";
                     default:
                         return "Exception";
-
                 }
             }
             catch (Exception ex)
             {
                 return "Exception : " + ex.Message;
             }
-
         }
     }
 }
