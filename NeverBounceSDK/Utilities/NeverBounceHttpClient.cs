@@ -1,4 +1,4 @@
-﻿// Author: Mike Mollick <mike@neverbounce.com>
+﻿﻿// Author: Mike Mollick <mike@neverbounce.com>
 //
 // Copyright (c) 2017 NeverBounce
 //
@@ -26,6 +26,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using System.Reflection;
 using NeverBounce.Exceptions;
 using NeverBounce.Models;
 using Newtonsoft.Json;
@@ -50,6 +51,7 @@ namespace NeverBounce.Utilities
         public NeverBounceHttpClient(IHttpClient Client, string ApiKey, string Host = null)
         {
             _client = Client;
+            _client.GetRequestHeaders().Add("User-Agent", "NeverBounceAPI-DotNet/" + Assembly.GetExecutingAssembly().GetName().Version);
             _apiKey = ApiKey;
             if (Host != null)
                 _host = Host;
