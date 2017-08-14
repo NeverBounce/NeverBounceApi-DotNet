@@ -27,6 +27,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using System.Reflection;
+using System.Diagnostics;
 using NeverBounce.Exceptions;
 using NeverBounce.Models;
 using Newtonsoft.Json;
@@ -51,10 +52,20 @@ namespace NeverBounce.Utilities
         public NeverBounceHttpClient(IHttpClient Client, string ApiKey, string Host = null)
         {
             _client = Client;
-            _client.GetRequestHeaders().Add("User-Agent", "NeverBounceAPI-DotNet/" + Assembly.GetExecutingAssembly().GetName().Version);
+            _client.GetRequestHeaders().Add("User-Agent", GenerateUserAgent());
             _apiKey = ApiKey;
             if (Host != null)
                 _host = Host;
+        }
+
+        /// <summary>
+        ///     Generates the useragent string
+        /// </summary>
+        private string GenerateUserAgent()
+        {
+            string loc = Assembly.GetExecutingAssembly().Location;
+            string productVersion = FileVersionInfo.GetVersionInfo(loc).ProductVersion;
+            return "NeverBounceApi-DotNet/" + productVersion;
         }
 
         /// <summary>
