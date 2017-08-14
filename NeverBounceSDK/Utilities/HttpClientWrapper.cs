@@ -22,12 +22,14 @@
 
 using System;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 
 namespace NeverBounce.Utilities
 {
     public interface IHttpClient
     {
+        HttpRequestHeaders GetRequestHeaders();
         Task<HttpResponseMessage> GetAsync(Uri uri);
         Task<HttpResponseMessage> PostAsync(Uri uri, HttpContent content);
     }
@@ -35,10 +37,15 @@ namespace NeverBounce.Utilities
     public class HttpClientWrapper : IHttpClient
     {
         private readonly HttpClient _client;
-
+        
         public HttpClientWrapper()
         {
             _client = new HttpClient();
+        }
+
+        public HttpRequestHeaders GetRequestHeaders()
+        {
+            return _client.DefaultRequestHeaders;
         }
 
         public Task<HttpResponseMessage> GetAsync(Uri uri)
