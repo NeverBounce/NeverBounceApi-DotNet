@@ -15,7 +15,7 @@
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <PackageId>NeverBounce.SDK.Samples</PackageId>
-    <PackageVersion>1.0.0</PackageVersion>
+    <PackageVersion>4.0.1</PackageVersion>
     <Authors>Mike Mollick</Authors>
     <PackageIconUrl>https://raw.githubusercontent.com/NeverBounce/NeverBounceApi-DotNet/master/neverbounce_white_square_64.png</PackageIconUrl>
     <NeutralLanguage>en-US</NeutralLanguage>

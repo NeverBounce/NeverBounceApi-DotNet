@@ -21,6 +21,7 @@
 // THE SOFTWARE.
 
 using NeverBounce;
+using NeverBounce.Exceptions;
 using NUnit.Framework;
 
 namespace NeverBounceSDKTests
@@ -36,6 +37,16 @@ namespace NeverBounceSDKTests
             Assert.IsNotNull(nb.Jobs);
             Assert.IsNotNull(nb.POE);
             Assert.IsNotNull(nb.Single);
+        }
+        
+        [Test]
+        public void TestNeverBounceAccountInfo()
+        {
+            var nb = new NeverBounceSdk("fake_api_key");            
+            var resp = Assert.ThrowsAsync<AuthException>(async () =>
+                await nb.Account.Info());
+            StringAssert.Contains("We were unable to authenticate your request", resp.Message);
+            StringAssert.Contains("(auth_failure)", resp.Message);
         }
     }
 }
