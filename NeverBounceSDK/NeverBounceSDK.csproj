@@ -71,7 +71,6 @@ This SDK provides convenient methods for integrating our API into your existing 
     <Compile Include="NeverBounceSdk.cs" />
     <Compile Include="Models\RequestModel.cs" />
     <Compile Include="Utilities\NeverBounceHttpClient.cs" />
-    <Compile Include="Exceptions\HttpClientException.cs" />
     <Compile Include="Exceptions\ThrottleException.cs" />
     <Compile Include="Exceptions\AuthException.cs" />
     <Compile Include="Exceptions\BadReferrerException.cs" />

@@ -67,7 +67,7 @@ namespace NeverBounceSDKTests
             clientMock.Setup(http => http.GetAsync(It.IsAny<Uri>())).Returns(Task.FromResult(responseMessage));
 
             var httpClient = new NeverBounceHttpClient(clientMock.Object, "fake_api_key");
-            var resp = Assert.ThrowsAsync<HttpClientException>(async () =>
+            var resp = Assert.ThrowsAsync<GeneralException>(async () =>
                 await httpClient.MakeRequest("GET", "/500", new RequestModel()));
             StringAssert.Contains("(Internal error)", resp.Message);
         }
@@ -117,7 +117,7 @@ namespace NeverBounceSDKTests
                 .Returns(Task.FromResult(new HttpResponseMessage(HttpStatusCode.NotFound)));
 
             var httpClient = new NeverBounceHttpClient(clientMock.Object, "fake_api_key");
-            Assert.ThrowsAsync<HttpClientException>(async () =>
+            Assert.ThrowsAsync<GeneralException>(async () =>
                 await httpClient.MakeRequest("GET", "/404", new RequestModel()));
         }
 
@@ -130,7 +130,7 @@ namespace NeverBounceSDKTests
                 .Returns(Task.FromResult(new HttpResponseMessage(HttpStatusCode.ServiceUnavailable)));
 
             var httpClient = new NeverBounceHttpClient(clientMock.Object, "fake_api_key");
-            Assert.ThrowsAsync<HttpClientException>(async () =>
+            Assert.ThrowsAsync<GeneralException>(async () =>
                 await httpClient.MakeRequest("GET", "/500", new RequestModel()));
         }
 

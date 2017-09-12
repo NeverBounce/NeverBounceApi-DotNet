@@ -100,7 +100,7 @@ namespace NeverBounce.Utilities
         {
             // Handle 5xx HTTP errors
             if (response.StatusCode.GetHashCode() > 500)
-                throw new HttpClientException(string.Format(
+                throw new GeneralException(string.Format(
                     "We were unable to complete your request. "
                     + "The following information was supplied: {0}"
                     + "\n\n(Internal error[status {1}])", response.StatusCode, response.StatusCode.GetHashCode()
@@ -108,7 +108,7 @@ namespace NeverBounce.Utilities
 
             // Handle 4xx HTTP errors
             if (response.StatusCode.GetHashCode() > 400)
-                throw new HttpClientException(string.Format(
+                throw new GeneralException(string.Format(
                     "We were unable to complete your request. "
                     + "The following information was supplied: {0}"
                     + "\n\n(Request error[status {1}])", response.StatusCode, response.StatusCode.GetHashCode()
@@ -128,7 +128,7 @@ namespace NeverBounce.Utilities
                 }
                 catch (Exception)
                 {
-                    throw new HttpClientException(string.Format(
+                    throw new GeneralException(string.Format(
                         "The response from NeverBounce was unable "
                         + "to be parsed as json. Try the request "
                         + "again, if this error persists "
