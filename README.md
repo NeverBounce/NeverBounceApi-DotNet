@@ -5,8 +5,6 @@
 <a href="https://www.nuget.org/packages/NeverBounce.SDK/"><img src="https://img.shields.io/nuget/v/NeverBounce.SDK.svg" alt="Build Status"></a>
 </p>
 
-> This version of the wrapper is for the V4 API currently in beta
-
 This is the official NeverBounce API .NET wrapper. It provides helpful methods to quickly implement our API in your .NET applications.
 
 Installation using Nuget
