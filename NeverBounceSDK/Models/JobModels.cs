@@ -57,8 +57,8 @@ namespace NeverBounce.Models
         public object started_at { get; set; }
         public object finished_at { get; set; }
         public JobsTotals total { get; set; }
-        public int bounce_estimate { get; set; }
-        public int percent_complete { get; set; }
+        public float bounce_estimate { get; set; }
+        public float percent_complete { get; set; }
     }
 
     public class JobsTotals
@@ -136,8 +136,8 @@ namespace NeverBounce.Models
         public string started_at { get; set; }
         public string finished_at { get; set; }
         public JobsTotals total { get; set; }
-        public int bounce_estimate { get; set; }
-        public int percent_complete { get; set; }
+        public float bounce_estimate { get; set; }
+        public float percent_complete { get; set; }
     }
 
     public class JobResultsRequestModel : RequestModel
