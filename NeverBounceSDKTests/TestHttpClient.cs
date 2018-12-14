@@ -155,17 +155,35 @@ namespace NeverBounceSDKTests
         }
 
         [Test]
-        public void TestPlainTextPassthrough()
+        public void TestMatchContentType()
         {
             var clientMock = new Mock<IHttpClient>();
             var responseMessage = new HttpResponseMessage(HttpStatusCode.OK);
             responseMessage.Content = new StringContent("Hello!");
+            responseMessage.Content.Headers.ContentType = new MediaTypeHeaderValue("text/html");
             clientMock.Setup(http => http.GetRequestHeaders()).Returns(new HttpClient().DefaultRequestHeaders);
             clientMock.Setup(http => http.GetAsync(It.IsAny<Uri>())).Returns(Task.FromResult(responseMessage));
 
             var httpClient = new NeverBounceHttpClient(clientMock.Object, "fake_api_key");
+            httpClient.SetAcceptedType("text/html");
             var resp = httpClient.MakeRequest("GET", "/", new RequestModel()).Result;
             Assert.AreEqual("Hello!", resp);
+        }
+        
+        [Test]
+        public void TestMismatchedContentTypeThrowsError()
+        {
+            var clientMock = new Mock<IHttpClient>();
+            var responseMessage = new HttpResponseMessage(HttpStatusCode.OK);
+            responseMessage.Content = new StringContent("Hello!");
+            responseMessage.Content.Headers.ContentType = new MediaTypeHeaderValue("text/csv");
+            clientMock.Setup(http => http.GetRequestHeaders()).Returns(new HttpClient().DefaultRequestHeaders);
+            clientMock.Setup(http => http.GetAsync(It.IsAny<Uri>())).Returns(Task.FromResult(responseMessage));
+
+            var httpClient = new NeverBounceHttpClient(clientMock.Object, "fake_api_key");
+            httpClient.SetAcceptedType("text/html");
+            var resp = Assert.ThrowsAsync<GeneralException>(async () =>
+                await httpClient.MakeRequest("GET", "/", new RequestModel()));
         }
 
         [Test]

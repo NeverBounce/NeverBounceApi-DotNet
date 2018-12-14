@@ -43,6 +43,8 @@ namespace NeverBounce.Utilities
 
         private readonly string _host = "https://api.neverbounce.com/v4/";
 
+        private string acceptedType = "application/json";
+
         /// <summary>
         ///     Creates the HttpClient instance as well as sets up the hostname to use
         /// </summary>
@@ -56,6 +58,16 @@ namespace NeverBounce.Utilities
             _apiKey = ApiKey;
             if (Host != null)
                 _host = Host;
+        }
+
+        /// <summary>
+        ///     This will set the expected data type for the response. If a different
+        ///     data type is return an error will be thrown.
+        /// </summary>
+        /// <param name="type">The expected request data type</param>
+        public void SetAcceptedType(string type)
+        {
+            acceptedType = type;
         }
 
         /// <summary>
@@ -172,6 +184,16 @@ namespace NeverBounce.Utilities
                                 + "The following information was supplied: {0}"
                                 + "\n\n({1})", token.SelectToken("message"), token.SelectToken("status")));
                     }
+            }
+            
+            // Handle unexpected response types
+            if (contentType != acceptedType)
+            {
+                throw new GeneralException(string.Format(
+                    "The response from NeverBounce was has a data type of \"{0}\", but \"{1}\" was expected."
+                    + "The following information was supplied: {2}"
+                    + "\n\n(Internal error[status {3}])", contentType, acceptedType, response.StatusCode, response.StatusCode.GetHashCode()
+                ));
             }
 
             // Return response data for passthrough/marshalling
