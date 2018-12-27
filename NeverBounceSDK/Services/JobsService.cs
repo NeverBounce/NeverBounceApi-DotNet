@@ -146,7 +146,7 @@ namespace NeverBounce.Services
         public async Task<string> Download(JobDownloadRequestModel model)
         {
             var client = new NeverBounceHttpClient(_client, _apiKey, _host);
-            client.SetAcceptedType("application/octect-stream");
+            client.SetAcceptedType("application/octet-stream");
             return await client.MakeRequest("GET", "/jobs/download", model);
         }
 
