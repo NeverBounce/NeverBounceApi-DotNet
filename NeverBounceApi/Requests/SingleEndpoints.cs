@@ -20,6 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+using System.Threading.Tasks;
 using NeverBounce;
 using NeverBounce.Models;
 
@@ -27,13 +28,13 @@ namespace NeverBounceSdkExamples.Requests
 {
     public class SingleEndpoints
     {
-        public static SingleResponseModel Check(NeverBounceSdk sdk)
+        public static async Task<SingleResponseModel> Check(NeverBounceSdk sdk)
         {
             var model = new SingleRequestModel();
             model.email = "support@neverbounce.com";
             model.credits_info = true;
             model.address_info = true;
-            return sdk.Single.Check(model).Result;
+            return await sdk.Single.Check(model);
         }
     }
 }
