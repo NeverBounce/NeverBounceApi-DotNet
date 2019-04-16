@@ -22,14 +22,15 @@
 
 using NeverBounce;
 using NeverBounce.Models;
+using System.Threading.Tasks;
 
 namespace NeverBounceSdkExamples.Requests
 {
     public class AccountEndpoint
     {
-        public static AccountInfoResponseModel Info(NeverBounceSdk sdk)
+        public static async Task<AccountInfoResponseModel> Info(NeverBounceSdk sdk)
         {
-            return sdk.Account.Info().Result;
+            return await sdk.Account.Info();
         }
     }
 }

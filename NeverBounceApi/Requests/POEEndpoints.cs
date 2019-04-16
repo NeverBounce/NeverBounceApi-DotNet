@@ -20,6 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+using System.Threading.Tasks;
 using NeverBounce;
 using NeverBounce.Models;
 
@@ -27,14 +28,14 @@ namespace NeverBounceSdkExamples.Requests
 {
     public class POEEndpoints
     {
-        public static POEConfirmResponseModel Confirm(NeverBounceSdk sdk)
+        public static async Task<POEConfirmResponseModel> Confirm(NeverBounceSdk sdk)
         {
             var model = new POEConfirmRequestModel();
             model.email = "support@neverbounce.com";
             model.confirmation_token = "e3173fdbbdce6bad26522dae792911f2";
             model.transaction_id = "NBPOE-TXN-5942940c09669";
             model.result = "valid";
-            return sdk.POE.Confirm(model).Result;
+            return await sdk.POE.Confirm(model);
         }
     }
 }
