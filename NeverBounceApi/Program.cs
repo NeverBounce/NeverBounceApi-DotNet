@@ -32,7 +32,9 @@ namespace NeverBounceSdkExamples
         private static void Main(string[] args)
         {
             var sdk = new NeverBounceSdk("api_key");
-
+            
+            // https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/await
+            
             var response = AccountEndpoint.Info(sdk).Result;
             //var response = POEEndpoints.Confirm(sdk).Result;
             //var response = SingleEndpoints.Check(sdk).Result;
