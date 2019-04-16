@@ -21,7 +21,6 @@
 // THE SOFTWARE.
 
 using System;
-using System.Threading.Tasks;
 using NeverBounce;
 using NeverBounceSdkExamples.Requests;
 
