@@ -31,19 +31,21 @@ namespace NeverBounceSdkExamples
         private static void Main(string[] args)
         {
             var sdk = new NeverBounceSdk("api_key");
-
-            var response = AccountEndpoint.Info(sdk);
-            //var response = POEEndpoints.Confirm(sdk);
-            //var response = SingleEndpoints.Check(sdk);
-            //var response = JobsEndpoint.Search(sdk);
-            //var response = JobsEndpoint.CreateSuppliedData(sdk);
-            //var response = JobsEndpoint.CreateRemoteUrl(sdk);
-            //var response = JobsEndpoint.Parse(sdk);
-            //var response = JobsEndpoint.Start(sdk);
-            //var response = JobsEndpoint.Status(sdk);
-            //var response = JobsEndpoint.Results(sdk);
-            //var response = JobsEndpoint.Download(sdk);
-            //var response = JobsEndpoint.Delete(sdk);
+            
+            // https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/await
+            
+            var response = AccountEndpoint.Info(sdk).Result;
+            //var response = POEEndpoints.Confirm(sdk).Result;
+            //var response = SingleEndpoints.Check(sdk).Result;
+            //var response = JobsEndpoint.Search(sdk).Result;
+            //var response = JobsEndpoint.CreateSuppliedData(sdk).Result;
+            //var response = JobsEndpoint.CreateRemoteUrl(sdk).Result;
+            //var response = JobsEndpoint.Parse(sdk).Result;
+            //var response = JobsEndpoint.Start(sdk).Result;
+            //var response = JobsEndpoint.Status(sdk).Result;
+            //var response = JobsEndpoint.Results(sdk).Result;
+            //var response = JobsEndpoint.Download(sdk).Result;
+            //var response = JobsEndpoint.Delete(sdk).Result;
 
             var_dump(response);
             Console.ReadLine();
