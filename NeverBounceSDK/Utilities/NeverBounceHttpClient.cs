@@ -54,10 +54,10 @@ namespace NeverBounce.Utilities
         public NeverBounceHttpClient(IHttpClient Client, string ApiKey, string Host = null)
         {
             _client = Client;
-            _client.GetRequestHeaders().Add("User-Agent", GenerateUserAgent());
             _apiKey = ApiKey;
             if (Host != null)
                 _host = Host;
+            setUserAgent();
         }
 
         /// <summary>
@@ -68,6 +68,16 @@ namespace NeverBounce.Utilities
         public void SetAcceptedType(string type)
         {
             acceptedType = type;
+        }
+
+        /// <summary>
+        ///     Sets the user agent on the request
+        /// </summary>
+        private void setUserAgent()
+        {
+            string userAgent = GenerateUserAgent();
+            _client.GetRequestHeaders().Remove("User-Agent");
+            _client.GetRequestHeaders().Add("User-Agent", userAgent);
         }
 
         /// <summary>
