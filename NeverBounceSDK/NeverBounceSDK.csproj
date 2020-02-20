@@ -26,6 +26,9 @@ This SDK provides convenient methods for integrating our API into your existing 
     <PackageLicenseUrl>https://raw.githubusercontent.com/NeverBounce/NeverBounceApi-DotNet/master/LICENSE</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/NeverBounce/NeverBounceApi-DotNet/</PackageProjectUrl>
     <Summary>This SDK provides convenient methods for integrating our API into your existing .NET applications.</Summary>
+    <PackageReleaseNotes>NeverBounceSdk instantiation now has a Version argument. If you currently supply a custom Host or Client during instantiation you'll need to add the new Version argument in front of the Host.
+
+The ToQueryString method has changed, we've removed the Seperator argument and added a ParentParemeter argument. If you use this method directly you should update your usage.</PackageReleaseNotes>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
