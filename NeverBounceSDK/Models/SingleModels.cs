@@ -72,5 +72,6 @@ namespace NeverBounce.Models
         public bool? address_info { get; set; } = false;
         public bool? credits_info { get; set; } = false;
         public int? timeout { get; set; }
+        public RequestMetaDataModel request_meta_data { get; set; } = new RequestMetaDataModel();
     }
 }

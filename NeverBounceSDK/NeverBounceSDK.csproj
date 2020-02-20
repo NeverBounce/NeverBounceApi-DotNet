@@ -12,7 +12,7 @@
     <AssemblyName>NeverBounce</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <PackageVersion>4.0.5</PackageVersion>
+    <PackageVersion>4.1.0</PackageVersion>
     <Authors>Mike Mollick</Authors>
     <NeutralLanguage>en-US</NeutralLanguage>
     <Owners>NeverBounce</Owners>
@@ -26,6 +26,9 @@ This SDK provides convenient methods for integrating our API into your existing 
     <PackageLicenseUrl>https://raw.githubusercontent.com/NeverBounce/NeverBounceApi-DotNet/master/LICENSE</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/NeverBounce/NeverBounceApi-DotNet/</PackageProjectUrl>
     <Summary>This SDK provides convenient methods for integrating our API into your existing .NET applications.</Summary>
+    <PackageReleaseNotes>NeverBounceSdk instantiation now has a Version argument. If you currently supply a custom Host or Client during instantiation you'll need to add the new Version argument in front of the Host.
+
+The ToQueryString method has changed, we've removed the Seperator argument and added a ParentParemeter argument. If you use this method directly you should update your usage.</PackageReleaseNotes>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -60,6 +63,7 @@ This SDK provides convenient methods for integrating our API into your existing 
   <ItemGroup>
     <Compile Include="Classes\enumeration.cs" />
     <Compile Include="Models\JobModels.cs" />
+    <Compile Include="Models\RequestMetaDataModel.cs" />
     <Compile Include="Models\ResponseModel.cs" />
     <Compile Include="Models\SingleModels.cs" />
     <Compile Include="Models\AccountModels.cs" />

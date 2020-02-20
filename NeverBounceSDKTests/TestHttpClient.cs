@@ -236,7 +236,7 @@ namespace NeverBounceSDKTests
 
             var resp = httpClient.ToQueryString(query);
             Assert.AreEqual(
-                "email=support%40neverbounce.com&address_info=1&credits_info=0&timeout=3000&key=fake_api_key", resp);
+                "email=support%40neverbounce.com&address_info=1&credits_info=0&timeout=3000&request_meta_data[leverage_historical_data]=1&key=fake_api_key", resp);
         }
     }
 }
