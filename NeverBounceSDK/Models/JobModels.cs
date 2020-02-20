@@ -83,6 +83,8 @@ namespace NeverBounce.Models
         public bool auto_parse { get; set; } = false;
         public bool run_sample { get; set; } = false;
         public List<object> input { get; set; }
+        public RequestMetaDataModel request_meta_data { get; set; } = new RequestMetaDataModel();
+
     }
 
     public class JobCreateRemoteUrlRequestModel : RequestModel
@@ -93,6 +95,8 @@ namespace NeverBounce.Models
         public bool auto_parse { get; set; } = false;
         public bool run_sample { get; set; } = false;
         public string input { get; set; }
+        public RequestMetaDataModel request_meta_data { get; set; } = new RequestMetaDataModel();
+
     }
 
     public class JobCreateResponseModel : ResponseModel

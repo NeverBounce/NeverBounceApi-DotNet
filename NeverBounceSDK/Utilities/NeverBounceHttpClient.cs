@@ -22,6 +22,7 @@
 
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
@@ -214,8 +215,8 @@ namespace NeverBounce.Utilities
         ///     Creates a urlencoded query string of the parameters
         /// </summary>
         /// <param name="request">The request parameters to encode</param>
-        /// <param name="separator">The seperator to use for enumerated properties</param>
-        public string ToQueryString(object request, string separator = ",")
+        /// <param name="parentProperty">The nested parent parameter</param>
+        public string ToQueryString(object request, string parentProperty = null)
         {
             // Get all properties on the object
             var properties = request.GetType().GetProperties()
@@ -233,7 +234,7 @@ namespace NeverBounce.Utilities
                 .Where(x => !(x.Value is string) && x.Value is IEnumerable)
                 .Select(x => x.Key)
                 .ToList();
-
+            
             // Concat all IEnumerable properties into a comma separated string
             foreach (var key in propertyNames)
             {
@@ -242,6 +243,7 @@ namespace NeverBounce.Utilities
                 var valueElemType = valueType.IsGenericType
                     ? valueType.GetGenericArguments()[0]
                     : valueType.GetElementType();
+                
                 if (valueElemType.IsPrimitive || valueElemType == typeof(string))
                 {
                     var enumerable = properties[key] as IEnumerable;
@@ -251,9 +253,23 @@ namespace NeverBounce.Utilities
 
             // Concat all key/value pairs into a string separated by ampersand
             return string.Join("&", properties
-                .Select(x => string.Concat(
-                    Uri.EscapeDataString(x.Key), "=",
-                    Uri.EscapeDataString(x.Value.ToString()))));
+                .Select(x => BuildQueryStringKeyValue(x, parentProperty)));
+        }
+        
+        /// <summary>
+        ///     Builds URI safe key value pair
+        /// </summary>
+        /// <param name="pair">The key value pair to encode</param>
+        /// <param name="parentProperty">The nested parent parameter</param>
+        private string BuildQueryStringKeyValue(KeyValuePair<string, object> pair, string parentProperty = null)
+        {
+            var key = parentProperty != null
+                ? $"{parentProperty}[{Uri.EscapeDataString(pair.Key)}]"
+                : Uri.EscapeDataString(pair.Key);
+            
+            return pair.Value.GetType().IsPrimitive || pair.Value.GetType().IsValueType || pair.Value is string
+                ? $"{key}={Uri.EscapeDataString(pair.Value.ToString())}" 
+                : ToQueryString(pair.Value, key);
         }
     }
 }

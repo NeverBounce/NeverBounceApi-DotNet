@@ -27,39 +27,37 @@ namespace NeverBounce
 {
     public class NeverBounceSdk
     {
+        private const string _host = "https://api.neverbounce.com";
         private readonly string _apiKey;
         private readonly IHttpClient _client;
-        private readonly string _host = "https://api.neverbounce.com/v4";
-
-        public AccountService Account;
-        public JobsService Jobs;
-        public POEService POE;
-        public SingleService Single;
+        private readonly string _version;
+        
+        public readonly AccountService Account;
+        public readonly JobsService Jobs;
+        public readonly POEService POE;
+        public readonly SingleService Single;
 
         /// <summary>
         ///     This method initializes the NeverBounceSDK
         /// </summary>
         /// <param name="ApiKey">The api key to use to make the requests</param>
+        /// <param name="Version">The api version to make this request on</param>
         /// <param name="Host">Specify a different host to make the request to. Leave null to use 'https://api.neverbounce.com'</param>
         /// <param name="Client">An instance of IHttpClient to use; useful for mocking HTTP requests</param>
-        public NeverBounceSdk(string ApiKey, string Host = null, IHttpClient Client = null)
+        public NeverBounceSdk(string ApiKey, string Version = "v4.1", string Host = null, IHttpClient Client = null)
         {
             _apiKey = ApiKey;
-
-            // Accept debug host
-            if (Host != null)
-                _host = Host;
-
+            _version = Version;
+            
             // Check for mocked IHttpClient, if none exists create default
-            if (Client == null)
-                _client = new HttpClientWrapper();
-            else
-                _client = Client;
-
-            Account = new AccountService(_client, _apiKey, _host);
-            Jobs = new JobsService(_client, _apiKey, _host);
-            POE = new POEService(_client, _apiKey, _host);
-            Single = new SingleService(_client, _apiKey, _host);
+            _client = Client ?? new HttpClientWrapper();
+            
+            var url = $"{Host ?? _host}/{_version}";
+            
+            Account = new AccountService(_client, _apiKey, url);
+            Jobs = new JobsService(_client, _apiKey, url);
+            POE = new POEService(_client, _apiKey, url);
+            Single = new SingleService(_client, _apiKey,  url);
         }
     }
 }

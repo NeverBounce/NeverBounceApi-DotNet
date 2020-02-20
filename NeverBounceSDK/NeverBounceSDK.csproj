@@ -60,6 +60,7 @@ This SDK provides convenient methods for integrating our API into your existing 
   <ItemGroup>
     <Compile Include="Classes\enumeration.cs" />
     <Compile Include="Models\JobModels.cs" />
+    <Compile Include="Models\RequestMetaDataModel.cs" />
     <Compile Include="Models\ResponseModel.cs" />
     <Compile Include="Models\SingleModels.cs" />
     <Compile Include="Models\AccountModels.cs" />
