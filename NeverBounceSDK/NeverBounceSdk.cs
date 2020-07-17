@@ -44,7 +44,7 @@ namespace NeverBounce
         /// <param name="Version">The api version to make this request on</param>
         /// <param name="Host">Specify a different host to make the request to. Leave null to use 'https://api.neverbounce.com'</param>
         /// <param name="Client">An instance of IHttpClient to use; useful for mocking HTTP requests</param>
-        public NeverBounceSdk(string ApiKey, string Version = "v4.1", string Host = null, IHttpClient Client = null)
+        public NeverBounceSdk(string ApiKey, string Version = "v4.2", string Host = null, IHttpClient Client = null)
         {
             _apiKey = ApiKey;
             _version = Version;
