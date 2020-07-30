@@ -98,7 +98,6 @@ namespace NeverBounce.Models
     {
         public string input_location { get; } = "remote_url";
         public string input { get; set; }
-
     }
 
     public class JobCreateResponseModel : ResponseModel
