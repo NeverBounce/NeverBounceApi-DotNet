@@ -91,7 +91,6 @@ namespace NeverBounce.Models
     {
         public string input_location { get; } = "supplied";
         public List<object> input { get; set; }
-
     }
 
     public class JobCreateRemoteUrlRequestModel : JobCreateRequestModel
