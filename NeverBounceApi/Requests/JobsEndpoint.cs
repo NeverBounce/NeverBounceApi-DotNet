@@ -46,10 +46,6 @@ namespace NeverBounceSdkExamples.Requests
             data.Add(new {id = "3", email = "support@neverbounce.com", name = "Fred McValid"});
             data.Add(new {id = "4", email = "invalid@neverbounce.com", name = "Bob McInvalid"});
             model.input = data;
-            // model.callback_url = "https://localhost/webhook/neverbounce";
-            // var headers = new Dictionary<string, string>();
-            // headers.Add("X-My-Token", "abc123");
-            // model.callback_headers = headers;
             return await sdk.Jobs.CreateFromSuppliedData(model);
         }
 
