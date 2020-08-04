@@ -75,28 +75,28 @@ namespace NeverBounce.Models
         public int? bad_syntax { get; set; }
     }
 
-    public class JobCreateSuppliedDataRequestModel : RequestModel
+    public class JobCreateRequestModel : RequestModel
     {
-        public string input_location { get; } = "supplied";
         public string filename { get; set; }
         public bool auto_start { get; set; } = false;
         public bool auto_parse { get; set; } = false;
         public bool run_sample { get; set; } = false;
-        public List<object> input { get; set; }
+        public bool allow_manual_review { get; set; } = false;
+        public string callback_url { get; set; }
+        public Dictionary<string, string> callback_headers { get; set; }
         public RequestMetaDataModel request_meta_data { get; set; } = new RequestMetaDataModel();
-
     }
 
-    public class JobCreateRemoteUrlRequestModel : RequestModel
+    public class JobCreateSuppliedDataRequestModel : JobCreateRequestModel
+    {
+        public string input_location { get; } = "supplied";
+        public List<object> input { get; set; }
+    }
+
+    public class JobCreateRemoteUrlRequestModel : JobCreateRequestModel
     {
         public string input_location { get; } = "remote_url";
-        public string filename { get; set; }
-        public bool auto_start { get; set; } = false;
-        public bool auto_parse { get; set; } = false;
-        public bool run_sample { get; set; } = false;
         public string input { get; set; }
-        public RequestMetaDataModel request_meta_data { get; set; } = new RequestMetaDataModel();
-
     }
 
     public class JobCreateResponseModel : ResponseModel
@@ -119,6 +119,7 @@ namespace NeverBounce.Models
     {
         public int job_id { get; set; }
         public bool run_sample { get; set; }
+        public bool allow_manual_review { get; set; } = false;
     }
 
     public class JobStartResponseModel : ResponseModel
@@ -142,6 +143,7 @@ namespace NeverBounce.Models
         public JobsTotals total { get; set; }
         public float bounce_estimate { get; set; }
         public float percent_complete { get; set; }
+        public float failure_reason { get; set; }
     }
 
     public class JobResultsRequestModel : RequestModel
