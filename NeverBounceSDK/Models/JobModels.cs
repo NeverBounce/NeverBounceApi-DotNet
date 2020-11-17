@@ -143,7 +143,7 @@ namespace NeverBounce.Models
         public JobsTotals total { get; set; }
         public float bounce_estimate { get; set; }
         public float percent_complete { get; set; }
-        public float failure_reason { get; set; }
+        public string failure_reason { get; set; }
     }
 
     public class JobResultsRequestModel : RequestModel
