@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>NeverBounce</RootNamespace>
     <AssemblyName>NeverBounce</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <PackageVersion>4.2.0</PackageVersion>
     <Authors>Mike Mollick</Authors>
@@ -29,6 +29,7 @@ This SDK provides convenient methods for integrating our API into your existing 
     <PackageReleaseNotes>NeverBounceSdk instantiation now has a Version argument. If you currently supply a custom Host or Client during instantiation you'll need to add the new Version argument in front of the Host.
 
 The ToQueryString method has changed, we've removed the Seperator argument and added a ParentParemeter argument. If you use this method directly you should update your usage.</PackageReleaseNotes>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -87,9 +88,7 @@ The ToQueryString method has changed, we've removed the Seperator argument and a
     <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Exceptions\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.

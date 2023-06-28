@@ -11,7 +11,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>NeverBounceApi</RootNamespace>
     <AssemblyName>NeverBounceApi</AssemblyName>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <PackageId>NeverBounce.SDK.Samples</PackageId>
@@ -28,6 +28,7 @@
     <Description>NeverBounce is a realtime email verification service. Our verification API allows you to create Custom Integrations to add email verification to any part of your software. We offer solutions for verifying individual emails as well as lists containing hundreds or even millions of emails.
 
 This library provides samples for using the NeverBounce.SDK package.</Description>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -76,9 +77,7 @@ This library provides samples for using the NeverBounce.SDK package.</Descriptio
       <Name>NeverBounceSDK</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Requests\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
