@@ -1,21 +1,7 @@
 <p align="center"><img src="https://neverbounce-marketing.s3.amazonaws.com/neverbounce_color_600px.png"></p>
 
-<p align="center">
-<a href="https://travis-ci.org/NeverBounce/NeverBounceApi-DotNet"><img src="https://travis-ci.org/NeverBounce/NeverBounceApi-DotNet.svg" alt="Build Status"></a>
-<a href="https://www.nuget.org/packages/NeverBounce.SDK/"><img src="https://img.shields.io/nuget/v/NeverBounce.SDK.svg" alt="Build Status"></a>
-</p>
 
-This is the official NeverBounce API .NET wrapper. It provides helpful methods to quickly implement our API in your .NET applications.
+This is an unofficial fork of NeverBounce API .NET wrapper. 
 
-Installation using Nuget
----
+This fork is an update to current .NET dependency injection. It is not supported by NeverBounce.
 
-For the SDK:
-```bash
-Install-Package NeverBounce.SDK
-```
-
-For the SDK samples:
-```bash
-Install-Package NeverBounce.SDK.Samples
-```
