@@ -1,35 +1,46 @@
 ﻿namespace NeverBounce.Models;
 
+public enum ResponseStatus {
+    None = 0,
+    Success,
+    AuthFailure,
+    TempUnavail,
+    ThrottleTriggered,
+    BadReferrer,
+}
+
 public abstract class ResponseModel
 {
-    public string status { get; set; }
-    public string message { get; set; }
-    public int execution_time { get; set; }
+    public ResponseStatus Status { get; set; } = ResponseStatus.None;
+
+    public string? Message { get; set; } = null;
+
+    public int ExecutionTime { get; set; }
 }
 
 public class RawResponseModel
 {
-    public object json { get; set; }
-    public string plaintext { get; set; }
+    public object Json { get; set; }
+    public string Plaintext { get; set; }
 }
 
 public class CreditsInfo
 {
-    public int paid_credits_used { get; set; }
-    public int free_credits_used { get; set; }
-    public int paid_credits_remaining { get; set; }
-    public int free_credits_remaining { get; set; }
+    public int PaidCreditsUsed { get; set; }
+    public int FreeCreditsUsed { get; set; }
+    public int PaidCreditsRemaining { get; set; }
+    public int FreeCreditsRemaining { get; set; }
 }
 
 public class AddressInfo
 {
-    public string original_email { get; set; }
-    public string normalized_email { get; set; }
-    public string addr { get; set; }
-    public string alias { get; set; }
-    public string host { get; set; }
-    public string fqdn { get; set; }
-    public string domain { get; set; }
-    public string subdomain { get; set; }
-    public string tld { get; set; }
+    public string OriginalEmail { get; set; }
+    public string NormalizedEmail { get; set; }
+    public string Addr { get; set; }
+    public string Alias { get; set; }
+    public string Host { get; set; }
+    public string Fqdn { get; set; }
+    public string Domain { get; set; }
+    public string Subdomain { get; set; }
+    public string Tld { get; set; }
 }

@@ -11,41 +11,41 @@ public enum ResultCodes
 
 public class SingleResponseModel : ResponseModel
 {
-    public string result { get; set; }
-    public List<string> flags { get; set; }
-    public string suggested_correction { get; set; }
-    public string retry_token { get; set; }
-    public CreditsInfo credits_info { get; set; }
-    public AddressInfo address_info { get; set; }
+    public string Result { get; set; }
+    public List<string> Flags { get; set; }
+    public string SuggestedCorrection { get; set; }
+    public string RetryToken { get; set; }
+    public CreditsInfo CreditsInfo { get; set; }
+    public AddressInfo AddressInfo { get; set; }
 
     public bool ResultIs(string resultCode)
     {
-        return this.result.ToLower() == resultCode.ToLower();
+        return this.Result.ToLower() == resultCode.ToLower();
     }
 
     public bool ResultIs(IEnumerable<string> resultCodes)
     {
         resultCodes = resultCodes.Select(c => c.ToLower());
-        return resultCodes.Contains(this.result.ToLower());
+        return resultCodes.Contains(this.Result.ToLower());
     }
 
     public bool ResultIsNot(string resultCode)
     {
-        return this.result.ToLower() != resultCode.ToLower();
+        return this.Result.ToLower() != resultCode.ToLower();
     }
 
     public bool ResultIsNot(IEnumerable<string> resultCodes)
     {
         resultCodes = resultCodes.Select(c => c.ToLower());
-        return !resultCodes.Contains(this.result.ToLower());
+        return !resultCodes.Contains(this.Result.ToLower());
     }
 }
 
 public class SingleRequestModel : RequestModel
 {
-    public string email { get; set; }
-    public bool? address_info { get; set; } = false;
-    public bool? credits_info { get; set; } = false;
-    public int? timeout { get; set; }
-    public RequestMetaDataModel request_meta_data { get; set; } = new RequestMetaDataModel();
+    public string Email { get; set; }
+    public bool? AddressInfo { get; set; } = false;
+    public bool? CreditsInfo { get; set; } = false;
+    public int? Timeout { get; set; }
+    public RequestMetaDataModel RequestMetaData { get; set; } = new RequestMetaDataModel();
 }

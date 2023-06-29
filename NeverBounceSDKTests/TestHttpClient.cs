@@ -205,11 +205,11 @@ public class TestHttpClient
         var httpClient = new NeverBounceHttpClient(clientMock.Object, fakeSettings);
 
         var query = new SingleRequestModel();
-        query.key = "fake_api_key";
-        query.email = "support@neverbounce.com";
-        query.timeout = 3000;
-        query.address_info = true;
-        query.credits_info = false;
+        query.Key = "fake_api_key";
+        query.Email = "support@neverbounce.com";
+        query.Timeout = 3000;
+        query.AddressInfo = true;
+        query.CreditsInfo = false;
 
         var resp = NeverBounceHttpClient.ToQueryString(query);
         Assert.AreEqual(

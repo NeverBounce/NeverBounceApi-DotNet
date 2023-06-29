@@ -1,13 +1,12 @@
-﻿using System.Collections;
-using System.Text;
-using System.Reflection;
+﻿namespace NeverBounce.Utilities; 
 using NeverBounce.Exceptions;
 using NeverBounce.Models;
+using System.Collections;
 using System.Net;
+using System.Reflection;
+using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-
-namespace NeverBounce.Utilities;
 
 public interface INeverBounceHttpClient {
 
@@ -103,7 +102,7 @@ public sealed class NeverBounceHttpClient: INeverBounceHttpClient
     {
         model ??= new RequestModel();
 
-        model.key = this.settings.Key;
+        model.Key = this.settings.Key;
 
         var uri = new Uri(this.settings.Url + endpoint + "?" + ToQueryString(model));
         var response = await this._client.GetAsync(uri);
@@ -119,7 +118,7 @@ public sealed class NeverBounceHttpClient: INeverBounceHttpClient
     {
         model ??= new RequestModel();
 
-        model.key = this.settings.Key;
+        model.Key = this.settings.Key;
 
         var uri = new Uri(this.settings.Url + endpoint + "?" + ToQueryString(model));
         var response = await this._client.GetAsync(uri);
@@ -131,7 +130,7 @@ public sealed class NeverBounceHttpClient: INeverBounceHttpClient
 
     public async Task<T?> RequestPost<T>(string endpoint, RequestModel model) where T : notnull, ResponseModel
     {
-        model.key = this.settings.Key;
+        model.Key = this.settings.Key;
 
         var uri = new Uri(this.settings.Url + endpoint);
         var content = new StringContent(JsonSerializer.Serialize(model, JsonSettings), Encoding.UTF8, "application/json");
@@ -208,40 +207,35 @@ public sealed class NeverBounceHttpClient: INeverBounceHttpClient
                 """);
 
         // Handle non 'success' statuses that return with HTTP success codes but an error message in the body
-        var status = parsed.status;
-        if (status != "success")
-            switch (status)
+        var status = parsed.Status;
+        if (status != ResponseStatus.Success)
+            throw status switch
             {
-                case "auth_failure":
-                    throw new AuthException($"""
-                        We were unable to authenticate your request (auth_failure)
-                        {parsed.message}
-                        """);
-
-                case "temp_unavail":
-                    throw new GeneralException($"""
-                        We were unable to complete your request (temp_unavail)
-                        {parsed.message}
-                        """);
-
-                case "throttle_triggered":
-                    throw new ThrottleException($"""
-                        We were unable to complete your request (throttle_triggered)
-                        {parsed.message}
-                        """);
-
-                case "bad_referrer":
-                    throw new BadReferrerException($"""
-                        We were unable to complete your request (bad_referrer)
-                        {parsed.message}
-                        """);
-
-                default:
-                    throw new GeneralException($"""
-                        We were unable to complete your request ({status})
-                        {parsed.message}
-                        """);
-            }
+                // "auth_failure":
+                ResponseStatus.AuthFailure => new AuthException($"""
+                    We were unable to authenticate your request (auth_failure)
+                    {parsed.Message}
+                    """),
+                // "temp_unavail":
+                ResponseStatus.TempUnavail => new GeneralException($"""
+                    We were unable to complete your request (temp_unavail)
+                    {parsed.Message}
+                    """),
+                // "throttle_triggered":
+                ResponseStatus.ThrottleTriggered => new ThrottleException($"""
+                    We were unable to complete your request (throttle_triggered)
+                    {parsed.Message}
+                    """),
+                // "bad_referrer":
+                ResponseStatus.BadReferrer => new BadReferrerException($"""
+                    We were unable to complete your request (bad_referrer)
+                    {parsed.Message}
+                    """),
+                _ => new GeneralException($"""
+                    We were unable to complete your request ({status})
+                    {parsed.Message}
+                    """),
+            };
 
         // Return response data for passthrough/marshalling
         return parsed;

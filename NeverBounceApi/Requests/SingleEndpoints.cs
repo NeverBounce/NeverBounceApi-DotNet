@@ -8,9 +8,9 @@ public class SingleEndpoints
     public static async Task<SingleResponseModel> Check(NeverBounceService sdk)
     {
         var model = new SingleRequestModel();
-        model.email = "support@neverbounce.com";
-        model.credits_info = true;
-        model.address_info = true;
+        model.Email = "support@neverbounce.com";
+        model.CreditsInfo = true;
+        model.AddressInfo = true;
         return await sdk.Single.Check(model);
     }
 }

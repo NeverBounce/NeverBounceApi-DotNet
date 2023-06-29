@@ -2,5 +2,5 @@
 
 public class RequestModel
 {
-    public string key { get; set; }
+    public string Key { get; set; }
 }

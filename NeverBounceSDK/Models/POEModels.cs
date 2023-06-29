@@ -2,13 +2,13 @@
 
 public class POEConfirmResponseModel : ResponseModel
 {
-    public bool token_confirmed { get; set; }
+    public bool TokenConfirmed { get; set; }
 }
 
 public class POEConfirmRequestModel : RequestModel
 {
-    public string email { get; set; }
-    public string confirmation_token { get; set; }
-    public string transaction_id { get; set; }
-    public string result { get; set; }
+    public string Email { get; set; }
+    public string ConfirmationToken { get; set; }
+    public string TransactionID { get; set; }
+    public string Result { get; set; }
 }
