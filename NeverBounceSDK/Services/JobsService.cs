@@ -11,10 +11,7 @@ public sealed class JobsService
         this.client = client;
     }
 
-    /// <summary>
-    ///     This method calls the search job end points.
-    ///     See: "https://developers.neverbounce.com/v4.0/reference#jobs-search"
-    /// </summary>
+    /// <summary>List or find current jobs</summary>
     /// <param name="model">JobSearchRequestModel</param>
     /// <returns>JobSearchResponseModel</returns>
     public async Task<JobSearchResponseModel?> Search(JobSearchRequestModel model) => 
