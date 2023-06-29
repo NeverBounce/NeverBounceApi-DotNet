@@ -1,7 +1,6 @@
-﻿namespace NeverBounce.Models
+﻿namespace NeverBounce.Models;
+
+public class RequestModel
 {
-    public class RequestModel
-    {
-        public string key { get; set; }
-    }
+    public string key { get; set; }
 }

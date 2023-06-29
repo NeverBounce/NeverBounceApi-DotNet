@@ -1,13 +1,12 @@
 ﻿using NeverBounce;
 using NeverBounce.Models;
 
-namespace NeverBounceSdkExamples.Requests
+namespace NeverBounceSdkExamples.Requests;
+
+public class AccountEndpoint
 {
-    public class AccountEndpoint
+    public static async Task<AccountInfoResponseModel> Info(NeverBounceService sdk)
     {
-        public static async Task<AccountInfoResponseModel> Info(NeverBounceService sdk)
-        {
-            return await sdk.Account.Info();
-        }
+        return await sdk.Account.Info();
     }
 }

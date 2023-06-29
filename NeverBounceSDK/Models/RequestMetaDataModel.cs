@@ -1,7 +1,6 @@
-﻿namespace NeverBounce.Models
+﻿namespace NeverBounce.Models;
+
+public class RequestMetaDataModel
 {
-    public class RequestMetaDataModel
-    {
-        public bool leverage_historical_data { get; set; } = true;
-    }
+    public bool leverage_historical_data { get; set; } = true;
 }

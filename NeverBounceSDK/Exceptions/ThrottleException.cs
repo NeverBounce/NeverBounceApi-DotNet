@@ -1,27 +1,26 @@
 ﻿using System.Runtime.Serialization;
 
-namespace NeverBounce.Exceptions
+namespace NeverBounce.Exceptions;
+
+[Serializable]
+public class ThrottleException : Exception
 {
-    [Serializable]
-    public class ThrottleException : Exception
+    public ThrottleException()
     {
-        public ThrottleException()
-        {
-        }
+    }
 
-        public ThrottleException(string message) : base(message)
-        {
-        }
+    public ThrottleException(string message) : base(message)
+    {
+    }
 
-        public ThrottleException(string message, Exception inner) : base(message, inner)
-        {
-        }
+    public ThrottleException(string message, Exception inner) : base(message, inner)
+    {
+    }
 
-        // A constructor is needed for serialization when an
-        // exception propagates from a remoting server to the client. 
-        protected ThrottleException(SerializationInfo info,
-            StreamingContext context)
-        {
-        }
+    // A constructor is needed for serialization when an
+    // exception propagates from a remoting server to the client. 
+    protected ThrottleException(SerializationInfo info,
+        StreamingContext context)
+    {
     }
 }
