@@ -11,16 +11,23 @@ namespace NeverBounce.Utilities;
 
 public interface INeverBounceHttpClient {
 
-    /// <summary>This method makes the actual request to the API</summary>
+    /// <summary>This method makes the HTTP request to the API and parses the response</summary>
     /// <param name="endpoint">The endpoint to request</param>
     /// <param name="model">The parameters to include with the request</param>
+    /// <typeparam name="T">The expected response model to parse</typeparam>
+    /// <returns>The parsed result, or null if no content.</returns>
     Task<T?> RequestGet<T>(string endpoint, RequestModel? model = null) where T: notnull, ResponseModel;
 
-    Task<string?> RequestGetBody(string endpoint, RequestModel? model = null);
-
-    /// <summary>This method makes the actual request to the API</summary>
+    /// <summary>This method makes the HTTP request to the API</summary>
     /// <param name="endpoint">The endpoint to request</param>
     /// <param name="model">The parameters to include with the request</param>
+    Task<string?> RequestGetBody(string endpoint, RequestModel? model = null);
+
+    /// <summary>This method makes the HTTP request to the API and parses the response</summary>
+    /// <param name="endpoint">The endpoint to request</param>
+    /// <param name="model">The parameters to include with the request</param>
+    /// <typeparam name="T">The expected response model to parse</typeparam>
+    /// <returns>The parsed result, or null if no content.</returns>
     Task<T?> RequestPost<T>(string endpoint, RequestModel model) where T : notnull, ResponseModel;
 }
 
