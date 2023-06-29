@@ -1,25 +1,14 @@
-﻿using NeverBounce.Models;
+﻿namespace NeverBounce.Services;
+using NeverBounce.Models;
 using NeverBounce.Utilities;
-using Newtonsoft.Json;
 
-namespace NeverBounce.Services;
-
-public class POEService
+public sealed class POEService
 {
-    protected string _apiKey;
+    readonly INeverBounceHttpClient client;
 
-    protected IHttpClient _client;
-
-    protected string _host;
-
-    public POEService(IHttpClient Client, string ApiKey, string Host = null)
+    public POEService(INeverBounceHttpClient client)
     {
-        this._client = Client;
-        this._apiKey = ApiKey;
-
-        // Accept debug host
-        if (Host != null)
-            this._host = Host;
+        this.client = client;
     }
 
     /// <summary>
@@ -28,10 +17,6 @@ public class POEService
     /// </summary>
     /// <param name="model"> POEConfirmRequestModel</param>
     /// <returns>POEConfirmResponseModel</returns>
-    public async Task<POEConfirmResponseModel> Confirm(POEConfirmRequestModel model)
-    {
-        var client = new NeverBounceHttpClient(this._client, this._apiKey, this._host);
-        var result = await client.MakeRequest("POST", "/poe/confirm", model);
-        return JsonConvert.DeserializeObject<POEConfirmResponseModel>(result);
-    }
+    public async Task<POEConfirmResponseModel?> Confirm(POEConfirmRequestModel model) => 
+        await this.client.RequestPost<POEConfirmResponseModel>( "/poe/confirm", model);
 }

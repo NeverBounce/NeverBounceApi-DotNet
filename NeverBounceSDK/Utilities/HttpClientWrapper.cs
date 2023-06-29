@@ -1,35 +1,21 @@
-﻿using System.Net.Http.Headers;
-
-namespace NeverBounce.Utilities;
-
-public interface IHttpClient
-{
-    HttpRequestHeaders GetRequestHeaders();
-    Task<HttpResponseMessage> GetAsync(Uri uri);
-    Task<HttpResponseMessage> PostAsync(Uri uri, HttpContent content);
-}
+﻿namespace NeverBounce.Utilities;
+using System.Net.Http.Headers;
 
 public class HttpClientWrapper : IHttpClient
 {
-    private readonly HttpClient _client;
+    readonly HttpClient _client;
     
-    public HttpClientWrapper()
+    public HttpClientWrapper(HttpClient client)
     {
-        this._client = new HttpClient();
+        this._client = client;
     }
 
-    public HttpRequestHeaders GetRequestHeaders()
-    {
-        return this._client.DefaultRequestHeaders;
-    }
+    public HttpRequestHeaders DefaultRequestHeaders =>
+        this._client.DefaultRequestHeaders;
 
-    public Task<HttpResponseMessage> GetAsync(Uri uri)
-    {
-        return this._client.GetAsync(uri);
-    }
-
-    public Task<HttpResponseMessage> PostAsync(Uri uri, HttpContent content)
-    {
-        return this._client.PostAsync(uri, content);
-    }
+    public Task<HttpResponseMessage> GetAsync(Uri uri) =>
+        this._client.GetAsync(uri);
+   
+    public Task<HttpResponseMessage> PostAsync(Uri uri, HttpContent content) => 
+        this._client.PostAsync(uri, content);
 }

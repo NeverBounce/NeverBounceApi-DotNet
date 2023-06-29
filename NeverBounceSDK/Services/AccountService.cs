@@ -1,25 +1,14 @@
-﻿using NeverBounce.Models;
+﻿namespace NeverBounce.Services;
+using NeverBounce.Models;
 using NeverBounce.Utilities;
-using Newtonsoft.Json;
 
-namespace NeverBounce.Services;
-
-public class AccountService
+public sealed class AccountService
 {
-    protected string _apiKey;
+    readonly INeverBounceHttpClient client;
 
-    protected IHttpClient _client;
-
-    protected string _host;
-
-    public AccountService(IHttpClient Client, string ApiKey, string Host = null)
+    public AccountService(INeverBounceHttpClient client)
     {
-        this._client = Client;
-        this._apiKey = ApiKey;
-
-        // Accept debug host
-        if (Host != null)
-            this._host = Host;
+        this.client = client;
     }
 
     /// <summary>
@@ -28,11 +17,6 @@ public class AccountService
     ///     See: "https://developers.neverbounce.com/v4.0/reference#account-info"
     /// </summary>
     /// <returns>AccountInfoResponseModel</returns>
-    public async Task<AccountInfoResponseModel> Info()
-    {
-        var model = new RequestModel();
-        var client = new NeverBounceHttpClient(this._client, this._apiKey, this._host);
-        var result = await client.MakeRequest("GET", "/account/info", model);
-        return JsonConvert.DeserializeObject<AccountInfoResponseModel>(result);
-    }
+    public async Task<AccountInfoResponseModel?> Info() => 
+        await this.client.RequestGet<AccountInfoResponseModel>("/account/info");
 }

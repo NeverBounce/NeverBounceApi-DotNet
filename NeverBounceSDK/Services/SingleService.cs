@@ -1,25 +1,14 @@
-﻿using NeverBounce.Models;
+﻿namespace NeverBounce.Services; 
+using NeverBounce.Models;
 using NeverBounce.Utilities;
-using Newtonsoft.Json;
 
-namespace NeverBounce.Services;
-
-public class SingleService
+public sealed class SingleService
 {
-    protected string _apiKey;
+    readonly INeverBounceHttpClient client;
 
-    protected IHttpClient _client;
-
-    protected string _host;
-
-    public SingleService(IHttpClient Client, string ApiKey, string Host = null)
+    public SingleService(INeverBounceHttpClient client)
     {
-        this._client = Client;
-        this._apiKey = ApiKey;
-
-        // Accept debug host
-        if (Host != null)
-            this._host = Host;
+        this.client = client;
     }
 
     /// <summary>
@@ -28,10 +17,6 @@ public class SingleService
     /// </summary>
     /// <param name="model"> SingleRequestModel</param>
     /// <returns>SingleResponseModel</returns>
-    public async Task<SingleResponseModel> Check(SingleRequestModel model)
-    {
-        var client = new NeverBounceHttpClient(this._client, this._apiKey, this._host);
-        var result = await client.MakeRequest("GET", "/single/check", model);
-        return JsonConvert.DeserializeObject<SingleResponseModel>(result);
-    }
+    public async Task<SingleResponseModel?> Check(SingleRequestModel model) =>
+        await this.client.RequestGet<SingleResponseModel>( "/single/check", model);
 }

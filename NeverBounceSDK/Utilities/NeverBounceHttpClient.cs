@@ -1,23 +1,37 @@
 ﻿using System.Collections;
 using System.Text;
 using System.Reflection;
-using System.Diagnostics;
 using NeverBounce.Exceptions;
 using NeverBounce.Models;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
+using System.Net;
 
 namespace NeverBounce.Utilities;
 
-public class NeverBounceHttpClient
+public interface INeverBounceHttpClient {
+
+    /// <summary>This method makes the actual request to the API</summary>
+    /// <param name="endpoint">The endpoint to request</param>
+    /// <param name="model">The parameters to include with the request</param>
+    Task<T?> RequestGet<T>(string endpoint, RequestModel? model = null) where T: notnull, ResponseModel;
+
+    Task<string?> RequestGetBody(string endpoint, RequestModel? model = null);
+
+    /// <summary>This method makes the actual request to the API</summary>
+    /// <param name="endpoint">The endpoint to request</param>
+    /// <param name="model">The parameters to include with the request</param>
+    Task<T?> RequestPost<T>(string endpoint, RequestModel model) where T : notnull, ResponseModel;
+}
+
+public sealed class NeverBounceHttpClient: INeverBounceHttpClient
 {
-    private readonly string _apiKey;
+    readonly NeverBounceSettings settings;
 
-    private readonly IHttpClient _client;
+    readonly IHttpClient _client;
 
-    private readonly string _host = "https://api.neverbounce.com/v4/";
+    //private readonly string _host = "https://api.neverbounce.com/v4/";
 
-    private string acceptedType = "application/json";
+    string acceptedType = "application/json";
 
     /// <summary>
     ///     Creates the HttpClient instance as well as sets up the hostname to use
@@ -25,12 +39,11 @@ public class NeverBounceHttpClient
     /// <param name="Client">The instance of IHttpClient to use to make requests</param>
     /// <param name="ApiKey">The api key to use to authenticate requests</param>
     /// <param name="Host">The url to make the API request to</param>
-    public NeverBounceHttpClient(IHttpClient Client, string ApiKey, string Host = null)
+    public NeverBounceHttpClient(IHttpClient Client, NeverBounceSettings settings)
     {
         this._client = Client;
-        this._apiKey = ApiKey;
-        if (Host != null)
-            this._host = Host;
+        this.settings = settings;
+
         this.setUserAgent();
     }
 
@@ -44,157 +57,178 @@ public class NeverBounceHttpClient
         this.acceptedType = type;
     }
 
-    /// <summary>
-    ///     Sets the user agent on the request
-    /// </summary>
-    private void setUserAgent()
+    /// <summary>Sets the user agent on the request</summary>
+    void setUserAgent()
     {
-        string userAgent = this.GenerateUserAgent();
-        this._client.GetRequestHeaders().Remove("User-Agent");
-        this._client.GetRequestHeaders().Add("User-Agent", userAgent);
+        string userAgent = GenerateUserAgent();
+        this._client.DefaultRequestHeaders.Remove("User-Agent");
+        this._client.DefaultRequestHeaders.Add("User-Agent", userAgent);
     }
 
-    /// <summary>
-    ///     Generates the useragent string
-    /// </summary>
-    private string GenerateUserAgent()
+    /// <summary>Generates the useragent string</summary>
+    static string GenerateUserAgent()
     {
-        string loc = Assembly.GetExecutingAssembly().Location;
-        string productVersion = FileVersionInfo.GetVersionInfo(loc).ProductVersion;
-        return "NeverBounceApi-DotNet/" + productVersion;
+        string productVersion = Assembly.GetExecutingAssembly().GetName().Version?.ToString() ?? "0.0.0";
+        return "NeverBounce/" + productVersion;
     }
 
-    /// <summary>
-    ///     This method makes the actual request to the API
-    ///     It currently only support GET and POST requests
-    /// </summary>
-    /// <param name="method">The HTTP method to use, either GET or POST</param>
-    /// <param name="endpoint">The endpoint to request</param>
-    /// <param name="model">The parameters to include with the request</param>
-    public async Task<string> MakeRequest(string method, string endpoint, RequestModel model)
+    public async Task<string?> RequestGetBody(string endpoint, RequestModel? model)
     {
-        model.key = this._apiKey;
-        HttpResponseMessage response;
+        model ??= new RequestModel();
 
-        // Handle GET && POST methods differently
-        if (method.ToUpper() == "GET")
-        {
-            var uri = new Uri(this._host + endpoint + "?" + this.ToQueryString(model));
-            response = await this._client.GetAsync(uri);
-        }
-        else
-        {
-            var uri = new Uri(this._host + endpoint);
-            var content = new StringContent(JsonConvert.SerializeObject(model), Encoding.UTF8, "application/json");
-            response = await this._client.PostAsync(uri, content);
-        }
+        model.key = this.settings.Key;
 
-        return await this.ParseResponse(response);
+        var uri = new Uri(this.settings.Url + endpoint + "?" + ToQueryString(model));
+        var response = await this._client.GetAsync(uri);
+
+        await EnsureResponseHasSuccessContent(response);
+        if (response.StatusCode == HttpStatusCode.NoContent)
+            return null;
+
+        return await response.Content.ReadAsStringAsync();
     }
 
-    protected async Task<string> ParseResponse(HttpResponseMessage response)
+    public async Task<T?> RequestGet<T>(string endpoint, RequestModel? model) where T : notnull, ResponseModel
     {
+        model ??= new RequestModel();
+
+        model.key = this.settings.Key;
+
+        var uri = new Uri(this.settings.Url + endpoint + "?" + ToQueryString(model));
+        var response = await this._client.GetAsync(uri);
+
+
+
+        return await this.ParseResponse<T>(response);
+    }
+
+    public async Task<T?> RequestPost<T>(string endpoint, RequestModel model) where T : notnull, ResponseModel
+    {
+        model.key = this.settings.Key;
+
+        var uri = new Uri(this.settings.Url + endpoint);
+        var content = new StringContent(JsonConvert.SerializeObject(model), Encoding.UTF8, "application/json");
+        var response = await this._client.PostAsync(uri, content);
+
+        return await this.ParseResponse<T>(response);
+    }
+
+    static async Task<string> ResponseBodyForce(HttpResponseMessage response) {
+        try { return "Body: " + await response.Content.ReadAsStringAsync(); }
+        catch (Exception x) { return $"Unable to read body: {x.Message}"; }
+    }
+
+    static async Task EnsureResponseHasSuccessContent(HttpResponseMessage response) {
         // Handle 5xx HTTP errors
         if (response.StatusCode.GetHashCode() > 500)
-            throw new GeneralException(string.Format(
-                "We were unable to complete your request. "
-                + "The following information was supplied: {0}"
-                + "\n\n(Internal error[status {1}])", response.StatusCode, response.StatusCode.GetHashCode()
-            ));
+            throw new GeneralException($"""
+                Error on server: {response.StatusCode}
+                {await ResponseBodyForce(response)}
+                """);
 
         // Handle 4xx HTTP errors
         if (response.StatusCode.GetHashCode() > 400)
-            throw new GeneralException(string.Format(
-                "We were unable to complete your request. "
-                + "The following information was supplied: {0}"
-                + "\n\n(Request error[status {1}])", response.StatusCode, response.StatusCode.GetHashCode()
-            ));
+            throw new GeneralException($"""
+                Bad request: {response.StatusCode}
+                {await ResponseBodyForce(response)}
+                """);
 
-        var contentType = response.Content.Headers.ContentType.ToString();
-        var data = await response.Content.ReadAsStringAsync();
-
-        // Handle application/json responses
-        if (contentType == "application/json")
-        {
-            JObject token;
-
-            try
-            {
-                token = JObject.Parse(data);
-            }
-            catch (Exception)
-            {
-                throw new GeneralException(string.Format(
-                    "The response from NeverBounce was unable "
-                    + "to be parsed as json. Try the request "
-                    + "again, if this error persists "
-                    + "let us know at support@neverbounce.com. "
-                    + "The following information was supplied: {0} "
-                    + "\n\n(Internal error)", data));
-            }
-
-            // Handle non 'success' statuses
-            var status = (string) token.SelectToken("status");
-            if (status != "success")
-                switch (status)
-                {
-                    case "auth_failure":
-                        throw new AuthException(string.Format(
-                            "We were unable to authenticate your request. "
-                            + "The following information was supplied: {0} "
-                            + "\n\n(auth_failure)", token.SelectToken("message")));
-
-                    case "temp_unavail":
-                        throw new GeneralException(string.Format(
-                            "We were unable to complete your request. "
-                            + "The following information was supplied: {0} "
-                            + "\n\n(temp_unavail)", token.SelectToken("message")));
-
-                    case "throttle_triggered":
-                        throw new ThrottleException(string.Format(
-                            "We were unable to complete your request. "
-                            + "The following information was supplied: {0} "
-                            + "\n\n(throttle_triggered)", token.SelectToken("message")));
-
-                    case "bad_referrer":
-                        throw new BadReferrerException(string.Format(
-                            "We were unable to complete your request. "
-                            + "The following information was supplied: {0}"
-                            + "\n\n(bad_referrer)", token.SelectToken("message")));
-
-                    default:
-                        throw new GeneralException(string.Format(
-                            "We were unable to complete your request. "
-                            + "The following information was supplied: {0}"
-                            + "\n\n({1})", token.SelectToken("message"), token.SelectToken("status")));
-                }
-        }
-        
-        // Handle unexpected response types
-        if (contentType != this.acceptedType)
-        {
-            throw new GeneralException(string.Format(
-                "The response from NeverBounce was has a data type of \"{0}\", but \"{1}\" was expected."
-                + "The following information was supplied: {2}"
-                + "\n\n(Internal error[status {3}])", contentType, this.acceptedType, response.StatusCode, response.StatusCode.GetHashCode()
-            ));
-        }
-
-        // Return response data for passthrough/marshalling
-        return data;
+        if (!response.IsSuccessStatusCode)
+            throw new GeneralException($"""
+                Error response code: {response.StatusCode}
+                {await ResponseBodyForce(response)}
+                """);
     }
 
-    /// <summary>
-    ///     Creates a urlencoded query string of the parameters
-    /// </summary>
+    async Task<T?> ParseResponse<T>(HttpResponseMessage response) where T : notnull, ResponseModel
+    {
+        await EnsureResponseHasSuccessContent(response);
+
+        if (response.StatusCode == HttpStatusCode.NoContent)
+            return null;
+
+        string? contentType = response.Content.Headers.ContentType?.ToString();
+        string data = await response.Content.ReadAsStringAsync();
+
+        if (contentType != "application/json")
+            // Handle unexpected response types
+            throw new GeneralException($"""
+                The response from NeverBounce was has a data type of "{contentType}", but "application/json" was expected. {response.StatusCode}
+                {data}
+                """);
+
+        // Handle application/json responses
+        T? parsed;
+
+        try { parsed = JsonConvert.DeserializeObject<T>(data); }
+        catch (Exception x)
+        {
+            throw new GeneralException($"""
+                The response from NeverBounce was unable to be parsed as JSON.
+                Try the request again, if this error persists let us know at support@neverbounce.com
+                Parse error: {x.Message} 
+                Response body: 
+                {data}
+                """);
+        }
+
+        if(parsed is null)
+            throw new GeneralException($"""
+                The response from NeverBounce was unable to be parsed as JSON.
+                Try the request again, if this error persists let us know at support@neverbounce.com
+                Response body: 
+                {data}
+                """);
+
+        // Handle non 'success' statuses that return with HTTP success codes but an error message in the body
+        var status = parsed.status;
+        if (status != "success")
+            switch (status)
+            {
+                case "auth_failure":
+                    throw new AuthException($"""
+                        We were unable to authenticate your request (auth_failure)
+                        {parsed.message}
+                        """);
+
+                case "temp_unavail":
+                    throw new GeneralException($"""
+                        We were unable to complete your request (temp_unavail)
+                        {parsed.message}
+                        """);
+
+                case "throttle_triggered":
+                    throw new ThrottleException($"""
+                        We were unable to complete your request (throttle_triggered)
+                        {parsed.message}
+                        """);
+
+                case "bad_referrer":
+                    throw new BadReferrerException($"""
+                        We were unable to complete your request (bad_referrer)
+                        {parsed.message}
+                        """);
+
+                default:
+                    throw new GeneralException($"""
+                        We were unable to complete your request ({status})
+                        {parsed.message}
+                        """);
+            }
+
+        // Return response data for passthrough/marshalling
+        return parsed;
+    }
+
+    /// <summary>Creates a urlencoded query string of the parameters</summary>
     /// <param name="request">The request parameters to encode</param>
     /// <param name="parentProperty">The nested parent parameter</param>
-    public string ToQueryString(object request, string parentProperty = null)
+    public static string ToQueryString(object request, string? parentProperty = null)
     {
         // Get all properties on the object
         var properties = request.GetType().GetProperties()
             .Where(x => x.CanRead)
-            .Where(x => x.GetValue(request, null) != null)
+            .Where(x => x.GetValue(request, null) is not null)
             .ToDictionary(
                 x => x.Name,
                 x => x.PropertyType.ToString().Contains("System.Boolean")
@@ -204,44 +238,55 @@ public class NeverBounceHttpClient
 
         // Get names for all IEnumerable properties (excl. string)
         var propertyNames = properties
-            .Where(x => !(x.Value is string) && x.Value is IEnumerable)
+            .Where(x => x.Value is not string && x.Value is IEnumerable)
             .Select(x => x.Key)
             .ToList();
         
         // Concat all IEnumerable properties into a comma separated string
-        foreach (var key in propertyNames)
+        foreach (string? key in propertyNames)
         {
-            var value = properties[key];
-            var valueType = properties[key].GetType();
+            object? value = properties[key];
+            if (value is null) continue;
+
+            var valueType = value.GetType();
             var valueElemType = valueType.IsGenericType
                 ? valueType.GetGenericArguments()[0]
                 : valueType.GetElementType();
+
+            if (valueElemType is null) continue;
             
             if (valueElemType.IsPrimitive || valueElemType == typeof(string))
             {
-                var enumerable = properties[key] as IEnumerable;
-                properties[key] = string.Join(",", enumerable.Cast<object>());
+                var enumerable = value as IEnumerable;
+                if(enumerable is not null)
+                    properties[key] = string.Join(",", enumerable.Cast<object>());
             }
         }
 
         // Concat all key/value pairs into a string separated by ampersand
         return string.Join("&", properties
-            .Select(x => this.BuildQueryStringKeyValue(x, parentProperty)));
+            .Select(x => BuildQueryStringKeyValue(x, parentProperty)));
     }
     
-    /// <summary>
-    ///     Builds URI safe key value pair
-    /// </summary>
+    /// <summary>Builds URI safe key value pair</summary>
     /// <param name="pair">The key value pair to encode</param>
     /// <param name="parentProperty">The nested parent parameter</param>
-    private string BuildQueryStringKeyValue(KeyValuePair<string, object> pair, string parentProperty = null)
+    static string? BuildQueryStringKeyValue(KeyValuePair<string, object?> pair, string? parentProperty = null)
     {
-        var key = parentProperty != null
+        if(pair.Value is null) return null;
+
+        string key = parentProperty is not null
             ? $"{parentProperty}[{Uri.EscapeDataString(pair.Key)}]"
             : Uri.EscapeDataString(pair.Key);
-        
-        return pair.Value.GetType().IsPrimitive || pair.Value.GetType().IsValueType || pair.Value is string
-            ? $"{key}={Uri.EscapeDataString(pair.Value.ToString())}" 
-            : this.ToQueryString(pair.Value, key);
+
+        if (pair.Value.GetType().IsPrimitive || pair.Value.GetType().IsValueType || pair.Value is string) {
+            string? valueStr = pair.Value.ToString();
+            if (valueStr is not null)
+                return $"{key}={Uri.EscapeDataString(valueStr)}";
+            else
+                return null;
+        }
+
+        return ToQueryString(pair.Value, key);
     }
 }

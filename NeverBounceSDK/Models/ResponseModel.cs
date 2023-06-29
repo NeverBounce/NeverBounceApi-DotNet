@@ -1,8 +1,9 @@
 ﻿namespace NeverBounce.Models;
 
-public class ResponseModel
+public abstract class ResponseModel
 {
     public string status { get; set; }
+    public string message { get; set; }
     public int execution_time { get; set; }
 }
 
