@@ -96,7 +96,7 @@ public abstract class JobCreateRequestModel : RequestModel
 
 public class JobCreateSuppliedDataRequestModel : JobCreateRequestModel
 {
-    public JobCreateSuppliedDataRequestModel(IEnumerable<ICreatRequestInputRecord> input) { this.Input = input; }
+    public JobCreateSuppliedDataRequestModel(IEnumerable<ICreateRequestInputRecord> input) { this.Input = input; }
 
     /// <summary>This endpoint can receive input in multiple ways.</summary>
     public string InputLocation { get; } = "supplied";
@@ -106,7 +106,7 @@ public class JobCreateSuppliedDataRequestModel : JobCreateRequestModel
     /// <para>The API enforces a max request size of 25 Megabytes. 
     /// If you surpass this limit you'll receive a 413 Entity Too Large error from the server. 
     /// For payloads that exceed 25 Megabytes we suggest using the remote_url method or removing any ancillary data sent with the emails.</para></summary>
-    public IEnumerable<ICreatRequestInputRecord> Input { get; }
+    public IEnumerable<ICreateRequestInputRecord> Input { get; }
 }
 
 public class JobCreateSuppliedArrayRequestModel : JobCreateRequestModel
@@ -125,7 +125,7 @@ public class JobCreateSuppliedArrayRequestModel : JobCreateRequestModel
 }
 
 /// <summary>Records have an email address and any other properties you want.</summary>
-public interface ICreatRequestInputRecord { 
+public interface ICreateRequestInputRecord { 
     string Email { get; }
 }
 
