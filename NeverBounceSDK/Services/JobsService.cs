@@ -20,23 +20,40 @@ public sealed class JobsService
     public async Task<JobSearchResponseModel?> Search(JobSearchRequestModel model) => 
         await this.client.RequestGet<JobSearchResponseModel>( "/jobs/search", model);
 
-    /// <summary>
-    ///     This method calls the create job end point using supplied data for input
-    ///     See: "https://developers.neverbounce.com/v4.0/reference#jobs-create"
-    /// </summary>
-    /// <param name="model">JobCreateRequestModel</param>
-    /// <returns>JobCreateResponseModel</returns>
-    public async Task<JobCreateResponseModel?> CreateFromSuppliedData(JobCreateSuppliedDataRequestModel model) => 
-        await this.client.RequestPost<JobCreateResponseModel>( "/jobs/create", model);
 
-    /// <summary>
-    ///     This method calls the create job end point using a remote URL for the input
-    ///     See: "https://developers.neverbounce.com/v4.0/reference#jobs-create"
-    /// </summary>
-    /// <param name="model">JobCreateRemoteUrlRequestModel</param>
-    /// <returns>JobCreateResponseModel</returns>
-    public async Task<JobCreateResponseModel?> CreateFromRemoteUrl(JobCreateRemoteUrlRequestModel model) => 
-        await this.client.RequestPost<JobCreateResponseModel>( "/jobs/create", model);
+    #region create bounce-check job
+
+    /// <summary>The jobs create endpoint allows you create verify multiple emails together, the same way you would verify lists in the dashboard. 
+    /// This endpoint will create a job and process the emails in the list (if auto_start is enabled) asynchronously. 
+    /// Verification results are not returned in the response.
+    /// <para>The API enforces a max request size of 25 Megabytes. 
+    /// If you surpass this limit you'll receive a 413 Entity Too Large error from the server. 
+    /// For payloads that exceed 25 Megabytes we suggest using the remote_url method or removing any ancillary data sent with the emails.</para></summary>
+    /// <param name="model">A model that includes structured data to check</param>
+    /// <returns>ID of the job created. Use this ID to check progress or make changes.</returns>
+    public async Task<int?> Create(JobCreateSuppliedDataRequestModel model) => 
+        (await this.client.RequestPost<JobCreateResponseModel>( "/jobs/create", model))?.JobID;
+
+    /// <summary>The jobs create endpoint allows you create verify multiple emails together, the same way you would verify lists in the dashboard. 
+    /// This endpoint will create a job and process the emails in the list (if auto_start is enabled) asynchronously. 
+    /// Verification results are not returned in the response.
+    /// <para>The API enforces a max request size of 25 Megabytes. 
+    /// If you surpass this limit you'll receive a 413 Entity Too Large error from the server. 
+    /// For payloads that exceed 25 Megabytes we suggest using the remote_url method or removing any ancillary data sent with the emails.</para></summary>
+    /// <param name="model">A model that includes array data to check</param>
+    /// <returns>ID of the job created. Use this ID to check progress or make changes.</returns>
+    public async Task<int?> Create(JobCreateSuppliedArrayRequestModel model) =>
+        (await this.client.RequestPost<JobCreateResponseModel>("/jobs/create", model))?.JobID;
+
+    /// <summary>The jobs create endpoint allows you create verify multiple emails together, the same way you would verify lists in the dashboard. 
+    /// This endpoint will create a job and process the emails in the list (if auto_start is enabled) asynchronously. 
+    /// Verification results are not returned in the response.</summary>
+    /// <param name="model">A model that includes a link to a CSV to check</param>
+    /// <returns>ID of the job created. Use this ID to check progress or make changes.</returns>
+    public async Task<int?> Create(JobCreateRemoteUrlRequestModel model) => 
+        (await this.client.RequestPost<JobCreateResponseModel>( "/jobs/create", model))?.JobID;
+
+    #endregion
 
     /// <summary>
     ///     This method calls the parse job end point
