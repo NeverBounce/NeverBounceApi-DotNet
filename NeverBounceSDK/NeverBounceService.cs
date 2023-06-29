@@ -10,7 +10,6 @@ public class NeverBounceService
 
     public readonly AccountService Account;
     public readonly JobsService Jobs;
-    public readonly POEService POE;
     public readonly SingleService Single;
 
     /// <summary>
@@ -26,7 +25,6 @@ public class NeverBounceService
 
         this.Account = new AccountService(this.client);
         this.Jobs = new JobsService(this.client);
-        this.POE = new POEService(this.client);
         this.Single = new SingleService(this.client);
     }
 }

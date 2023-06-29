@@ -19,7 +19,6 @@ public class TestNeverBounceSdk
         var nb = new NeverBounceService(clientMock.Object, fakeSettings);
         Assert.IsNotNull(nb.Account);
         Assert.IsNotNull(nb.Jobs);
-        Assert.IsNotNull(nb.POE);
         Assert.IsNotNull(nb.Single);
     }
     
