@@ -3,7 +3,7 @@ using NeverBounce.Utilities;
 
 namespace NeverBounce
 {
-    public class NeverBounceSdk
+    public class NeverBounceService
     {
         private const string _host = "https://api.neverbounce.com";
         private readonly string _apiKey;
@@ -22,7 +22,7 @@ namespace NeverBounce
         /// <param name="Version">The api version to make this request on</param>
         /// <param name="Host">Specify a different host to make the request to. Leave null to use 'https://api.neverbounce.com'</param>
         /// <param name="Client">An instance of IHttpClient to use; useful for mocking HTTP requests</param>
-        public NeverBounceSdk(string ApiKey, string Version = "v4.2", string Host = null, IHttpClient Client = null)
+        public NeverBounceService(string ApiKey, string Version = "v4.2", string Host = null, IHttpClient Client = null)
         {
             this._apiKey = ApiKey;
             this._version = Version;

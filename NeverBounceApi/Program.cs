@@ -7,7 +7,7 @@ namespace NeverBounceSdkExamples
     {
         private static void Main(string[] args)
         {
-            var sdk = new NeverBounceSdk("api_key");
+            var sdk = new NeverBounceService("api_key");
             
             // https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/await
             

@@ -1,40 +1,18 @@
-﻿// Author: Mike Mollick <mike@neverbounce.com>
-//
-// Copyright (c) 2017 NeverBounce
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy
-// of this software and associated documentation files (the "Software"), to deal
-// in the Software without restriction, including without limitation the rights
-// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-// copies of the Software, and to permit persons to whom the Software is
-// furnished to do so, subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in
-// all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-// THE SOFTWARE.
-
-using NeverBounce;
+﻿using NeverBounce;
 using NeverBounce.Models;
 
 namespace NeverBounceSdkExamples.Requests
 {
     public class JobsEndpoint
     {
-        public static async Task<JobSearchResponseModel> Search(NeverBounceSdk sdk)
+        public static async Task<JobSearchResponseModel> Search(NeverBounceService sdk)
         {
             var model = new JobSearchRequestModel();
             model.job_id = 288025;
             return await sdk.Jobs.Search(model);
         }
 
-        public static async Task<JobCreateResponseModel> CreateSuppliedData(NeverBounceSdk sdk)
+        public static async Task<JobCreateResponseModel> CreateSuppliedData(NeverBounceService sdk)
         {
             var model = new JobCreateSuppliedDataRequestModel();
             model.filename = "Created From dotNET.csv";
@@ -47,7 +25,7 @@ namespace NeverBounceSdkExamples.Requests
             return await sdk.Jobs.CreateFromSuppliedData(model);
         }
 
-        public static async Task<JobCreateResponseModel> CreateRemoteUrl(NeverBounceSdk sdk)
+        public static async Task<JobCreateResponseModel> CreateRemoteUrl(NeverBounceService sdk)
         {
             var model = new JobCreateRemoteUrlRequestModel();
             model.filename = "Created From dotNET.csv";
@@ -57,42 +35,42 @@ namespace NeverBounceSdkExamples.Requests
             return await sdk.Jobs.CreateFromRemoteUrl(model);
         }
 
-        public static async Task<JobParseResponseModel> Parse(NeverBounceSdk sdk)
+        public static async Task<JobParseResponseModel> Parse(NeverBounceService sdk)
         {
             var model = new JobParseRequestModel();
             model.job_id = 290561;
             return await sdk.Jobs.Parse(model);
         }
 
-        public static async Task<JobStartResponseModel> Start(NeverBounceSdk sdk)
+        public static async Task<JobStartResponseModel> Start(NeverBounceService sdk)
         {
             var model = new JobStartRequestModel();
             model.job_id = 290561;
             return await sdk.Jobs.Start(model);
         }
 
-        public static async Task<JobStatusResponseModel> Status(NeverBounceSdk sdk)
+        public static async Task<JobStatusResponseModel> Status(NeverBounceService sdk)
         {
             var model = new JobStatusRequestModel();
             model.job_id = 290561;
             return await sdk.Jobs.Status(model);
         }
 
-        public static async Task<JobResultsResponseModel> Results(NeverBounceSdk sdk)
+        public static async Task<JobResultsResponseModel> Results(NeverBounceService sdk)
         {
             var model = new JobResultsRequestModel();
             model.job_id = 290561;
             return await sdk.Jobs.Results(model);
         }
 
-        public static async Task<string> Download(NeverBounceSdk sdk)
+        public static async Task<string> Download(NeverBounceService sdk)
         {
             var model = new JobDownloadRequestModel();
             model.job_id = 290561;
             return await sdk.Jobs.Download(model);
         }
 
-        public static async Task<JobDeleteResponseModel> Delete(NeverBounceSdk sdk)
+        public static async Task<JobDeleteResponseModel> Delete(NeverBounceService sdk)
         {
             var model = new JobDeleteRequestModel();
             model.job_id = 290561;
