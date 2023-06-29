@@ -1,4 +1,4 @@
-﻿﻿// Author: Mike Mollick <mike@neverbounce.com>
+﻿// Author: Mike Mollick <mike@neverbounce.com>
 //
 // Copyright (c) 2017 NeverBounce
 //
@@ -20,13 +20,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
 using System.Text;
-using System.Threading.Tasks;
 using System.Reflection;
 using System.Diagnostics;
 using NeverBounce.Exceptions;
@@ -54,11 +49,11 @@ namespace NeverBounce.Utilities
         /// <param name="Host">The url to make the API request to</param>
         public NeverBounceHttpClient(IHttpClient Client, string ApiKey, string Host = null)
         {
-            _client = Client;
-            _apiKey = ApiKey;
+            this._client = Client;
+            this._apiKey = ApiKey;
             if (Host != null)
-                _host = Host;
-            setUserAgent();
+                this._host = Host;
+            this.setUserAgent();
         }
 
         /// <summary>
@@ -68,7 +63,7 @@ namespace NeverBounce.Utilities
         /// <param name="type">The expected request data type</param>
         public void SetAcceptedType(string type)
         {
-            acceptedType = type;
+            this.acceptedType = type;
         }
 
         /// <summary>
@@ -76,9 +71,9 @@ namespace NeverBounce.Utilities
         /// </summary>
         private void setUserAgent()
         {
-            string userAgent = GenerateUserAgent();
-            _client.GetRequestHeaders().Remove("User-Agent");
-            _client.GetRequestHeaders().Add("User-Agent", userAgent);
+            string userAgent = this.GenerateUserAgent();
+            this._client.GetRequestHeaders().Remove("User-Agent");
+            this._client.GetRequestHeaders().Add("User-Agent", userAgent);
         }
 
         /// <summary>
@@ -100,23 +95,23 @@ namespace NeverBounce.Utilities
         /// <param name="model">The parameters to include with the request</param>
         public async Task<string> MakeRequest(string method, string endpoint, RequestModel model)
         {
-            model.key = _apiKey;
+            model.key = this._apiKey;
             HttpResponseMessage response;
 
             // Handle GET && POST methods differently
             if (method.ToUpper() == "GET")
             {
-                var uri = new Uri(_host + endpoint + "?" + ToQueryString(model));
-                response = await _client.GetAsync(uri);
+                var uri = new Uri(this._host + endpoint + "?" + this.ToQueryString(model));
+                response = await this._client.GetAsync(uri);
             }
             else
             {
-                var uri = new Uri(_host + endpoint);
+                var uri = new Uri(this._host + endpoint);
                 var content = new StringContent(JsonConvert.SerializeObject(model), Encoding.UTF8, "application/json");
-                response = await _client.PostAsync(uri, content);
+                response = await this._client.PostAsync(uri, content);
             }
 
-            return await ParseResponse(response);
+            return await this.ParseResponse(response);
         }
 
         protected async Task<string> ParseResponse(HttpResponseMessage response)
@@ -198,12 +193,12 @@ namespace NeverBounce.Utilities
             }
             
             // Handle unexpected response types
-            if (contentType != acceptedType)
+            if (contentType != this.acceptedType)
             {
                 throw new GeneralException(string.Format(
                     "The response from NeverBounce was has a data type of \"{0}\", but \"{1}\" was expected."
                     + "The following information was supplied: {2}"
-                    + "\n\n(Internal error[status {3}])", contentType, acceptedType, response.StatusCode, response.StatusCode.GetHashCode()
+                    + "\n\n(Internal error[status {3}])", contentType, this.acceptedType, response.StatusCode, response.StatusCode.GetHashCode()
                 ));
             }
 
@@ -253,7 +248,7 @@ namespace NeverBounce.Utilities
 
             // Concat all key/value pairs into a string separated by ampersand
             return string.Join("&", properties
-                .Select(x => BuildQueryStringKeyValue(x, parentProperty)));
+                .Select(x => this.BuildQueryStringKeyValue(x, parentProperty)));
         }
         
         /// <summary>
@@ -269,7 +264,7 @@ namespace NeverBounce.Utilities
             
             return pair.Value.GetType().IsPrimitive || pair.Value.GetType().IsValueType || pair.Value is string
                 ? $"{key}={Uri.EscapeDataString(pair.Value.ToString())}" 
-                : ToQueryString(pair.Value, key);
+                : this.ToQueryString(pair.Value, key);
         }
     }
 }

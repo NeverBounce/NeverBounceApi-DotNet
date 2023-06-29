@@ -20,10 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-using System;
-using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Threading.Tasks;
 
 namespace NeverBounce.Utilities
 {
@@ -40,22 +37,22 @@ namespace NeverBounce.Utilities
         
         public HttpClientWrapper()
         {
-            _client = new HttpClient();
+            this._client = new HttpClient();
         }
 
         public HttpRequestHeaders GetRequestHeaders()
         {
-            return _client.DefaultRequestHeaders;
+            return this._client.DefaultRequestHeaders;
         }
 
         public Task<HttpResponseMessage> GetAsync(Uri uri)
         {
-            return _client.GetAsync(uri);
+            return this._client.GetAsync(uri);
         }
 
         public Task<HttpResponseMessage> PostAsync(Uri uri, HttpContent content)
         {
-            return _client.PostAsync(uri, content);
+            return this._client.PostAsync(uri, content);
         }
     }
 }

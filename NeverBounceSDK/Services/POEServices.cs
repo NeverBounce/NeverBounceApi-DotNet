@@ -20,7 +20,6 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-using System.Threading.Tasks;
 using NeverBounce.Models;
 using NeverBounce.Utilities;
 using Newtonsoft.Json;
@@ -37,12 +36,12 @@ namespace NeverBounce.Services
 
         public POEService(IHttpClient Client, string ApiKey, string Host = null)
         {
-            _client = Client;
-            _apiKey = ApiKey;
+            this._client = Client;
+            this._apiKey = ApiKey;
 
             // Accept debug host
             if (Host != null)
-                _host = Host;
+                this._host = Host;
         }
 
         /// <summary>
@@ -53,7 +52,7 @@ namespace NeverBounce.Services
         /// <returns>POEConfirmResponseModel</returns>
         public async Task<POEConfirmResponseModel> Confirm(POEConfirmRequestModel model)
         {
-            var client = new NeverBounceHttpClient(_client, _apiKey, _host);
+            var client = new NeverBounceHttpClient(this._client, this._apiKey, this._host);
             var result = await client.MakeRequest("POST", "/poe/confirm", model);
             return JsonConvert.DeserializeObject<POEConfirmResponseModel>(result);
         }

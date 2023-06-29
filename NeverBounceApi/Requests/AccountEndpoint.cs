@@ -22,7 +22,6 @@
 
 using NeverBounce;
 using NeverBounce.Models;
-using System.Threading.Tasks;
 
 namespace NeverBounceSdkExamples.Requests
 {

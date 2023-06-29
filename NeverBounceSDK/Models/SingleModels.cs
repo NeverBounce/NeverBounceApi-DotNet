@@ -20,9 +20,6 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-using System.Collections.Generic;
-using System.Linq;
-
 namespace NeverBounce.Models
 {
     public enum ResultCodes
@@ -45,24 +42,24 @@ namespace NeverBounce.Models
 
         public bool ResultIs(string resultCode)
         {
-            return result.ToLower() == resultCode.ToLower();
+            return this.result.ToLower() == resultCode.ToLower();
         }
 
         public bool ResultIs(IEnumerable<string> resultCodes)
         {
             resultCodes = resultCodes.Select(c => c.ToLower());
-            return resultCodes.Contains(result.ToLower());
+            return resultCodes.Contains(this.result.ToLower());
         }
 
         public bool ResultIsNot(string resultCode)
         {
-            return result.ToLower() != resultCode.ToLower();
+            return this.result.ToLower() != resultCode.ToLower();
         }
 
         public bool ResultIsNot(IEnumerable<string> resultCodes)
         {
             resultCodes = resultCodes.Select(c => c.ToLower());
-            return !resultCodes.Contains(result.ToLower());
+            return !resultCodes.Contains(this.result.ToLower());
         }
     }
 

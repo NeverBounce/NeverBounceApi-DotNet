@@ -46,18 +46,18 @@ namespace NeverBounce
         /// <param name="Client">An instance of IHttpClient to use; useful for mocking HTTP requests</param>
         public NeverBounceSdk(string ApiKey, string Version = "v4.2", string Host = null, IHttpClient Client = null)
         {
-            _apiKey = ApiKey;
-            _version = Version;
-            
+            this._apiKey = ApiKey;
+            this._version = Version;
+
             // Check for mocked IHttpClient, if none exists create default
-            _client = Client ?? new HttpClientWrapper();
+            this._client = Client ?? new HttpClientWrapper();
             
-            var url = $"{Host ?? _host}/{_version}";
-            
-            Account = new AccountService(_client, _apiKey, url);
-            Jobs = new JobsService(_client, _apiKey, url);
-            POE = new POEService(_client, _apiKey, url);
-            Single = new SingleService(_client, _apiKey,  url);
+            var url = $"{Host ?? _host}/{this._version}";
+
+            this.Account = new AccountService(this._client, this._apiKey, url);
+            this.Jobs = new JobsService(this._client, this._apiKey, url);
+            this.POE = new POEService(this._client, this._apiKey, url);
+            this.Single = new SingleService(this._client, this._apiKey,  url);
         }
     }
 }

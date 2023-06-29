@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace NeverBounce.Models
+﻿namespace NeverBounce.Models
 {
-     class Validation
+    class Validation
     {
         public static bool JobIdValidation(int job_id)
         {
