@@ -3,8 +3,9 @@ using System.Text;
 using System.Reflection;
 using NeverBounce.Exceptions;
 using NeverBounce.Models;
-using Newtonsoft.Json;
 using System.Net;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace NeverBounce.Utilities;
 
@@ -32,6 +33,25 @@ public sealed class NeverBounceHttpClient: INeverBounceHttpClient
     //private readonly string _host = "https://api.neverbounce.com/v4/";
 
     string acceptedType = "application/json";
+
+    /// <summary>NeverBounce API JSON serialisation settings, use snake_case for properties and enums</summary>
+    static JsonSerializerOptions JsonSettings { get; }
+
+    static NeverBounceHttpClient()
+    {
+        var namingPolicy = new SnakeCase();
+        JsonSettings = new JsonSerializerOptions
+        {
+            DictionaryKeyPolicy = namingPolicy,
+            PropertyNamingPolicy = namingPolicy,
+            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+            PropertyNameCaseInsensitive = true,
+            NumberHandling = JsonNumberHandling.AllowReadingFromString,
+        };
+
+        JsonSettings.Converters.Add(new JsonStringEnumConverter(namingPolicy));
+    }
+
 
     /// <summary>
     ///     Creates the HttpClient instance as well as sets up the hostname to use
@@ -107,7 +127,7 @@ public sealed class NeverBounceHttpClient: INeverBounceHttpClient
         model.key = this.settings.Key;
 
         var uri = new Uri(this.settings.Url + endpoint);
-        var content = new StringContent(JsonConvert.SerializeObject(model), Encoding.UTF8, "application/json");
+        var content = new StringContent(JsonSerializer.Serialize(model, JsonSettings), Encoding.UTF8, "application/json");
         var response = await this._client.PostAsync(uri, content);
 
         return await this.ParseResponse<T>(response);
@@ -160,7 +180,7 @@ public sealed class NeverBounceHttpClient: INeverBounceHttpClient
         // Handle application/json responses
         T? parsed;
 
-        try { parsed = JsonConvert.DeserializeObject<T>(data); }
+        try { parsed = JsonSerializer.Deserialize<T>(data, JsonSettings); }
         catch (Exception x)
         {
             throw new GeneralException($"""
