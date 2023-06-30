@@ -3,13 +3,13 @@
 public class JobSearchRequestModel : RequestModel
 {
     /// <summary>Filter jobs based on its ID</summary>
-    public int? JobID{ get; set; }
+    public int? JobID { get; set; }
 
     /// <summary>Filter jobs based on the filename (exact match)</summary>
-    public string Filename { get; set; }
+    public string? Filename { get; set; }
 
     /// <summary>Filter jobs by the job status</summary>
-    public string JobStatus { get; set; }
+    public JobStatus? JobStatus { get; set; }
 
     /// <summary>The page to grab the jobs from</summary>
     public int Page { get; set; } = 1;
@@ -21,9 +21,12 @@ public class JobSearchRequestModel : RequestModel
 public class JobSearchResponseModel : ResponseModel
 {
     public int TotalResults { get; set; }
+
     public int TotalPages { get; set; }
+
     public JobSearchQuery Query { get; set; }
-    public List<JobStatusResult> Results { get; set; }
+
+    public IEnumerable<JobStatusResult> Results { get; set; }
 }
 
 public class JobSearchQuery
@@ -134,7 +137,8 @@ public class JobCreateSuppliedArrayRequestModel : JobCreateRequestModel
 }
 
 /// <summary>Records have an email address and any other properties you want.</summary>
-public interface ICreateRequestInputRecord { 
+public interface ICreateRequestInputRecord
+{
     string Email { get; }
 }
 
@@ -162,47 +166,114 @@ public class JobCreateResponseModel : ResponseModel
     public int JobID { get; set; }
 }
 
-public class JobParseRequestModel : RequestModel
+public class JobParseRequestModel : JobStatusRequestModel
 {
-    public int JobID { get; set; }
+    public JobParseRequestModel(int jobID) : base(jobID) { }
+
+    /// <summary>Should the job start processing immediately after it's parsed? (default: false)</summary>
     public bool AutoStart { get; set; } = false;
 }
 
-public class JobParseResponseModel : ResponseModel
+public class JobQueueResponseModel : ResponseModel
 {
     public string QueueID { get; set; }
 }
 
-public class JobStartRequestModel : RequestModel
+public class JobStartRequestModel : JobStatusRequestModel
 {
-    public int JobID { get; set; }
-    public bool RunSample { get; set; }
-    public bool AllowManualReview { get; set; } = false;
-}
+    public JobStartRequestModel(int jobID): base(jobID) { }
 
-public class JobStartResponseModel : ResponseModel
-{
-    public string QueueID { get; set; }
+    /// <summary>Should this job be run as a sample? (default: false)</summary>
+    public bool RunSample { get; set; } = false;
 }
 
 public class JobStatusRequestModel : RequestModel
 {
-    public int JobID { get; set; }
+    public JobStatusRequestModel(int jobID) { this.JobID = jobID; }
+
+    /// <summary>The ID of the job to action (required)</summary>
+    public int JobID { get; }
+}
+
+public enum JobStatus
+{
+    /// <summary>The job has fallen into our Q/A review and requires action on our end. 
+    /// <para>Read more: https://neverbounce.com/help/clean/what-is-my-list-under-a-qa-review</para></summary>
+    UnderReview,
+
+    /// <summary>The job has been queued, this is because we're either too busy or you have too many active jobs.</summary>
+    Queued,
+
+    /// <summary>The job failed, typically this is due to poorly formatted data.</summary>
+    Failed,
+
+    /// <summary>The job has completed verification and the results are ready for download.</summary>
+    Complete,
+
+    /// <summary>The job is currently either running a sample or full verification.</summary>
+    Running,
+
+    /// <summary>The job has been received and we are parsing the data for emails and duplicate records.</summary>
+    Parsing,
+
+    /// <summary>The job has not yet run and is waiting to be started.</summary>
+    Waiting,
+
+    /// <summary>The job has completed analysis and is waiting for further action.</summary>
+    WaitingAnalyzed,
+
+    /// <summary>The job is currently being uploaded to the system.</summary>
+    Uploading,
+}
+
+
+public enum FailReason
+{ 
+    /// <summary>We were un-able to detect this file's encoding type. 
+    /// Please re-save your file choosing UTF-8 encoding for best results.</summary>
+    UnknownFileEncoding,
+
+    /// <summary>We were unable to parse the file. 
+    /// Please add some data to the file and try again.</summary>
+    EmptyFile,
+
+    /// <summary>We were unable to parse the file. 
+    /// Please split your file in smaller chunks and try again.</summary>
+    FileTooLarge,
+
+    /// <summary>This file appears to be corrupt, please try re-saving the original file or contact support for further assistance.</summary>
+    FileCorrupt,
 }
 
 public class JobStatusResponseModel : ResponseModel
 {
     public int ID { get; set; }
-    public string JobStatus { get; set; }
+
+    /// <summary>Job status will indicate what stage the job is currently in. 
+    /// This will be the primary property you'll want to check to determine what can be done with the job.</summary>
+    public JobStatus JobStatus { get; set; }
+
+    /// <summary>This will be what's displayed in the dashboard when viewing this job</summary>
     public string Filename { get; set; }
+
     public string CreatedAt { get; set; }
     public object StartedAt { get; set; }
     public object FinishedAt { get; set; }
+
+    /// <summary>There are several items in the total object that give you an overview of verification results. 
+    /// These numbers are updated periodically during the verification process.</summary>
     public JobsTotals Total { get; set; }
+
+    /// <summary>This property indicates the bounce rate we estimate the list to bounce at if sent to in its entirety. 
+    /// The value of this property will be a float between 0.0 and 100.0.</summary>
     public float BounceEstimate { get; set; }
+
+    /// <summary>This property indicates the overall progress of this job's verification. 
+    /// The value of this property will be a float between 0.0 and 100.0.</summary>
     public float PercentComplete { get; set; }
 
-    public float FailureReason { get; set; }
+    /// <summary>If the job has failed this will hold the reason, if known.</summary>
+    public FailReason? FailureReason { get; set; }
 }
 
 public class JobResultsRequestModel : RequestModel

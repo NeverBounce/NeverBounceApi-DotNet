@@ -12,9 +12,9 @@ public sealed class JobsService
     }
 
     /// <summary>List or find current jobs</summary>
-    /// <param name="model">JobSearchRequestModel</param>
+    /// <param name="model">Optional flags to search or paginate the jobs</param>
     /// <returns>JobSearchResponseModel</returns>
-    public async Task<JobSearchResponseModel?> Search(JobSearchRequestModel model) => 
+    public async Task<JobSearchResponseModel> Search(JobSearchRequestModel? model = null) => 
         await this.client.RequestGet<JobSearchResponseModel>( "/jobs/search", model);
 
 
@@ -28,8 +28,8 @@ public sealed class JobsService
     /// For payloads that exceed 25 Megabytes we suggest using the remote_url method or removing any ancillary data sent with the emails.</para></summary>
     /// <param name="model">A model that includes structured data to check</param>
     /// <returns>ID of the job created. Use this ID to check progress or make changes.</returns>
-    public async Task<int?> Create(JobCreateSuppliedDataRequestModel model) => 
-        (await this.client.RequestPost<JobCreateResponseModel>( "/jobs/create", model))?.JobID;
+    public async Task<int> Create(JobCreateSuppliedDataRequestModel model) => 
+        (await this.client.RequestPost<JobCreateResponseModel>( "/jobs/create", model)).JobID;
 
     /// <summary>The jobs create endpoint allows you create verify multiple emails together, the same way you would verify lists in the dashboard. 
     /// This endpoint will create a job and process the emails in the list (if auto_start is enabled) asynchronously. 
@@ -39,45 +39,56 @@ public sealed class JobsService
     /// For payloads that exceed 25 Megabytes we suggest using the remote_url method or removing any ancillary data sent with the emails.</para></summary>
     /// <param name="model">A model that includes array data to check</param>
     /// <returns>ID of the job created. Use this ID to check progress or make changes.</returns>
-    public async Task<int?> Create(JobCreateSuppliedArrayRequestModel model) =>
-        (await this.client.RequestPost<JobCreateResponseModel>("/jobs/create", model))?.JobID;
+    public async Task<int> Create(JobCreateSuppliedArrayRequestModel model) =>
+        (await this.client.RequestPost<JobCreateResponseModel>("/jobs/create", model)).JobID;
 
     /// <summary>The jobs create endpoint allows you create verify multiple emails together, the same way you would verify lists in the dashboard. 
     /// This endpoint will create a job and process the emails in the list (if auto_start is enabled) asynchronously. 
     /// Verification results are not returned in the response.</summary>
     /// <param name="model">A model that includes a link to a CSV to check</param>
     /// <returns>ID of the job created. Use this ID to check progress or make changes.</returns>
-    public async Task<int?> Create(JobCreateRemoteUrlRequestModel model) => 
-        (await this.client.RequestPost<JobCreateResponseModel>( "/jobs/create", model))?.JobID;
+    public async Task<int> Create(JobCreateRemoteUrlRequestModel model) => 
+        (await this.client.RequestPost<JobCreateResponseModel>( "/jobs/create", model)).JobID;
 
     #endregion
 
-    /// <summary>
-    ///     This method calls the parse job end point
-    ///     See: "https://developers.neverbounce.com/v4.0/reference#jobs-parse"
-    /// </summary>
-    /// <param name="model">JobParseRequestModel</param>
-    /// <returns>JobParseResponseModel</returns>
-    public async Task<JobParseResponseModel?> Parse(JobParseRequestModel model) => 
-        await this.client.RequestPost<JobParseResponseModel>( "/jobs/parse", model);
+    #region start or parse a job that was created with auto_start or auto_parse disabled
 
-    /// <summary>
-    ///     This method calls the start job end point
-    ///     See: "https://developers.neverbounce.com/v4.0/reference#jobs-start"
-    /// </summary>
-    /// <param name="model">JobStartRequestModel</param>
-    /// <returns>JobStartResponseModel</returns>
-    public async Task<JobStartResponseModel?> Start(JobStartRequestModel model) => 
-        await this.client.RequestPost<JobStartResponseModel>( "/jobs/start", model);
+    /// <summary>This endpoint allows you to parse a job created with auto_parse disabled. 
+    /// You cannot reparse a list once it's been parsed.</summary>
+    /// <param name="model">Job ID and additional flags</param>
+    /// <returns>ID of the queue entry</returns>
+    public async Task<string> Parse(JobParseRequestModel model) => 
+        (await this.client.RequestPost<JobQueueResponseModel>( "/jobs/parse", model)).QueueID;
 
-    /// <summary>
-    ///     This method calls the job status endpoint
-    ///     See: "https://developers.neverbounce.com/v4.0/reference#jobs-status"
-    /// </summary>
-    /// <param name="model">JobStatusRequestModel</param>
-    /// <returns>JobStatusResponseModel</returns>
-    public async Task<JobStatusResponseModel?> Status(JobStatusRequestModel model) =>
-        await this.client.RequestGet<JobStatusResponseModel>( "/jobs/status", model);
+    /// <summary>This endpoint allows you to parse a job created with auto_parse disabled. 
+    /// You cannot reparse a list once it's been parsed.</summary>
+    /// <param name="jobID">ID of the job to start</param>
+    /// <returns>ID of the queue entry</returns>
+    public async Task<string> Parse(int jobID) =>
+        (await this.client.RequestPost<JobQueueResponseModel>("/jobs/parse", new JobParseRequestModel(jobID))).QueueID;
+
+    /// <summary>This endpoint allows you to start a job created or parsed with auto_start disabled. 
+    /// Once the list has been started the credits will be deducted and the process cannot be stopped or restarted.</summary>
+    /// <param name="model">Job ID and additional flags</param>
+    /// <returns>ID of the queue entry</returns>
+    public async Task<string> Start(JobStartRequestModel model) => 
+        (await this.client.RequestPost<JobQueueResponseModel>( "/jobs/start", model)).QueueID;
+
+    /// <summary>This endpoint allows you to start a job created or parsed with auto_start disabled. 
+    /// Once the list has been started the credits will be deducted and the process cannot be stopped or restarted.</summary>
+    /// <param name="jobID">ID of the job to start</param>
+    /// <returns>ID of the queue entry</returns>
+    public async Task<string> Start(int jobID) =>
+        (await this.client.RequestPost<JobQueueResponseModel>("/jobs/start", new JobStartRequestModel(jobID))).QueueID;
+
+    #endregion
+
+    /// <summary>Get the current status of a job</summary>
+    /// <param name="jobID">The ID of an existing job to check.</param>
+    /// <returns>Current statuc of the job</returns>
+    public async Task<JobStatusResponseModel> Status(int jobID) =>
+        await this.client.RequestGet<JobStatusResponseModel>( "/jobs/status", new JobStatusRequestModel(jobID));
 
     /// <summary>
     ///     This method calls the job results endpoint
