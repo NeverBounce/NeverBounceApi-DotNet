@@ -14,8 +14,10 @@ public class SingleResponseModel : ResponseModel
 
     public string? RetryToken { get; set; }
 
-    public CreditsInfo CreditsInfo { get; set; }
+    /// <summary>Included account credit info, if requested.</summary>
+    public CreditsInfo? CreditsInfo { get; set; }
 
-    public EmailAddressInfo AddressInfo { get; set; }
+    /// <summary>Included additional address info, if requested.</summary>
+    public EmailAddressInfo? AddressInfo { get; set; }
 }
 
