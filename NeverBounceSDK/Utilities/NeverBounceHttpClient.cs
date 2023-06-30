@@ -15,7 +15,7 @@ public interface INeverBounceHttpClient {
     /// <param name="model">The parameters to include with the request</param>
     /// <typeparam name="T">The expected response model to parse</typeparam>
     /// <returns>The parsed result, or null if no content.</returns>
-    Task<T?> RequestGet<T>(string endpoint, RequestModel? model = null) where T: notnull, ResponseModel;
+    Task<T> RequestGet<T>(string endpoint, RequestModel? model = null) where T: notnull, ResponseModel;
 
     /// <summary>This method makes the HTTP request to the API</summary>
     /// <param name="endpoint">The endpoint to request</param>
@@ -27,7 +27,7 @@ public interface INeverBounceHttpClient {
     /// <param name="model">The parameters to include with the request</param>
     /// <typeparam name="T">The expected response model to parse</typeparam>
     /// <returns>The parsed result, or null if no content.</returns>
-    Task<T?> RequestPost<T>(string endpoint, RequestModel model) where T : notnull, ResponseModel;
+    Task<T> RequestPost<T>(string endpoint, RequestModel model) where T : notnull, ResponseModel;
 }
 
 public sealed class NeverBounceHttpClient: INeverBounceHttpClient
@@ -114,7 +114,7 @@ public sealed class NeverBounceHttpClient: INeverBounceHttpClient
         return await response.Content.ReadAsStringAsync();
     }
 
-    public async Task<T?> RequestGet<T>(string endpoint, RequestModel? model) where T : notnull, ResponseModel
+    public async Task<T> RequestGet<T>(string endpoint, RequestModel? model) where T : notnull, ResponseModel
     {
         model ??= new RequestModel();
 
@@ -128,7 +128,7 @@ public sealed class NeverBounceHttpClient: INeverBounceHttpClient
         return await this.ParseResponse<T>(response);
     }
 
-    public async Task<T?> RequestPost<T>(string endpoint, RequestModel model) where T : notnull, ResponseModel
+    public async Task<T> RequestPost<T>(string endpoint, RequestModel model) where T : notnull, ResponseModel
     {
         model.Key = this.settings.Key;
 
@@ -153,6 +153,15 @@ public sealed class NeverBounceHttpClient: INeverBounceHttpClient
                 """);
 
         // Handle 4xx HTTP errors
+        if (response.StatusCode == HttpStatusCode.RequestEntityTooLarge)
+            throw new GeneralException($"""
+                Entity too large: {response.StatusCode}
+                This API enforces a max request size of 25 Megabytes.
+                {await ResponseBodyForce(response)}
+                """);
+
+
+        // Handle 4xx HTTP errors
         if (response.StatusCode.GetHashCode() > 400)
             throw new GeneralException($"""
                 Bad request: {response.StatusCode}
@@ -164,14 +173,14 @@ public sealed class NeverBounceHttpClient: INeverBounceHttpClient
                 Error response code: {response.StatusCode}
                 {await ResponseBodyForce(response)}
                 """);
-    }
-
-    async Task<T?> ParseResponse<T>(HttpResponseMessage response) where T : notnull, ResponseModel
-    {
-        await EnsureResponseHasSuccessContent(response);
 
         if (response.StatusCode == HttpStatusCode.NoContent)
-            return null;
+            throw new GeneralException("Success no content (204)");
+    }
+
+    async Task<T> ParseResponse<T>(HttpResponseMessage response) where T : notnull, ResponseModel
+    {
+        await EnsureResponseHasSuccessContent(response);
 
         string? contentType = response.Content.Headers.ContentType?.ToString();
         string data = await response.Content.ReadAsStringAsync();
