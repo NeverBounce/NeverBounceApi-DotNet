@@ -204,9 +204,8 @@ public class TestHttpClient
         clientMock.Setup(http => http.DefaultRequestHeaders).Returns(new HttpClient().DefaultRequestHeaders);
         var httpClient = new NeverBounceHttpClient(clientMock.Object, fakeSettings);
 
-        var query = new SingleRequestModel();
+        var query = new SingleRequestModel("support@neverbounce.com");
         query.Key = "fake_api_key";
-        query.Email = "support@neverbounce.com";
         query.Timeout = 3000;
         query.AddressInfo = true;
         query.CreditsInfo = false;

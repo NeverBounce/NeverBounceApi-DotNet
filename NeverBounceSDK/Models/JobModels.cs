@@ -97,7 +97,7 @@ public abstract class JobCreateRequestModel : RequestModel
     public bool AllowManualReview { get; set; } = false;
 
     /// <summary>An optional URL that we should send events to during the lifecycle of the job</summary>
-    public string CallbackUrl { get; set; }
+    public string? CallbackUrl { get; set; }
 
     /// <summary>An optional array of headers that should be included when sending events to the callback_url</summary>
     public Dictionary<string, string>? CallbackHeaders { get; set; }
@@ -276,54 +276,85 @@ public class JobStatusResponseModel : ResponseModel
     public FailReason? FailureReason { get; set; }
 }
 
-public class JobResultsRequestModel : RequestModel
+public class JobResultsRequestModel : JobStatusRequestModel
 {
-    public int JobID { get; set; }
+    public JobResultsRequestModel(int jobID) : base(jobID) { }
+
+    /// <summary>The page to return the results from</summary>
     public int Page { get; set; } = 1;
+
+    /// <summary>The number of results to be returned, between 1 and 1000</summary>
     public int ItemsPerPage { get; set; } = 10;
 }
 
 public class JobResultsResponseModel : ResponseModel
 {
     public int TotalResults { get; set; }
+
     public int TotalPages { get; set; }
+
     public JobsResultsQuery Query { get; set; }
-    public List<Result> Results { get; set; }
+
+    public IEnumerable<EmailCheckResult> Results { get; set; }
 }
 
 public class JobsResultsQuery
 {
     public int JobID { get; set; }
+
     public int Valids { get; set; }
+
     public int Invalids { get; set; }
+
     public int Disposables { get; set; }
+
     public int Catchalls { get; set; }
+
     public int Unknowns { get; set; }
+
     public int Page { get; set; }
+
     public int ItemsPerPage { get; set; }
 }
 
-public class Result
+
+public class EmailCheckResult
 {
+    /// <summary>The data object will contain the original data submitted for this row. 
+    /// If the source data was submitted via the API the data will have the same keys as when it was originally submitted. 
+    /// If submitted as a CSV in the dashboard the data will use the header row to determine the keys for the data when available.</summary>
     public Dictionary<string, object> Data { get; set; }
+
+    /// <summary>The verification object contains the verification results for the email being verified. </summary>
     public SingleResponseModel Verification { get; set; }
 }
 
-public class JobDownloadRequestModel : RequestModel
+public class JobDownloadRequestModel : JobStatusRequestModel
 {
-    public int JobID { get; set; }
+    public JobDownloadRequestModel(int jobID) : base(jobID) { }
+
+    /// <summary>Includes or excludes valid emails</summary>
     public bool Valids { get; set; } = true;
+
+    /// <summary>Includes or excludes invalid emails</summary>
     public bool Invalids { get; set; } = true;
+
+    /// <summary>Includes or excludes catchall (accept all / unverifiable) emails</summary>
     public bool Catchalls { get; set; } = true;
+
+    /// <summary>Includes or excludes unknown emails</summary>
     public bool Unknowns { get; set; } = true;
+
+    /// <summary>Includes or excludes disposable emails</summary>
     public bool Disposables { get; set; } = true;
+
+    /// <summary>If true then all instances of duplicated items will appear.</summary>
+    public bool IncludeDuplicates { get; set; } = false;
+
+    /// <summary>If set this property overrides other segmentation options and the download will only return the duplicated items.</summary>
+    public bool OnlyDuplicates { get; set; } = false;
+
+    /// <summary>If set this property overrides other segmentation options and the download will only return bad syntax records.</summary>
+    public bool OnlyBadSyntax { get; set; } = false;
 }
 
-public class JobDeleteRequestModel : RequestModel
-{
-    public int JobID { get; set; }
-}
-
-public class JobDeleteResponseModel : ResponseModel
-{
-}

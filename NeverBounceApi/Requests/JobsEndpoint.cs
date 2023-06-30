@@ -1,5 +1,6 @@
 ﻿using NeverBounce;
 using NeverBounce.Models;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace NeverBounceSdkExamples.Requests;
 
@@ -7,73 +8,56 @@ public class JobsEndpoint
 {
     public static async Task<JobSearchResponseModel> Search(NeverBounceService sdk)
     {
-        var model = new JobSearchRequestModel();
-        model.JobID = 288025;
-        return await sdk.Jobs.Search(model);
+        return await sdk.Jobs.Search();
     }
 
-    public static async Task<JobCreateResponseModel> CreateSuppliedData(NeverBounceService sdk)
-    {
-        var model = new JobCreateSuppliedDataRequestModel();
-        model.Filename = "Created From dotNET.csv";
-        model.AutoParse = true;
-        model.AutoStart = false;
-        var data = new List<object>();
-        data.Add(new {id = "3", email = "support@neverbounce.com", name = "Fred McValid"});
-        data.Add(new {id = "4", email = "invalid@neverbounce.com", name = "Bob McInvalid"});
-        model.Input = data;
-        return await sdk.Jobs.CreateFromSuppliedData(model);
+    class ExampleSendModel : ICreateRequestInputRecord { 
+        public int ID { get; set; }
+        public string Email { get; set; }
+        public string Name { get; set; }
     }
 
-    public static async Task<JobCreateResponseModel> CreateRemoteUrl(NeverBounceService sdk)
+    public static async Task<int> CreateSuppliedData(NeverBounceService sdk)
     {
-        var model = new JobCreateRemoteUrlRequestModel();
-        model.Filename = "Created From dotNET.csv";
-        model.AutoParse = true;
-        model.AutoStart = false;
-        model.Input = "https://example.com/file.csv";
-        return await sdk.Jobs.CreateFromRemoteUrl(model);
+        var data = new ExampleSendModel[] {
+            new ExampleSendModel { ID = 3, Email = "support@neverbounce.com", Name = "Fred McValid" },
+            new ExampleSendModel { ID = 4, Email = "invalid@neverbounce.com", Name = "Bob McInvalid" },
+        };
+        return await sdk.Jobs.Create(data, name: "Created From dotNET array", autoParse: true);
     }
 
-    public static async Task<JobParseResponseModel> Parse(NeverBounceService sdk)
+    public static async Task<int> CreateRemoteUrl(NeverBounceService sdk)
     {
-        var model = new JobParseRequestModel();
-        model.JobID = 290561;
-        return await sdk.Jobs.Parse(model);
+        return await sdk.Jobs.Create("https://example.com/file.csv", name: "Created From dotNET file.csv", autoParse: true);
     }
 
-    public static async Task<JobStartResponseModel> Start(NeverBounceService sdk)
+    public static async Task<string> Parse(NeverBounceService sdk)
     {
-        var model = new JobStartRequestModel();
-        model.JobID = 290561;
-        return await sdk.Jobs.Start(model);
+        return await sdk.Jobs.Parse(290561);
+    }
+
+    public static async Task<string> Start(NeverBounceService sdk)
+    {
+        return await sdk.Jobs.Start(290561);
     }
 
     public static async Task<JobStatusResponseModel> Status(NeverBounceService sdk)
     {
-        var model = new JobStatusRequestModel();
-        model.JobID = 290561;
-        return await sdk.Jobs.Status(model);
+        return await sdk.Jobs.Status(290561);
     }
 
     public static async Task<JobResultsResponseModel> Results(NeverBounceService sdk)
     {
-        var model = new JobResultsRequestModel();
-        model.JobID = 290561;
-        return await sdk.Jobs.Results(model);
+        return await sdk.Jobs.Results(290561);
     }
 
     public static async Task<string> Download(NeverBounceService sdk)
     {
-        var model = new JobDownloadRequestModel();
-        model.JobID = 290561;
-        return await sdk.Jobs.Download(model);
+        return await sdk.Jobs.Download(290561);
     }
 
-    public static async Task<JobDeleteResponseModel> Delete(NeverBounceService sdk)
+    public static async Task Delete(NeverBounceService sdk)
     {
-        var model = new JobDeleteRequestModel();
-        model.JobID = 290561;
-        return await sdk.Jobs.Delete(model);
+        await sdk.Jobs.Delete(290561);
     }
 }

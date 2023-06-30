@@ -9,7 +9,7 @@ public enum ResponseStatus {
     BadReferrer,
 }
 
-public abstract class ResponseModel
+public class ResponseModel
 {
     public ResponseStatus Status { get; set; } = ResponseStatus.None;
 

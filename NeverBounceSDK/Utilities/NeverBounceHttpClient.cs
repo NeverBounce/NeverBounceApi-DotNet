@@ -123,8 +123,6 @@ public sealed class NeverBounceHttpClient: INeverBounceHttpClient
         var uri = new Uri(this.settings.Url + endpoint + "?" + ToQueryString(model));
         var response = await this._client.GetAsync(uri);
 
-
-
         return await this.ParseResponse<T>(response);
     }
 
