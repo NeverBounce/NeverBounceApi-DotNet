@@ -1,7 +1,6 @@
-﻿using NeverBounce;
+﻿namespace NeverBounceSdkExamples.Requests;
+using NeverBounce;
 using NeverBounce.Models;
-
-namespace NeverBounceSdkExamples.Requests;
 
 public class SingleEndpoints
 {

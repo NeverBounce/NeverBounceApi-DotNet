@@ -136,7 +136,7 @@ public sealed class JobsService
     /// <param name="jobID">The ID of an existing job to check.</param>
     /// <returns>Current status of the job</returns>
     public async Task<JobStatusResponseModel> Status(int jobID) =>
-        await this.client.RequestGet<JobStatusResponseModel>( "/jobs/status", new JobStatusRequestModel(jobID));
+        await this.client.RequestGet<JobStatusResponseModel>( "/jobs/status", new JobRequestModel(jobID));
 
     /// <summary>Get the results of a job</summary>
     /// <param name="model">The job ID and additional flags</param>
@@ -176,5 +176,5 @@ public sealed class JobsService
     /// If the results are needed after a job has been deleted you will need to resubmit and reverify the data.</para></summary>
     /// <param name="jobID">The ID of an existing job to delete.</param>
     public async Task Delete(int jobID) => 
-        await this.client.RequestGet<ResponseModel>( "/jobs/delete", new JobStatusRequestModel(jobID));
+        await this.client.RequestGet<ResponseModel>( "/jobs/delete", new JobRequestModel(jobID));
 }

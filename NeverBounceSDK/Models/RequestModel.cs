@@ -2,5 +2,6 @@
 
 public class RequestModel
 {
-    public string Key { get; set; }
+    /// <summary>API key, set before serialising the request object.</summary>
+    public string? Key { get; set; }
 }

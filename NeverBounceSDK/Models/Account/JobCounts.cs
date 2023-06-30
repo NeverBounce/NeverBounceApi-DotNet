@@ -1,12 +1,5 @@
 ﻿namespace NeverBounce.Models;
 
-public class AccountInfoResponseModel : ResponseModel
-{
-    public CreditsInfo CreditsInfo { get; set; }
-
-    public JobCounts JobCounts { get; set; }
-}
-
 public class JobCounts
 {
     public int Completed { get; set; }
