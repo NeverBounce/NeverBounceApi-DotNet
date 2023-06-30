@@ -6,7 +6,7 @@ public sealed class SingleService
 {
     readonly INeverBounceHttpClient client;
 
-    public SingleService(INeverBounceHttpClient client)
+    internal SingleService(INeverBounceHttpClient client)
     {
         this.client = client;
     }

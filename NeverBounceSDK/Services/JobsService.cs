@@ -7,7 +7,7 @@ public sealed class JobsService
 {
     readonly INeverBounceHttpClient client;
 
-    public JobsService(INeverBounceHttpClient client)
+    internal JobsService(INeverBounceHttpClient client)
     {
         this.client = client;
     }
