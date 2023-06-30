@@ -28,7 +28,7 @@ public class TestHttpClient
 
         var httpClient = new NeverBounceHttpClient(clientMock.Object, fakeSettings);
         var resp = Assert.ThrowsAsync<AuthException>(async () =>
-            await httpClient.RequestGetBody( "/500", null));
+            await httpClient.RequestGetContent( "/500", null));
         StringAssert.Contains("The key provided is invalid", resp.Message);
         StringAssert.Contains("(auth_failure)", resp.Message);
     }
@@ -45,7 +45,7 @@ public class TestHttpClient
 
         var httpClient = new NeverBounceHttpClient(clientMock.Object, fakeSettings);
         var resp = Assert.ThrowsAsync<GeneralException>(async () =>
-            await httpClient.RequestGetBody( "/500", null));
+            await httpClient.RequestGetContent( "/500", null));
         StringAssert.Contains("(Internal error)", resp.Message);
     }
 
@@ -63,7 +63,7 @@ public class TestHttpClient
 
         var httpClient = new NeverBounceHttpClient(clientMock.Object, fakeSettings);
         var resp = Assert.ThrowsAsync<BadReferrerException>(async () =>
-            await httpClient.RequestGetBody( "/500", null));
+            await httpClient.RequestGetContent( "/500", null));
     }
 
     [Test]
@@ -80,7 +80,7 @@ public class TestHttpClient
 
         var httpClient = new NeverBounceHttpClient(clientMock.Object, fakeSettings);
         var resp = Assert.ThrowsAsync<GeneralException>(async () =>
-            await httpClient.RequestGetBody( "/500", null));
+            await httpClient.RequestGetContent( "/500", null));
         StringAssert.Contains("Something went wrong", resp.Message);
         StringAssert.Contains("(general_failure)", resp.Message);
     }
@@ -95,7 +95,7 @@ public class TestHttpClient
 
         var httpClient = new NeverBounceHttpClient(clientMock.Object, fakeSettings);
         Assert.ThrowsAsync<GeneralException>(async () =>
-            await httpClient.RequestGetBody( "/404", null));
+            await httpClient.RequestGetContent( "/404", null));
     }
 
     [Test]
@@ -108,7 +108,7 @@ public class TestHttpClient
 
         var httpClient = new NeverBounceHttpClient(clientMock.Object, fakeSettings);
         Assert.ThrowsAsync<GeneralException>(async () =>
-            await httpClient.RequestGetBody( "/500", null));
+            await httpClient.RequestGetContent( "/500", null));
     }
 
     [Test]
@@ -122,7 +122,7 @@ public class TestHttpClient
         clientMock.Setup(http => http.GetAsync(It.IsAny<Uri>())).Returns(Task.FromResult(responseMessage));
 
         var httpClient = new NeverBounceHttpClient(clientMock.Object, fakeSettings);
-        var resp = httpClient.RequestGetBody( "/", null).Result;
+        var resp = httpClient.RequestGetContent( "/", null).Result.ReadAsStringAsync().Result;
 
 
         Assert.AreEqual("{\"status\": \"success\", \"execution_time\":100}", resp);
@@ -143,7 +143,7 @@ public class TestHttpClient
 
         var httpClient = new NeverBounceHttpClient(clientMock.Object, fakeSettings);
         httpClient.SetAcceptedType("text/html");
-        var resp = httpClient.RequestGetBody( "/", null).Result;
+        var resp = httpClient.RequestGetContent( "/", null).Result.ReadAsStringAsync().Result;
         Assert.AreEqual("Hello!", resp);
     }
     
@@ -160,7 +160,7 @@ public class TestHttpClient
         var httpClient = new NeverBounceHttpClient(clientMock.Object, fakeSettings);
         httpClient.SetAcceptedType("text/html");
         var resp = Assert.ThrowsAsync<GeneralException>(async () =>
-            await httpClient.RequestGetBody( "/", null));
+            await httpClient.RequestGetContent( "/", null));
     }
 
     [Test]
@@ -177,7 +177,7 @@ public class TestHttpClient
 
         var httpClient = new NeverBounceHttpClient(clientMock.Object, fakeSettings);
         var resp = Assert.ThrowsAsync<GeneralException>(async () =>
-            await httpClient.RequestGetBody( "/500", null));
+            await httpClient.RequestGetContent( "/500", null));
     }
 
     [Test]
@@ -194,7 +194,7 @@ public class TestHttpClient
 
         var httpClient = new NeverBounceHttpClient(clientMock.Object, fakeSettings);
         var resp = Assert.ThrowsAsync<ThrottleException>(async () =>
-            await httpClient.RequestGetBody( "/500", null));
+            await httpClient.RequestGetContent( "/500", null));
     }
 
     [Test]

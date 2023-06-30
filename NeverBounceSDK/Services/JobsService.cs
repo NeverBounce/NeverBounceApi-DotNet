@@ -1,6 +1,7 @@
 ﻿namespace NeverBounce.Services;
 using NeverBounce.Models;
 using NeverBounce.Utilities;
+using System.Threading;
 
 public sealed class JobsService
 {
@@ -147,14 +148,28 @@ public sealed class JobsService
         await this.Results(new JobResultsRequestModel(jobID) { Page = page, ItemsPerPage = itemsPerPage });
 
     /// <summary>Download the CSV data for the job</summary>
-    /// <param name="model">JobDownloadRequestModel</param>
-    /// <returns>string</returns>
-    public async Task<string?> Download(JobDownloadRequestModel model) =>
+    /// <param name="model">The job ID and additional flags</param>
+    /// <param name="cancellationToken">Token to cancel long downloads</param>
+    /// <returns>A stream of the file contents</returns>
+    public async Task<Stream> Download(JobDownloadRequestModel model, CancellationToken cancellationToken)
+    {
         // expect "application/octet-stream"
-        await this.client.RequestGetBody( "/jobs/download", model);
+        var content = await this.client.RequestGetContent("/jobs/download", model);
+        return await content.ReadAsStreamAsync(cancellationToken);
+    }
 
-    public async Task<string?> Download(int jobID) =>
-        await this.Download(new JobDownloadRequestModel(jobID));
+    /// <summary>Download the CSV data for the job</summary>
+    /// <param name="jobID">The ID of the job.</param>
+    /// <param name="cancellationToken">Optional token to cancel long downloads</param>
+    /// <returns>A stream of the file contents</returns>
+    public async Task<Stream> Download(int jobID, CancellationToken cancellationToke) =>
+        await this.Download(new JobDownloadRequestModel(jobID), cancellationToke);
+
+    /// <summary>Download the CSV data for the job</summary>
+    /// <param name="jobID">The ID of the job.</param>
+    /// <param name="cancellationToken">Optional token to cancel long downloads</param>
+    public async Task<Stream> Download(int jobID) =>
+        await this.Download(new JobDownloadRequestModel(jobID), CancellationToken.None);
 
     /// <summary>Delete a job and remove all data associated with it.
     /// <para>The job and its results cannot be recovered once the job has been deleted. 

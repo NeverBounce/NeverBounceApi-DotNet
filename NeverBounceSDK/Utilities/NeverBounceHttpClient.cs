@@ -20,7 +20,7 @@ public interface INeverBounceHttpClient {
     /// <summary>This method makes the HTTP request to the API</summary>
     /// <param name="endpoint">The endpoint to request</param>
     /// <param name="model">The parameters to include with the request</param>
-    Task<string?> RequestGetBody(string endpoint, RequestModel? model = null);
+    Task<HttpContent> RequestGetContent(string endpoint, RequestModel? model = null);
 
     /// <summary>This method makes the HTTP request to the API and parses the response</summary>
     /// <param name="endpoint">The endpoint to request</param>
@@ -98,7 +98,7 @@ public sealed class NeverBounceHttpClient: INeverBounceHttpClient
         return "NeverBounce/" + productVersion;
     }
 
-    public async Task<string?> RequestGetBody(string endpoint, RequestModel? model)
+    public async Task<HttpContent> RequestGetContent(string endpoint, RequestModel? model)
     {
         model ??= new RequestModel();
 
@@ -108,10 +108,8 @@ public sealed class NeverBounceHttpClient: INeverBounceHttpClient
         var response = await this._client.GetAsync(uri);
 
         await EnsureResponseHasSuccessContent(response);
-        if (response.StatusCode == HttpStatusCode.NoContent)
-            return null;
 
-        return await response.Content.ReadAsStringAsync();
+        return response.Content;
     }
 
     public async Task<T> RequestGet<T>(string endpoint, RequestModel? model) where T : notnull, ResponseModel

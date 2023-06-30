@@ -1,5 +1,6 @@
 ﻿using NeverBounce;
 using NeverBounce.Models;
+using System.Text;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace NeverBounceSdkExamples.Requests;
@@ -53,7 +54,9 @@ public class JobsEndpoint
 
     public static async Task<string> Download(NeverBounceService sdk)
     {
-        return await sdk.Jobs.Download(290561);
+        await using var stream = await sdk.Jobs.Download(290561);
+        using TextReader reader = new StreamReader(stream, Encoding.UTF8);
+        return await reader.ReadToEndAsync();
     }
 
     public static async Task Delete(NeverBounceService sdk)
