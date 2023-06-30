@@ -1,5 +1,6 @@
 ﻿namespace NeverBounce.Models;
 
+/// <summary>Result expected from the /single/check endpoint</summary>
 public class SingleResponseModel : ResponseModel
 {
     /// <summary>Result of the email evaluation</summary>

@@ -1,5 +1,6 @@
 ﻿namespace NeverBounce.Models;
 
+/// <summary>Result expected from the /job/search endpoint</summary>
 public class JobSearchResponseModel : ResponseModel
 {
     public int TotalResults { get; set; }

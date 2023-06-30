@@ -1,5 +1,6 @@
 ﻿namespace NeverBounce.Models;
 
+/// <summary>Request object to serialise and send to the /job/download endpoint</summary>
 public class JobDownloadRequestModel : JobRequestModel
 {
     public JobDownloadRequestModel(int jobID) : base(jobID) { }

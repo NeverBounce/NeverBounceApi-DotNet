@@ -1,5 +1,6 @@
 ﻿namespace NeverBounce.Models;
 
+/// <summary>Request object to serialise and send to the /job/results endpoint</summary>
 public class JobResultsRequestModel : JobRequestModel
 {
     public JobResultsRequestModel(int jobID) : base(jobID) { }

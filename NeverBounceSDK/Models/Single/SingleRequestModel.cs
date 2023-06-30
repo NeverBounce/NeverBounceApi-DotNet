@@ -1,5 +1,6 @@
 ﻿namespace NeverBounce.Models;
 
+/// <summary>Request object to serialise and send to the /single/check endpoint</summary>
 public class SingleRequestModel : RequestModel
 {
     public SingleRequestModel(string email) { this.Email = email; }

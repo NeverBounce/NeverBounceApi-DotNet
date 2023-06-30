@@ -1,5 +1,6 @@
 ﻿namespace NeverBounce.Models;
 
+/// <summary>Result expected from the /job/status endpoint</summary>
 public class JobStatusResponseModel : ResponseModel
 {
     public int ID { get; set; }
