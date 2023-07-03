@@ -64,9 +64,11 @@ public static class QueryStringUtility
     {
         if (pair.Value is null) return null;
 
+        string caseFix = SnakeCase.Convert(pair.Key);
+
         string key = parentProperty is not null
-            ? $"{parentProperty}[{Uri.EscapeDataString(pair.Key)}]"
-            : Uri.EscapeDataString(pair.Key);
+            ? $"{parentProperty}[{Uri.EscapeDataString(caseFix)}]"
+            : Uri.EscapeDataString(caseFix);
 
         if (pair.Value.GetType().IsPrimitive || pair.Value.GetType().IsValueType || pair.Value is string)
         {
