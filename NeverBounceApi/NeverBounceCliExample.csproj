@@ -20,7 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\NeverBounceSDK\NeverBounceSDK.csproj">
+    <ProjectReference Include="..\NeverBounceSDK\NeverBounce.csproj">
       <Project>{f3a4d952-0692-49d3-a78a-1d417e23bd40}</Project>
       <Name>NeverBounceSDK</Name>
     </ProjectReference>

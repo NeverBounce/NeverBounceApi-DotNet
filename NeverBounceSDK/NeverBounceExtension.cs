@@ -26,13 +26,13 @@ public static class NeverBounceExtension
         var url = GetUrl(host, version);
 
         // Create a named client
-        services.AddHttpClient("neverbounce", client => ConfigureHttpClient(client, url));
+        services.AddHttpClient("NeverBounce", client => ConfigureHttpClient(client, url));
 
         // Use the named client in a transient service
-        return services.AddTransient<NeverBounceService>(s =>
+        return services.AddTransient(s =>
         {
             var clientFactory = s.GetRequiredService<IHttpClientFactory>();
-            var httpClient = clientFactory.CreateClient("neverbounce");
+            var httpClient = clientFactory.CreateClient("NeverBounce");
             var endpoint = new HttpServiceEndpoint(httpClient);
 
             // Add Companies House API service
@@ -84,7 +84,8 @@ public static class NeverBounceExtension
     static void ConfigureHttpClient(HttpClient client, Uri baseUrl) {
         // Set user agent
         client.DefaultRequestHeaders.Remove("User-Agent");
-        client.DefaultRequestHeaders.Add("User-Agent", $"NeverBounce/{Assembly.GetExecutingAssembly().GetName().Version?.ToString() ?? "0.0.0"}");
+        client.DefaultRequestHeaders.Add("User-Agent", $"NeverBounce-NETClient/{Assembly.GetEntryAssembly()?.
+            GetCustomAttribute<AssemblyInformationalVersionAttri‌bute>()?.Informationa‌lVersion ?? "0.0.0"}");
 
         // Set default 30s timeout
         client.Timeout = new TimeSpan(0, 0, 30);

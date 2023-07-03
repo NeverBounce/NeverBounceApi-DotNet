@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.6.33723.286
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NeverBounceSDK", "NeverBounceSDK\NeverBounceSDK.csproj", "{F3A4D952-0692-49D3-A78A-1D417E23BD40}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NeverBounce", "NeverBounceSDK\NeverBounce.csproj", "{F3A4D952-0692-49D3-A78A-1D417E23BD40}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NeverBounceSDKExamples", "NeverBounceApi\NeverBounceSDKExamples.csproj", "{B613EFA9-6151-4265-AC0D-D2B1718A7D11}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NeverBounceCliExample", "NeverBounceApi\NeverBounceCliExample.csproj", "{B613EFA9-6151-4265-AC0D-D2B1718A7D11}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NeverBounceSDKTests", "NeverBounceSDKTests\NeverBounceSDKTests.csproj", "{94D33EC6-FCD8-4DE5-AAAC-68F07FBDE1E3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NeverBounceTests", "NeverBounceSDKTests\NeverBounceTests.csproj", "{94D33EC6-FCD8-4DE5-AAAC-68F07FBDE1E3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

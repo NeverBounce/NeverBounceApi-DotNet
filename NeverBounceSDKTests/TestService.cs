@@ -1,11 +1,11 @@
-﻿namespace NeverBounceSDKTests;
+﻿namespace NeverBounceTests;
 using NeverBounce.Exceptions;
 using NeverBounce.Models;
 using NUnit.Framework;
 using static TestUtility;
 
 [TestFixture]
-public class TestNeverBounceSdk
+public class TestService
 {
     [Test]
     public void TestNeverBounceSdkSetup()

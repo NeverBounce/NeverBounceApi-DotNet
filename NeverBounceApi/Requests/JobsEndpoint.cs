@@ -1,9 +1,6 @@
 ﻿using NeverBounce;
 using NeverBounce.Models;
 using System.Text;
-using static System.Runtime.InteropServices.JavaScript.JSType;
-
-namespace NeverBounceSdkExamples.Requests;
 
 public class JobsEndpoint
 {

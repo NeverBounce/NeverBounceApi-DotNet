@@ -1,4 +1,4 @@
-﻿namespace NeverBounceSDKTests;
+﻿namespace NeverBounceTests;
 using NeverBounce.Exceptions;
 using NeverBounce.Models;
 using NeverBounce.Utilities;
@@ -9,7 +9,7 @@ using System.Net.Http.Headers;
 using static TestUtility;
 
 [TestFixture]
-public class TestHttpClient
+public class TestEndPoint
 {
     
     [Test]
