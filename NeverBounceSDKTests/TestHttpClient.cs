@@ -44,7 +44,7 @@ public class TestHttpClient
         var httpClient = new NeverBounceHttpClient(clientMock.Object, fakeKey, null);
         var resp = Assert.ThrowsAsync<GeneralException>(async () =>
             await httpClient.RequestGet<ResponseModel>( "/500", null));
-        StringAssert.Contains("(Internal error)", resp.Message);
+        StringAssert.Contains("{notvalid json}", resp.Message);
     }
 
     [Test]
