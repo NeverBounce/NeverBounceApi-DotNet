@@ -1,12 +1,11 @@
 ﻿namespace NeverBounceSDKTests;
-using System.Net;
-using System.Net.Http.Headers;
-using Moq;
 using NeverBounce.Exceptions;
 using NeverBounce.Models;
 using NeverBounce.Utilities;
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;
+using System.Net;
+using System.Net.Http.Headers;
 using static TestUtility;
 
 [TestFixture]
@@ -16,7 +15,13 @@ public class TestHttpClient
     [Test]
     public void TestAuthFailureHandling()
     {
-        var httpClient = CreateMockEndpoint("{\"status\": \"auth_failure\", \"message\": \"The key provided is invalid\", \"execution_time\":100}");
+        var httpClient = CreateMockEndpoint("""
+            {
+                "status": "auth_failure", 
+                "message": "The key provided is invalid", 
+                "execution_time": 100
+            }
+            """);
         var resp = Assert.ThrowsAsync<AuthException>(async () =>
             await httpClient.RequestGet<ResponseModel>( "/500", null));
         StringAssert.Contains("The key provided is invalid", resp.Message);
@@ -35,7 +40,13 @@ public class TestHttpClient
     [Test]
     public void TestBadReferrerErrorHandling()
     {
-        var httpClient = CreateMockEndpoint("{\"status\": \"bad_referrer\", \"message\": \"The originator of this request is not trusted\", \"execution_time\":100}");
+        var httpClient = CreateMockEndpoint("""
+            {
+                "status": "bad_referrer", 
+                "message": "The originator of this request is not trusted", 
+                "execution_time": 100
+            }
+            """);
         var resp = Assert.ThrowsAsync<BadReferrerException>(async () =>
             await httpClient.RequestGet<ResponseModel>( "/500", null));
     }
@@ -43,7 +54,13 @@ public class TestHttpClient
     [Test]
     public void TestGenericFailureHandling()
     {
-        var httpClient = CreateMockEndpoint("{\"status\": \"general_failure\", \"message\": \"Something went wrong\", \"execution_time\":100}");
+        var httpClient = CreateMockEndpoint("""
+            {
+                "status": "general_failure", 
+                "message": "Something went wrong", 
+                "execution_time": 100
+            }
+            """);
         var resp = Assert.ThrowsAsync<GeneralException>(async () =>
             await httpClient.RequestGet<ResponseModel>( "/500", null));
         StringAssert.Contains("Something went wrong", resp.Message);
@@ -69,7 +86,12 @@ public class TestHttpClient
     [Test]
     public void TestJsonUnmarshalling()
     {
-        var content = "{\"status\": \"success\", \"execution_time\":123}";
+        var content = """
+            {
+                "status": "success", 
+                "execution_time": 123
+            }
+            """;
         var httpClient = CreateMockEndpoint(content);
         var resp = httpClient.RequestGetContent( "/", null).Result.ReadAsStringAsync().Result;
 
@@ -82,7 +104,9 @@ public class TestHttpClient
     [Test]
     public void TestMatchContentType()
     {
-        var httpClient = CreateMockEndpoint("{\"status\": \"success\"}");
+        var httpClient = CreateMockEndpoint("""
+            { "status": "success" }
+            """);
         var resp = httpClient.RequestGet<ResponseModel>( "/", null).Result;
         Assert.AreEqual(ResponseStatus.Success, resp.Status);
     }
@@ -100,7 +124,13 @@ public class TestHttpClient
     [Test]
     public void TestTempUnavailErrorHandling()
     {
-        var httpClient = CreateMockEndpoint("{\"status\": \"temp_unavail\", \"message\": \"Something went wrong\", \"execution_time\":100}");
+        var httpClient = CreateMockEndpoint("""
+            {
+                "status": "temp_unavail", 
+                "message": "Something went wrong", 
+                "execution_time": 100
+            }
+            """);
         var resp = Assert.ThrowsAsync<GeneralException>(async () =>
             await httpClient.RequestGet<ResponseModel>( "/500", null));
     }
@@ -108,7 +138,13 @@ public class TestHttpClient
     [Test]
     public void TestThrottleErrorHandling()
     {
-        var httpClient = CreateMockEndpoint("{\"status\": \"throttle_triggered\", \"message\": \"Too many requests in a short amount of time\", \"execution_time\":100}");
+        var httpClient = CreateMockEndpoint("""
+            {
+                "status": "throttle_triggered", 
+                "message": "Too many requests in a short amount of time", 
+                "execution_time": 100
+            }
+            """);
         var resp = Assert.ThrowsAsync<ThrottleException>(async () =>
             await httpClient.RequestGet<ResponseModel>( "/500", null));
     }

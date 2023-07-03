@@ -18,7 +18,12 @@ public class TestNeverBounceSdk
     [Test]
     public void TestNeverBounceAccountInfo()
     {
-        var nb = CreateMockClient("{\"status\": \"auth_failure\", \"message\": \"Test Message\"}");
+        var nb = CreateMockClient("""
+            {
+                "status": "auth_failure", 
+                "message": "Test Message"
+            }
+            """);
 
         var resp = Assert.ThrowsAsync<AuthException>(async () =>
             await nb.Account.Info());
