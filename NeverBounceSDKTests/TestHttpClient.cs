@@ -76,7 +76,7 @@ public class TestHttpClient
 
         var httpClient = new NeverBounceHttpClient(clientMock.Object, fakeKey, null);
         var resp = Assert.ThrowsAsync<GeneralException>(async () =>
-            await httpClient.RequestGetContent( "/500", null));
+            await httpClient.RequestGet<ResponseModel>( "/500", null));
         StringAssert.Contains("Something went wrong", resp.Message);
         StringAssert.Contains("(general_failure)", resp.Message);
     }

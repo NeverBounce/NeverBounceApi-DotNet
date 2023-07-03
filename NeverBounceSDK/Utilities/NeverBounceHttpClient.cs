@@ -210,7 +210,7 @@ public sealed class NeverBounceHttpClient: INeverBounceHttpClient
                     {parsed.Message}
                     """),
                 _ => new GeneralException($"""
-                    We were unable to complete your request ({status})
+                    We were unable to complete your request ({SnakeCase.Convert(status.ToString())})
                     {parsed.Message}
                     """),
             };
