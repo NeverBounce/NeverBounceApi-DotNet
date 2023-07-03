@@ -60,7 +60,7 @@ public class TestHttpClient
 
         var httpClient = new NeverBounceHttpClient(clientMock.Object, fakeKey, null);
         var resp = Assert.ThrowsAsync<BadReferrerException>(async () =>
-            await httpClient.RequestGetContent( "/500", null));
+            await httpClient.RequestGet<ResponseModel>( "/500", null));
     }
 
     [Test]
