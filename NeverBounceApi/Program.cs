@@ -1,54 +1,44 @@
-﻿using NeverBounce;
-using NeverBounce.Utilities;
-using NeverBounceSdkExamples.Requests;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using NeverBounce;
 
-namespace NeverBounceSdkExamples;
+// Init .NET DI host
+var builder = Host.CreateDefaultBuilder(args);
 
-internal class Program
-{
-    private static void Main(string[] args)
-    {
-        var sdk = new NeverBounceService(new HttpServiceEndpoint(new HttpClient()), new NeverBounce.Models.NeverBounceConfigurationSettings("api_key"));
+// Add service with configuration
+builder.ConfigureServices((host, s) => s.AddNeverBounceService(host.Configuration));
+
+// Build the host
+using var host = builder.Build();
+await host.StartAsync();
+
+// Get the never bounce service from DI
+// In another DI service you can just add a NeverBounceService parameter to the constructor
+// Or in a controller you can add [FromServices] attribute
+var neverBounceService = host.Services.GetRequiredService<NeverBounceService>();
+
+// Call the account info endpoint
+var info = await neverBounceService.Account.Info();
+
+var c = info.CreditsInfo;
+Console.WriteLine($"Free credits: remaining {c?.FreeCreditsRemaining ?? 0}, used {c?.FreeCreditsUsed ?? 0}");
+Console.WriteLine($"Paid credits: remaining {c?.PaidCreditsRemaining ?? 0}, used {c?.PaidCreditsUsed ?? 0}");
+
+var j = info.JobCounts;
+Console.WriteLine($"Jobs: pending {j?.Queued ?? 0}, processing {j?.Processing ?? 0}, completed {j?.Completed ?? 0}, under review {j?.UnderReview ?? 0}");
+
+Console.ReadLine();
+
         
-        // https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/await
-        
-        var response = AccountEndpoint.Info(sdk).Result;
-        //var response = POEEndpoints.Confirm(sdk).Result;
-        //var response = SingleEndpoints.Check(sdk).Result;
-        //var response = JobsEndpoint.Search(sdk).Result;
-        //var response = JobsEndpoint.CreateSuppliedData(sdk).Result;
-        //var response = JobsEndpoint.CreateRemoteUrl(sdk).Result;
-        //var response = JobsEndpoint.Parse(sdk).Result;
-        //var response = JobsEndpoint.Start(sdk).Result;
-        //var response = JobsEndpoint.Status(sdk).Result;
-        //var response = JobsEndpoint.Results(sdk).Result;
-        //var response = JobsEndpoint.Download(sdk).Result;
-        //var response = JobsEndpoint.Delete(sdk).Result;
-
-        var_dump(response);
-        Console.ReadLine();
-    }
-
-    public static void var_dump(object obj)
-    {
-        Console.WriteLine("{0,-18} {1}", "Name", "Value");
-        var ln = @"-------------------------------------   
-               ----------------------------";
-        Console.WriteLine(ln);
-
-        var t = obj.GetType();
-        var props = t.GetProperties();
-
-        for (var i = 0; i < props.Length; i++)
-            try
-            {
-                Console.WriteLine("{0,-18} {1}",
-                    props[i].Name, props[i].GetValue(obj, null));
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-            }
-        Console.WriteLine();
-    }
-}
+// var response = AccountEndpoint.Info(sdk).Result;
+//var response = POEEndpoints.Confirm(sdk).Result;
+//var response = SingleEndpoints.Check(sdk).Result;
+//var response = JobsEndpoint.Search(sdk).Result;
+//var response = JobsEndpoint.CreateSuppliedData(sdk).Result;
+//var response = JobsEndpoint.CreateRemoteUrl(sdk).Result;
+//var response = JobsEndpoint.Parse(sdk).Result;
+//var response = JobsEndpoint.Start(sdk).Result;
+//var response = JobsEndpoint.Status(sdk).Result;
+//var response = JobsEndpoint.Results(sdk).Result;
+//var response = JobsEndpoint.Download(sdk).Result;
+//var response = JobsEndpoint.Delete(sdk).Result;
