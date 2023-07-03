@@ -7,6 +7,7 @@ using System.Reflection;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using static QueryStringUtility;
 
 public interface INeverBounceHttpClient {
 
@@ -35,10 +36,6 @@ public sealed class NeverBounceHttpClient: INeverBounceHttpClient
     readonly NeverBounceSettings settings;
 
     readonly IHttpClient _client;
-
-    //private readonly string _host = "https://api.neverbounce.com/v4/";
-
-    string acceptedType = "application/json";
 
     /// <summary>NeverBounce API JSON serialisation settings, use snake_case for properties and enums</summary>
     static JsonSerializerOptions JsonSettings { get; }
@@ -71,16 +68,6 @@ public sealed class NeverBounceHttpClient: INeverBounceHttpClient
         this.settings = settings;
 
         this.setUserAgent();
-    }
-
-    /// <summary>
-    ///     This will set the expected data type for the response. If a different
-    ///     data type is return an error will be thrown.
-    /// </summary>
-    /// <param name="type">The expected request data type</param>
-    public void SetAcceptedType(string type)
-    {
-        this.acceptedType = type;
     }
 
     /// <summary>Sets the user agent on the request</summary>
@@ -244,75 +231,5 @@ public sealed class NeverBounceHttpClient: INeverBounceHttpClient
 
         // Return response data for passthrough/marshalling
         return parsed;
-    }
-
-    /// <summary>Creates a urlencoded query string of the parameters</summary>
-    /// <param name="request">The request parameters to encode</param>
-    /// <param name="parentProperty">The nested parent parameter</param>
-    public static string ToQueryString(object request, string? parentProperty = null)
-    {
-        // Get all properties on the object
-        var properties = request.GetType().GetProperties()
-            .Where(x => x.CanRead)
-            .Where(x => x.GetValue(request, null) is not null)
-            .ToDictionary(
-                x => x.Name,
-                x => x.PropertyType.ToString().Contains("System.Boolean")
-                    ? Convert.ToInt32(x.GetValue(request, null))
-                    : x.GetValue(request, null)
-            );
-
-        // Get names for all IEnumerable properties (excl. string)
-        var propertyNames = properties
-            .Where(x => x.Value is not string && x.Value is IEnumerable)
-            .Select(x => x.Key)
-            .ToList();
-        
-        // Concat all IEnumerable properties into a comma separated string
-        foreach (string? key in propertyNames)
-        {
-            object? value = properties[key];
-            if (value is null) continue;
-
-            var valueType = value.GetType();
-            var valueElemType = valueType.IsGenericType
-                ? valueType.GetGenericArguments()[0]
-                : valueType.GetElementType();
-
-            if (valueElemType is null) continue;
-            
-            if (valueElemType.IsPrimitive || valueElemType == typeof(string))
-            {
-                var enumerable = value as IEnumerable;
-                if(enumerable is not null)
-                    properties[key] = string.Join(",", enumerable.Cast<object>());
-            }
-        }
-
-        // Concat all key/value pairs into a string separated by ampersand
-        return string.Join("&", properties
-            .Select(x => BuildQueryStringKeyValue(x, parentProperty)));
-    }
-    
-    /// <summary>Builds URI safe key value pair</summary>
-    /// <param name="pair">The key value pair to encode</param>
-    /// <param name="parentProperty">The nested parent parameter</param>
-    static string? BuildQueryStringKeyValue(KeyValuePair<string, object?> pair, string? parentProperty = null)
-    {
-        if(pair.Value is null) return null;
-
-        string key = parentProperty is not null
-            ? $"{parentProperty}[{Uri.EscapeDataString(pair.Key)}]"
-            : Uri.EscapeDataString(pair.Key);
-
-        if (pair.Value.GetType().IsPrimitive || pair.Value.GetType().IsValueType || pair.Value is string) {
-            string? valueStr = pair.Value.ToString();
-            if (valueStr is not null)
-                return $"{key}={Uri.EscapeDataString(valueStr)}";
-            else
-                return null;
-        }
-
-        return ToQueryString(pair.Value, key);
     }
 }
