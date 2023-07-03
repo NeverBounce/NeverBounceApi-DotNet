@@ -11,6 +11,7 @@
     <Version>5.0.0</Version>
     <FileVersion>5.0.0</FileVersion>
     <OutputType>Exe</OutputType>
+    <UserSecretsId>neverbounce</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
