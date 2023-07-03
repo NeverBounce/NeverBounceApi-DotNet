@@ -97,48 +97,50 @@ public sealed class NeverBounceHttpClient: INeverBounceHttpClient
 
     static async Task EnsureResponseHasSuccessContent(HttpResponseMessage response) {
         // Handle 5xx HTTP errors
-        if (response.StatusCode.GetHashCode() > 500)
-            throw new GeneralException($"""
+        if ((int) response.StatusCode > 500)
+            throw new NeverBounceResponseException(response.StatusCode, $"""
                 Error on server: {response.StatusCode}
                 {await ResponseBodyForce(response)}
                 """);
 
         // Handle 4xx HTTP errors
         if (response.StatusCode == HttpStatusCode.RequestEntityTooLarge)
-            throw new GeneralException($"""
+            throw new NeverBounceResponseException(response.StatusCode, $"""
                 Entity too large: {response.StatusCode}
                 This API enforces a max request size of 25 Megabytes.
                 {await ResponseBodyForce(response)}
                 """);
 
         // Handle 4xx HTTP errors
-        if (response.StatusCode.GetHashCode() > 400)
-            throw new GeneralException($"""
+        if ((int) response.StatusCode > 400)
+            throw new NeverBounceResponseException(response.StatusCode, $"""
                 Bad request: {response.StatusCode}
                 {await ResponseBodyForce(response)}
                 """);
 
         if (!response.IsSuccessStatusCode)
-            throw new GeneralException($"""
+            throw new NeverBounceResponseException(response.StatusCode, $"""
                 Error response code: {response.StatusCode}
                 {await ResponseBodyForce(response)}
                 """);
 
         if (response.StatusCode == HttpStatusCode.NoContent)
-            throw new GeneralException("Success no content (204)");
+            throw new NeverBounceResponseException(HttpStatusCode.NoContent, "Success no content (204)");
     }
 
     static async Task<T> ParseResponse<T>(HttpResponseMessage response) where T : notnull, ResponseModel
     {
         await EnsureResponseHasSuccessContent(response);
 
-        string? contentType = response.Content.Headers.ContentType?.ToString();
         string data = await response.Content.ReadAsStringAsync();
+        if(string.IsNullOrWhiteSpace(data))
+            throw new NeverBounceResponseException(response.StatusCode, "No message content");
 
         // Expects "application/json", but may be "application/json; charset=utf-8"
+        string? contentType = response.Content.Headers.ContentType?.ToString();
         if (contentType is null || !contentType.Contains("application/json", StringComparison.OrdinalIgnoreCase))
             // Handle unexpected response types
-            throw new GeneralException($"""
+            throw new NeverBounceResponseException(response.StatusCode, $"""
                 The response from NeverBounce was has a data type of "{contentType}", but "application/json" was expected. {response.StatusCode}
                 {data}
                 """);
@@ -149,33 +151,12 @@ public sealed class NeverBounceHttpClient: INeverBounceHttpClient
         // Handle non 'success' statuses that return with HTTP success codes but an error message in the body
         var status = parsed.Status;
         if (status != ResponseStatus.Success)
-            throw status switch
-            {
-                // "auth_failure":
-                ResponseStatus.AuthFailure => new AuthException($"""
-                    We were unable to authenticate your request (auth_failure)
-                    {parsed.Message}
-                    """),
-                // "temp_unavail":
-                ResponseStatus.TempUnavail => new GeneralException($"""
-                    We were unable to complete your request (temp_unavail)
-                    {parsed.Message}
-                    """),
-                // "throttle_triggered":
-                ResponseStatus.ThrottleTriggered => new ThrottleException($"""
-                    We were unable to complete your request (throttle_triggered)
-                    {parsed.Message}
-                    """),
-                // "bad_referrer":
-                ResponseStatus.BadReferrer => new BadReferrerException($"""
-                    We were unable to complete your request (bad_referrer)
-                    {parsed.Message}
-                    """),
-                _ => new GeneralException($"""
-                    We were unable to complete your request ({SnakeCase.Convert(status.ToString())})
-                    {parsed.Message}
-                    """),
-            };
+            throw new NeverBounceServiceException(status, $"""
+                {(status == ResponseStatus.AuthFailure ?
+                    "We were unable to authenticate your request" :
+                    "We were unable to complete your request ")} ({SnakeCase.Convert(status.ToString())})
+                {parsed.Message}
+                """);
 
         // Return response data for passthrough/marshalling
         return parsed;

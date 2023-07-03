@@ -1,5 +1,6 @@
 ﻿namespace NeverBounceSDKTests;
 using NeverBounce.Exceptions;
+using NeverBounce.Models;
 using NUnit.Framework;
 using static TestUtility;
 
@@ -25,10 +26,11 @@ public class TestNeverBounceSdk
             }
             """);
 
-        var resp = Assert.ThrowsAsync<AuthException>(async () =>
+        var resp = Assert.ThrowsAsync<NeverBounceServiceException>(async () =>
             await nb.Account.Info());
 
         StringAssert.Contains("We were unable to authenticate your request", resp.Message);
         StringAssert.Contains("(auth_failure)", resp.Message);
+        Assert.AreEqual(ResponseStatus.AuthFailure, resp.Reason);
     }
 }

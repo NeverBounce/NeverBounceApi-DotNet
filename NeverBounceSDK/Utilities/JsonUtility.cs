@@ -32,17 +32,17 @@ static class JsonUtility
         try { parsed = JsonSerializer.Deserialize<T>(data, JsonSettings); }
         catch (Exception x)
         {
-            throw new GeneralException($"""
+            throw new NeverBounceParseException($"""
                 The response from NeverBounce was unable to be parsed as JSON.
                 Try the request again, if this error persists let us know at support@neverbounce.com
                 Parse error: {x.Message} 
                 Response body: 
                 {data}
-                """);
+                """, x);
         }
 
         if (parsed is null)
-            throw new GeneralException($"""
+            throw new NeverBounceParseException($"""
                 The response from NeverBounce was unable to be parsed as JSON.
                 Try the request again, if this error persists let us know at support@neverbounce.com
                 Response body: 
