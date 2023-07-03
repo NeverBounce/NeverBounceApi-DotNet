@@ -12,7 +12,8 @@ public sealed class AccountService
     }
 
     /// <summary>Check your account's balance and how many jobs are currently running</summary>
-    /// <returns>AccountInfoResponseModel</returns>
-    public async Task<AccountInfoResponseModel> Info() =>
-        await this.client.RequestGet<AccountInfoResponseModel>("account/info");
+    /// <param name="cancellationToken">Optional token to cancel long requests</param>
+    /// <returns>Current credits and running jobs.</returns>
+    public async Task<AccountInfoResponseModel> Info(CancellationToken? cancellationToken = null) =>
+        await this.client.RequestGet<AccountInfoResponseModel>("account/info", cancellationToken);
 }
