@@ -2,7 +2,7 @@
 
 /// <summary>Request object to serialise and send to the /job/create endpoint.
 /// <para>Input can be different types, which is done as properties on classes that inherit this.</para></summary>
-public abstract class JobCreateRequestModel : RequestModel
+public abstract class JobCreateRequestModel
 {
     /// <summary>This will be what's displayed in the dashboard when viewing this job</summary>
     public string? Filename { get; set; }

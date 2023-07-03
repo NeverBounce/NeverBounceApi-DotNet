@@ -24,8 +24,8 @@ static class JsonUtility
         JsonSettings.Converters.Add(new JsonStringEnumConverter(namingPolicy));
     }
 
-    public static string Serialise<T>(T model) =>
-        JsonSerializer.Serialize<T>(model, JsonSettings);
+    public static string Serialise<T>(T model, string key) =>
+        string.Concat("{\"key\":\"", key, "\",", JsonSerializer.Serialize<T>(model, JsonSettings).AsSpan(1));
 
     public static T Deserialise<T>(string data) {
         T? parsed;

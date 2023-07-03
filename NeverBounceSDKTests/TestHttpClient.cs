@@ -162,13 +162,13 @@ public class TestHttpClient
     public void TestToQueryStringSimple()
     {
         var query = new SingleRequestModel("support@neverbounce.com");
-        query.Key = "fake_api_key";
+        //query.Key = "fake_api_key";
         query.Timeout = 3000;
         query.AddressInfo = true;
         query.CreditsInfo = false;
 
         var resp = QueryStringUtility.ToQueryString(query);
         Assert.AreEqual(
-            "email=support%40neverbounce.com&address_info=1&credits_info=0&timeout=3000&request_meta_data[leverage_historical_data]=1&key=fake_api_key", resp);
+            "email=support%40neverbounce.com&address_info=1&credits_info=0&timeout=3000&request_meta_data[leverage_historical_data]=1", resp);
     }
 }

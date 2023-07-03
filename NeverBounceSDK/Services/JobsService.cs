@@ -5,9 +5,9 @@ using System.Threading;
 
 public sealed class JobsService
 {
-    readonly INeverBounceHttpClient client;
+    readonly INeverBounceEndpoint client;
 
-    internal JobsService(INeverBounceHttpClient client)
+    internal JobsService(INeverBounceEndpoint client)
     {
         this.client = client;
     }

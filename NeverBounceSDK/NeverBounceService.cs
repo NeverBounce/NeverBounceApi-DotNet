@@ -1,14 +1,11 @@
 ﻿namespace NeverBounce;
-
 using Microsoft.Extensions.Logging;
-using NeverBounce.Models;
 using NeverBounce.Services;
 using NeverBounce.Utilities;
 
 public class NeverBounceService
 {
-
-    readonly INeverBounceHttpClient client;
+    readonly INeverBounceEndpoint client;
 
     /// <summary>Account Info method allow to programmatically check your account's balance and how many jobs are currently running on your account.</summary>
     public readonly AccountService Account;
@@ -21,15 +18,14 @@ public class NeverBounceService
     /// <summary>Single verification allows you verify individual emails and gather additional information pertaining to the email.</summary>
     public readonly SingleService Single;
 
-    /// <summary>
-    ///     This method initializes the NeverBounceSDK
-    /// </summary>
+    /// <summary>This method initializes the NeverBounceService directly
+    /// <para>It should not be called directly, use the dependency injection service instead</para></summary>
     /// <param name="key">The api key to use to make the requests</param>
     /// <param name="httpEndpoint">Configured HTTP endpoint</param>
     /// <param name="loggerFactory">Optional logger</param>
     public NeverBounceService(IHttpServiceEndpoint httpEndpoint, string key, ILoggerFactory? loggerFactory)
     {
-        this.client = new NeverBounceHttpClient(httpEndpoint, key, loggerFactory);
+        this.client = new NeverBounceEndpoint(httpEndpoint, key, loggerFactory);
 
         this.Account = new AccountService(this.client);
         this.Jobs = new JobsService(this.client);

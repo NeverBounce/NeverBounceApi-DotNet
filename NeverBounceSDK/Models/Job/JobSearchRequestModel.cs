@@ -1,7 +1,7 @@
 ﻿namespace NeverBounce.Models;
 
 /// <summary>Request object to serialise and send to the /job/search endpoint</summary>
-public class JobSearchRequestModel : RequestModel
+public class JobSearchRequestModel
 {
     /// <summary>Filter jobs based on its ID</summary>
     public int? JobID { get; set; }

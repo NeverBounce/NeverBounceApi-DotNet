@@ -4,9 +4,9 @@ using NeverBounce.Utilities;
 
 public sealed class SingleService
 {
-    readonly INeverBounceHttpClient client;
+    readonly INeverBounceEndpoint client;
 
-    internal SingleService(INeverBounceHttpClient client)
+    internal SingleService(INeverBounceEndpoint client)
     {
         this.client = client;
     }

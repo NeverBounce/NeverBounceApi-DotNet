@@ -1,39 +1,12 @@
 ﻿namespace NeverBounce.Utilities;
-
 using Microsoft.Extensions.Logging;
 using NeverBounce.Exceptions;
 using NeverBounce.Models;
-using System.Collections;
 using System.Net;
-using System.Reflection;
 using System.Text;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 using static QueryStringUtility;
 
-public interface INeverBounceHttpClient {
-
-    /// <summary>This method makes the HTTP request to the API and parses the response</summary>
-    /// <param name="endpoint">The endpoint to request</param>
-    /// <param name="model">The parameters to include with the request</param>
-    /// <typeparam name="T">The expected response model to parse</typeparam>
-    /// <returns>The parsed result, or null if no content.</returns>
-    Task<T> RequestGet<T>(string endpoint, RequestModel? model = null) where T: notnull, ResponseModel;
-
-    /// <summary>This method makes the HTTP request to the API</summary>
-    /// <param name="endpoint">The endpoint to request</param>
-    /// <param name="model">The parameters to include with the request</param>
-    Task<HttpContent> RequestGetContent(string endpoint, RequestModel? model = null);
-
-    /// <summary>This method makes the HTTP request to the API and parses the response</summary>
-    /// <param name="endpoint">The endpoint to request</param>
-    /// <param name="model">The parameters to include with the request</param>
-    /// <typeparam name="T">The expected response model to parse</typeparam>
-    /// <returns>The parsed result, or null if no content.</returns>
-    Task<T> RequestPost<T>(string endpoint, RequestModel model) where T : notnull, ResponseModel;
-}
-
-public sealed class NeverBounceHttpClient: INeverBounceHttpClient
+public sealed class NeverBounceEndpoint: INeverBounceEndpoint
 {
     readonly string key;
     readonly IHttpServiceEndpoint endpointService;
@@ -43,19 +16,19 @@ public sealed class NeverBounceHttpClient: INeverBounceHttpClient
     /// <param name="endpoint">The instance of the endpoint service to use to make requests</param>
     /// <param name="key">The api key to use to authenticate requests</param>
     /// <param name="loggerFactory">Optional logger</param>
-    public NeverBounceHttpClient(IHttpServiceEndpoint endpoint, string key, ILoggerFactory? loggerFactory)
+    public NeverBounceEndpoint(IHttpServiceEndpoint endpoint, string key, ILoggerFactory? loggerFactory)
     {
         this.endpointService = endpoint;
         this.key = key;
 
-        this.logger = loggerFactory?.CreateLogger<NeverBounceHttpClient>();
+        this.logger = loggerFactory?.CreateLogger<NeverBounceEndpoint>();
     }
 
-    public async Task<HttpContent> RequestGetContent(string endpoint, RequestModel? model)
+    public async Task<HttpContent> RequestGetContent(string endpoint, object? model)
     {
-        model ??= new RequestModel();
-        model.Key = this.key;
-        string getRequest = endpoint + "?" + ToQueryString(model);
+        string getRequest =  $"{endpoint}?key={Uri.EscapeDataString(this.key)}";
+        if (model is not null) getRequest += "&" + ToQueryString(model);
+
         this.logger?.LogInformation("GET request to NeverBounce {EndPoint}", getRequest);
         var response = await this.endpointService.GetAsync(getRequest, CancellationToken.None);
 
@@ -64,11 +37,11 @@ public sealed class NeverBounceHttpClient: INeverBounceHttpClient
         return response.Content;
     }
 
-    public async Task<T> RequestGet<T>(string endpoint, RequestModel? model) where T : notnull, ResponseModel
+    public async Task<T> RequestGet<T>(string endpoint, object? model) where T : notnull, ResponseModel
     {
-        model ??= new RequestModel();
-        model.Key = this.key;
-        string getRequest = endpoint + "?" + ToQueryString(model);
+        string getRequest = $"{endpoint}?key={Uri.EscapeDataString(this.key)}";
+        if (model is not null) getRequest += "&" + ToQueryString(model);
+
         this.logger?.LogInformation("GET request to NeverBounce {EndPoint}", getRequest);
 
         var response = await this.endpointService.GetAsync(getRequest, CancellationToken.None);
@@ -76,10 +49,9 @@ public sealed class NeverBounceHttpClient: INeverBounceHttpClient
         return await ParseResponse<T>(response);
     }
 
-    public async Task<T> RequestPost<T>(string endpoint, RequestModel model) where T : notnull, ResponseModel
+    public async Task<T> RequestPost<T>(string endpoint, object model) where T : notnull, ResponseModel
     {
-        model.Key = this.key;
-        string strContent = JsonUtility.Serialise(model);
+        string strContent = JsonUtility.Serialise(model, this.key);
         this.logger?.LogInformation("GET request to NeverBounce {EndPoint}, Content: {Content}", endpoint, strContent);
 
         var content = new StringContent(strContent, Encoding.UTF8, "application/json");

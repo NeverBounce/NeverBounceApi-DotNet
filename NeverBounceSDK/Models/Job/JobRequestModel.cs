@@ -1,6 +1,6 @@
 ﻿namespace NeverBounce.Models;
 
-public class JobRequestModel : RequestModel
+public class JobRequestModel
 {
     public JobRequestModel(int jobID) { this.JobID = jobID; }
 

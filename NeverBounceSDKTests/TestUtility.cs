@@ -24,16 +24,16 @@ static class TestUtility
         return new NeverBounceService(clientMock.Object, "fake_api_key", null);
     }
 
-    public static NeverBounceHttpClient CreateMockEndpoint(string strContent) =>
+    public static NeverBounceEndpoint CreateMockEndpoint(string strContent) =>
         CreateMockEndpoint(new HttpResponseMessage(HttpStatusCode.OK)
         {
             Content = new StringContent(strContent, Encoding.UTF8, "application/json")
         });
 
-    public static NeverBounceHttpClient CreateMockEndpoint(HttpResponseMessage response)
+    public static NeverBounceEndpoint CreateMockEndpoint(HttpResponseMessage response)
     {
         var clientMock = new Mock<IHttpServiceEndpoint>();
         clientMock.Setup(http => http.GetAsync(It.IsAny<string>(), It.IsAny<CancellationToken>())).Returns(Task.FromResult(response));
-        return new NeverBounceHttpClient(clientMock.Object, "fake_api_key", null);
+        return new NeverBounceEndpoint(clientMock.Object, "fake_api_key", null);
     }
 }
