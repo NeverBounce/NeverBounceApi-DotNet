@@ -2,15 +2,25 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using NeverBounce;
+using System.Text;
+
+// Bug workaround: https://developercommunity.visualstudio.com/content/problem/176587/unicode-characters-in-output-window.html
+// and https://stackoverflow.com/questions/51483609/in-net-core-using-ilogger-how-do-i-log-unicode-chars
+Console.OutputEncoding = Encoding.UTF8;
 
 // Init .NET DI host
 var builder = Host.CreateDefaultBuilder(args);
 
 // Get config - local appsettings.json, user secrets (for API key, which shouldn't go into source control), environment variables
-builder.ConfigureHostConfiguration(host => host.
-    AddJsonFile("appsettings.json", optional: false).
-    AddUserSecrets("neverbounce").
-    AddEnvironmentVariables());
+//builder.ConfigureHostConfiguration(host => host.
+//    AddJsonFile("appsettings.json", optional: false).
+//    AddUserSecrets("neverbounce").
+//    AddEnvironmentVariables());
+
+#if DEBUG
+// For this example force a dev environment
+builder.UseEnvironment(Environments.Development);
+#endif
 
 // Add service with configuration
 builder.ConfigureServices((host, s) => s.AddNeverBounceService(host.Configuration));
