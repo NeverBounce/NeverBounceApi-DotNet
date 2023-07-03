@@ -1,4 +1,6 @@
-﻿namespace NeverBounce.Utilities; 
+﻿namespace NeverBounce.Utilities;
+
+using Microsoft.Extensions.Logging;
 using NeverBounce.Exceptions;
 using NeverBounce.Models;
 using System.Collections;
@@ -33,9 +35,9 @@ public interface INeverBounceHttpClient {
 
 public sealed class NeverBounceHttpClient: INeverBounceHttpClient
 {
-    readonly NeverBounceSettings settings;
-
-    readonly IHttpClient _client;
+    readonly string key;
+    readonly IHttpServiceEndpoint endpointService;
+    readonly ILogger? logger;
 
     /// <summary>NeverBounce API JSON serialisation settings, use snake_case for properties and enums</summary>
     static JsonSerializerOptions JsonSettings { get; }
@@ -56,43 +58,25 @@ public sealed class NeverBounceHttpClient: INeverBounceHttpClient
     }
 
 
-    /// <summary>
-    ///     Creates the HttpClient instance as well as sets up the hostname to use
-    /// </summary>
-    /// <param name="Client">The instance of IHttpClient to use to make requests</param>
-    /// <param name="ApiKey">The api key to use to authenticate requests</param>
-    /// <param name="Host">The url to make the API request to</param>
-    public NeverBounceHttpClient(IHttpClient Client, NeverBounceSettings settings)
+    /// <summary>Create an endpoint wrapper</summary>
+    /// <param name="endpoint">The instance of the endpoint service to use to make requests</param>
+    /// <param name="key">The api key to use to authenticate requests</param>
+    /// <param name="loggerFactory">Optional logger</param>
+    public NeverBounceHttpClient(IHttpServiceEndpoint endpoint, string key, ILoggerFactory? loggerFactory)
     {
-        this._client = Client;
-        this.settings = settings;
+        this.endpointService = endpoint;
+        this.key = key;
 
-        this.setUserAgent();
-    }
-
-    /// <summary>Sets the user agent on the request</summary>
-    void setUserAgent()
-    {
-        string userAgent = GenerateUserAgent();
-        this._client.DefaultRequestHeaders.Remove("User-Agent");
-        this._client.DefaultRequestHeaders.Add("User-Agent", userAgent);
-    }
-
-    /// <summary>Generates the useragent string</summary>
-    static string GenerateUserAgent()
-    {
-        string productVersion = Assembly.GetExecutingAssembly().GetName().Version?.ToString() ?? "0.0.0";
-        return "NeverBounce/" + productVersion;
+        this.logger = loggerFactory?.CreateLogger<NeverBounceHttpClient>();
     }
 
     public async Task<HttpContent> RequestGetContent(string endpoint, RequestModel? model)
     {
         model ??= new RequestModel();
-
-        model.Key = this.settings.Key;
-
-        var uri = new Uri(this.settings.Url + endpoint + "?" + ToQueryString(model));
-        var response = await this._client.GetAsync(uri);
+        model.Key = this.key;
+        string getRequest = endpoint + "?" + ToQueryString(model);
+        this.logger?.LogInformation("GET request to NeverBounce {EndPoint}", getRequest);
+        var response = await this.endpointService.GetAsync(getRequest, CancellationToken.None);
 
         await EnsureResponseHasSuccessContent(response);
 
@@ -102,26 +86,29 @@ public sealed class NeverBounceHttpClient: INeverBounceHttpClient
     public async Task<T> RequestGet<T>(string endpoint, RequestModel? model) where T : notnull, ResponseModel
     {
         model ??= new RequestModel();
+        model.Key = this.key;
+        string getRequest = endpoint + "?" + ToQueryString(model);
+        this.logger?.LogInformation("GET request to NeverBounce {EndPoint}", getRequest);
 
-        model.Key = this.settings.Key;
-
-        var uri = new Uri(this.settings.Url + endpoint + "?" + ToQueryString(model));
-        var response = await this._client.GetAsync(uri);
+        var response = await this.endpointService.GetAsync(getRequest, CancellationToken.None);
 
         return await this.ParseResponse<T>(response);
     }
 
     public async Task<T> RequestPost<T>(string endpoint, RequestModel model) where T : notnull, ResponseModel
     {
-        model.Key = this.settings.Key;
+        model.Key = this.key;
+        string strContent = JsonSerializer.Serialize(model, JsonSettings);
+        this.logger?.LogInformation("GET request to NeverBounce {EndPoint}, Content: {Content}", endpoint, strContent);
 
-        var uri = new Uri(this.settings.Url + endpoint);
-        var content = new StringContent(JsonSerializer.Serialize(model, JsonSettings), Encoding.UTF8, "application/json");
-        var response = await this._client.PostAsync(uri, content);
+        var content = new StringContent(strContent, Encoding.UTF8, "application/json");
+        var response = await this.endpointService.PostAsync(endpoint, content, CancellationToken.None);
 
         return await this.ParseResponse<T>(response);
     }
 
+    /// <summary>Try and get the body from an error response.
+    /// <para>As this is getting an error message it ignores any exception getting the message out</para></summary>
     static async Task<string> ResponseBodyForce(HttpResponseMessage response) {
         try { return "Body: " + await response.Content.ReadAsStringAsync(); }
         catch (Exception x) { return $"Unable to read body: {x.Message}"; }
@@ -142,7 +129,6 @@ public sealed class NeverBounceHttpClient: INeverBounceHttpClient
                 This API enforces a max request size of 25 Megabytes.
                 {await ResponseBodyForce(response)}
                 """);
-
 
         // Handle 4xx HTTP errors
         if (response.StatusCode.GetHashCode() > 400)

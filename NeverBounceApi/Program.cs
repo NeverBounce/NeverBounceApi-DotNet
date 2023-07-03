@@ -8,7 +8,7 @@ internal class Program
 {
     private static void Main(string[] args)
     {
-        var sdk = new NeverBounceService(new HttpClientWrapper(new HttpClient()), new NeverBounce.Models.NeverBounceConfigurationSettings("api_key"));
+        var sdk = new NeverBounceService(new HttpServiceEndpoint(new HttpClient()), new NeverBounce.Models.NeverBounceConfigurationSettings("api_key"));
         
         // https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/await
         

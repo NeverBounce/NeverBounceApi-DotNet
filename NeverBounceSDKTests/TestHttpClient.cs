@@ -17,7 +17,7 @@ public class TestHttpClient
     [Test]
     public void TestAuthFailureHandling()
     {
-        var clientMock = new Mock<IHttpClient>();
+        var clientMock = new Mock<IHttpServiceEndpoint>();
         var responseMessage = new HttpResponseMessage(HttpStatusCode.OK);
         responseMessage.Content =
             new StringContent(
@@ -36,7 +36,7 @@ public class TestHttpClient
     [Test]
     public void TestBadlyFormattedJsonHandling()
     {
-        var clientMock = new Mock<IHttpClient>();
+        var clientMock = new Mock<IHttpServiceEndpoint>();
         var responseMessage = new HttpResponseMessage(HttpStatusCode.OK);
         responseMessage.Content = new StringContent("{notvalid json}");
         responseMessage.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
@@ -52,7 +52,7 @@ public class TestHttpClient
     [Test]
     public void TestBadReferrerErrorHandling()
     {
-        var clientMock = new Mock<IHttpClient>();
+        var clientMock = new Mock<IHttpServiceEndpoint>();
         var responseMessage = new HttpResponseMessage(HttpStatusCode.OK);
         responseMessage.Content =
             new StringContent(
@@ -69,7 +69,7 @@ public class TestHttpClient
     [Test]
     public void TestGenericFailureHandling()
     {
-        var clientMock = new Mock<IHttpClient>();
+        var clientMock = new Mock<IHttpServiceEndpoint>();
         var responseMessage = new HttpResponseMessage(HttpStatusCode.OK);
         responseMessage.Content =
             new StringContent(
@@ -88,7 +88,7 @@ public class TestHttpClient
     [Test]
     public void TestHttpStatusCode400ErrorHandling()
     {
-        var clientMock = new Mock<IHttpClient>();
+        var clientMock = new Mock<IHttpServiceEndpoint>();
         clientMock.Setup(http => http.DefaultRequestHeaders).Returns(new HttpClient().DefaultRequestHeaders);
         clientMock.Setup(http => http.GetAsync(It.IsAny<Uri>()))
             .Returns(Task.FromResult(new HttpResponseMessage(HttpStatusCode.NotFound)));
@@ -101,7 +101,7 @@ public class TestHttpClient
     [Test]
     public void TestHttpStatusCode500ErrorHandling()
     {
-        var clientMock = new Mock<IHttpClient>();
+        var clientMock = new Mock<IHttpServiceEndpoint>();
         clientMock.Setup(http => http.DefaultRequestHeaders).Returns(new HttpClient().DefaultRequestHeaders);
         clientMock.Setup(http => http.GetAsync(It.IsAny<Uri>()))
             .Returns(Task.FromResult(new HttpResponseMessage(HttpStatusCode.ServiceUnavailable)));
@@ -114,7 +114,7 @@ public class TestHttpClient
     [Test]
     public void TestJsonUnmarshalling()
     {
-        var clientMock = new Mock<IHttpClient>();
+        var clientMock = new Mock<IHttpServiceEndpoint>();
         var responseMessage = new HttpResponseMessage(HttpStatusCode.OK);
         responseMessage.Content = new StringContent("{\"status\": \"success\", \"execution_time\":100}");
         responseMessage.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
@@ -134,7 +134,7 @@ public class TestHttpClient
     [Test]
     public void TestMatchContentType()
     {
-        var clientMock = new Mock<IHttpClient>();
+        var clientMock = new Mock<IHttpServiceEndpoint>();
         var responseMessage = new HttpResponseMessage(HttpStatusCode.OK);
         responseMessage.Content = new StringContent("Hello!");
         responseMessage.Content.Headers.ContentType = new MediaTypeHeaderValue("text/html");
@@ -150,7 +150,7 @@ public class TestHttpClient
     [Test]
     public void TestMismatchedContentTypeThrowsError()
     {
-        var clientMock = new Mock<IHttpClient>();
+        var clientMock = new Mock<IHttpServiceEndpoint>();
         var responseMessage = new HttpResponseMessage(HttpStatusCode.OK);
         responseMessage.Content = new StringContent("Hello!");
         responseMessage.Content.Headers.ContentType = new MediaTypeHeaderValue("text/csv");
@@ -166,7 +166,7 @@ public class TestHttpClient
     [Test]
     public void TestTempUnavailErrorHandling()
     {
-        var clientMock = new Mock<IHttpClient>();
+        var clientMock = new Mock<IHttpServiceEndpoint>();
         var responseMessage = new HttpResponseMessage(HttpStatusCode.OK);
         responseMessage.Content =
             new StringContent(
@@ -183,7 +183,7 @@ public class TestHttpClient
     [Test]
     public void TestThrottleErrorHandling()
     {
-        var clientMock = new Mock<IHttpClient>();
+        var clientMock = new Mock<IHttpServiceEndpoint>();
         var responseMessage = new HttpResponseMessage(HttpStatusCode.OK);
         responseMessage.Content =
             new StringContent(
@@ -200,7 +200,7 @@ public class TestHttpClient
     [Test]
     public void TestToQueryStringSimple()
     {
-        var clientMock = new Mock<IHttpClient>();
+        var clientMock = new Mock<IHttpServiceEndpoint>();
         clientMock.Setup(http => http.DefaultRequestHeaders).Returns(new HttpClient().DefaultRequestHeaders);
         var httpClient = new NeverBounceHttpClient(clientMock.Object, fakeSettings);
 

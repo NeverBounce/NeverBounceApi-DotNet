@@ -15,7 +15,7 @@ public class TestNeverBounceSdk
     [Test]
     public void TestNeverBounceSdkSetup()
     {
-        var clientMock = new Mock<IHttpClient>();
+        var clientMock = new Mock<IHttpServiceEndpoint>();
         var nb = new NeverBounceService(clientMock.Object, fakeSettings);
         Assert.IsNotNull(nb.Account);
         Assert.IsNotNull(nb.Jobs);
@@ -25,7 +25,7 @@ public class TestNeverBounceSdk
     [Test]
     public void TestNeverBounceAccountInfo()
     {
-        var clientMock = new Mock<IHttpClient>();
+        var clientMock = new Mock<IHttpServiceEndpoint>();
         var nb = new NeverBounceService(clientMock.Object, fakeSettings);            
         var resp = Assert.ThrowsAsync<AuthException>(async () =>
             await nb.Account.Info());
