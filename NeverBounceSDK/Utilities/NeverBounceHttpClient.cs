@@ -39,25 +39,6 @@ public sealed class NeverBounceHttpClient: INeverBounceHttpClient
     readonly IHttpServiceEndpoint endpointService;
     readonly ILogger? logger;
 
-    /// <summary>NeverBounce API JSON serialisation settings, use snake_case for properties and enums</summary>
-    static JsonSerializerOptions JsonSettings { get; }
-
-    static NeverBounceHttpClient()
-    {
-        var namingPolicy = new SnakeCase();
-        JsonSettings = new JsonSerializerOptions
-        {
-            DictionaryKeyPolicy = namingPolicy,
-            PropertyNamingPolicy = namingPolicy,
-            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
-            PropertyNameCaseInsensitive = true,
-            NumberHandling = JsonNumberHandling.AllowReadingFromString,
-        };
-
-        JsonSettings.Converters.Add(new JsonStringEnumConverter(namingPolicy));
-    }
-
-
     /// <summary>Create an endpoint wrapper</summary>
     /// <param name="endpoint">The instance of the endpoint service to use to make requests</param>
     /// <param name="key">The api key to use to authenticate requests</param>
@@ -92,19 +73,19 @@ public sealed class NeverBounceHttpClient: INeverBounceHttpClient
 
         var response = await this.endpointService.GetAsync(getRequest, CancellationToken.None);
 
-        return await this.ParseResponse<T>(response);
+        return await ParseResponse<T>(response);
     }
 
     public async Task<T> RequestPost<T>(string endpoint, RequestModel model) where T : notnull, ResponseModel
     {
         model.Key = this.key;
-        string strContent = JsonSerializer.Serialize(model, JsonSettings);
+        string strContent = JsonUtility.Serialise(model);
         this.logger?.LogInformation("GET request to NeverBounce {EndPoint}, Content: {Content}", endpoint, strContent);
 
         var content = new StringContent(strContent, Encoding.UTF8, "application/json");
         var response = await this.endpointService.PostAsync(endpoint, content, CancellationToken.None);
 
-        return await this.ParseResponse<T>(response);
+        return await ParseResponse<T>(response);
     }
 
     /// <summary>Try and get the body from an error response.
@@ -147,7 +128,7 @@ public sealed class NeverBounceHttpClient: INeverBounceHttpClient
             throw new GeneralException("Success no content (204)");
     }
 
-    async Task<T> ParseResponse<T>(HttpResponseMessage response) where T : notnull, ResponseModel
+    static async Task<T> ParseResponse<T>(HttpResponseMessage response) where T : notnull, ResponseModel
     {
         await EnsureResponseHasSuccessContent(response);
 
@@ -163,27 +144,7 @@ public sealed class NeverBounceHttpClient: INeverBounceHttpClient
                 """);
 
         // Handle application/json responses
-        T? parsed;
-
-        try { parsed = JsonSerializer.Deserialize<T>(data, JsonSettings); }
-        catch (Exception x)
-        {
-            throw new GeneralException($"""
-                The response from NeverBounce was unable to be parsed as JSON.
-                Try the request again, if this error persists let us know at support@neverbounce.com
-                Parse error: {x.Message} 
-                Response body: 
-                {data}
-                """);
-        }
-
-        if(parsed is null)
-            throw new GeneralException($"""
-                The response from NeverBounce was unable to be parsed as JSON.
-                Try the request again, if this error persists let us know at support@neverbounce.com
-                Response body: 
-                {data}
-                """);
+        var parsed = JsonUtility.Deserialise<T>(data);
 
         // Handle non 'success' statuses that return with HTTP success codes but an error message in the body
         var status = parsed.Status;
