@@ -1,8 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-      <AssemblyName>NeverBounceApi</AssemblyName>
-      <RootNamespace>NeverBounceApi</RootNamespace>
+    <AssemblyName>NeverBounceApi</AssemblyName>
+    <RootNamespace>NeverBounceApi</RootNamespace>
     <TargetFramework>net7.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
@@ -12,7 +12,11 @@
     <FileVersion>5.0.0</FileVersion>
   </PropertyGroup>
 
-    <ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="7.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\NeverBounceSDK\NeverBounceSDK.csproj">
       <Project>{f3a4d952-0692-49d3-a78a-1d417e23bd40}</Project>
       <Name>NeverBounceSDK</Name>
