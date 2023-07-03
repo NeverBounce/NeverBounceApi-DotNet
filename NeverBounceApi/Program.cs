@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using NeverBounce;
 using System.Text;
@@ -10,12 +9,6 @@ Console.OutputEncoding = Encoding.UTF8;
 
 // Init .NET DI host
 var builder = Host.CreateDefaultBuilder(args);
-
-// Get config - local appsettings.json, user secrets (for API key, which shouldn't go into source control), environment variables
-//builder.ConfigureHostConfiguration(host => host.
-//    AddJsonFile("appsettings.json", optional: false).
-//    AddUserSecrets("neverbounce").
-//    AddEnvironmentVariables());
 
 #if DEBUG
 // For this example force a dev environment
