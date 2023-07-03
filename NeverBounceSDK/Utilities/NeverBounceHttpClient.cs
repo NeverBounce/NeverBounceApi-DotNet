@@ -154,7 +154,8 @@ public sealed class NeverBounceHttpClient: INeverBounceHttpClient
         string? contentType = response.Content.Headers.ContentType?.ToString();
         string data = await response.Content.ReadAsStringAsync();
 
-        if (contentType != "application/json")
+        // Expects "application/json", but may be "application/json; charset=utf-8"
+        if (contentType is null || !contentType.Contains("application/json", StringComparison.OrdinalIgnoreCase))
             // Handle unexpected response types
             throw new GeneralException($"""
                 The response from NeverBounce was has a data type of "{contentType}", but "application/json" was expected. {response.StatusCode}
