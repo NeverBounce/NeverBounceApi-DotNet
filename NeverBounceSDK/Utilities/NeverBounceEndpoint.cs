@@ -24,38 +24,38 @@ public sealed class NeverBounceEndpoint: INeverBounceEndpoint
         this.logger = loggerFactory?.CreateLogger<NeverBounceEndpoint>();
     }
 
-    public async Task<HttpContent> RequestGetContent(string endpoint, object? model)
+    public async Task<HttpContent> RequestGetContent(string endpoint, object? model, CancellationToken? cancellationToken)
     {
         string getRequest =  $"{endpoint}?key={Uri.EscapeDataString(this.key)}";
         if (model is not null) getRequest += "&" + ToQueryString(model);
 
         this.logger?.LogInformation("GET request to NeverBounce {EndPoint}", getRequest);
-        var response = await this.endpointService.GetAsync(getRequest, CancellationToken.None);
+        var response = await this.endpointService.GetAsync(getRequest, cancellationToken ?? CancellationToken.None);
 
         await EnsureResponseHasSuccessContent(response);
 
         return response.Content;
     }
 
-    public async Task<T> RequestGet<T>(string endpoint, object? model) where T : notnull, ResponseModel
+    public async Task<T> RequestGet<T>(string endpoint, object? model, CancellationToken? cancellationToken) where T : notnull, ResponseModel
     {
         string getRequest = $"{endpoint}?key={Uri.EscapeDataString(this.key)}";
         if (model is not null) getRequest += "&" + ToQueryString(model);
 
         this.logger?.LogInformation("GET request to NeverBounce {EndPoint}", getRequest);
 
-        var response = await this.endpointService.GetAsync(getRequest, CancellationToken.None);
+        var response = await this.endpointService.GetAsync(getRequest, cancellationToken ?? CancellationToken.None);
 
         return await ParseResponse<T>(response);
     }
 
-    public async Task<T> RequestPost<T>(string endpoint, object model) where T : notnull, ResponseModel
+    public async Task<T> RequestPost<T>(string endpoint, object model, CancellationToken? cancellationToken) where T : notnull, ResponseModel
     {
         string strContent = JsonUtility.Serialise(model, this.key);
         this.logger?.LogInformation("GET request to NeverBounce {EndPoint}, Content: {Content}", endpoint, strContent);
 
         var content = new StringContent(strContent, Encoding.UTF8, "application/json");
-        var response = await this.endpointService.PostAsync(endpoint, content, CancellationToken.None);
+        var response = await this.endpointService.PostAsync(endpoint, content, cancellationToken ?? CancellationToken.None);
 
         return await ParseResponse<T>(response);
     }

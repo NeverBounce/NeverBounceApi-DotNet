@@ -154,7 +154,7 @@ public sealed class JobsService
     public async Task<Stream> Download(JobDownloadRequestModel model, CancellationToken cancellationToken)
     {
         // expect "application/octet-stream"
-        var content = await this.client.RequestGetContent("jobs/download", model);
+        var content = await this.client.RequestGetContent("jobs/download", model, cancellationToken);
         return await content.ReadAsStreamAsync(cancellationToken);
     }
 
@@ -162,8 +162,8 @@ public sealed class JobsService
     /// <param name="jobID">The ID of the job.</param>
     /// <param name="cancellationToken">Optional token to cancel long downloads</param>
     /// <returns>A stream of the file contents</returns>
-    public async Task<Stream> Download(int jobID, CancellationToken cancellationToke) =>
-        await this.Download(new JobDownloadRequestModel(jobID), cancellationToke);
+    public async Task<Stream> Download(int jobID, CancellationToken cancellationToken) =>
+        await this.Download(new JobDownloadRequestModel(jobID), cancellationToken);
 
     /// <summary>Download the CSV data for the job</summary>
     /// <param name="jobID">The ID of the job.</param>
