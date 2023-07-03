@@ -1,9 +1,16 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using NeverBounce;
 
 // Init .NET DI host
 var builder = Host.CreateDefaultBuilder(args);
+
+// Get config - local appsettings.json, user secrets (for API key, which shouldn't go into source control), environment variables
+builder.ConfigureHostConfiguration(host => host.
+    AddJsonFile("appsettings.json", optional: false).
+    AddUserSecrets("neverbounce").
+    AddEnvironmentVariables());
 
 // Add service with configuration
 builder.ConfigureServices((host, s) => s.AddNeverBounceService(host.Configuration));
