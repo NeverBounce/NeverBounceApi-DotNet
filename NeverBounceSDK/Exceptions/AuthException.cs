@@ -1,6 +1,6 @@
-﻿using System.Runtime.Serialization;
+﻿namespace NeverBounce.Exceptions;
+using System.Runtime.Serialization;
 
-namespace NeverBounce.Exceptions;
 
 [Serializable]
 public class AuthException : Exception

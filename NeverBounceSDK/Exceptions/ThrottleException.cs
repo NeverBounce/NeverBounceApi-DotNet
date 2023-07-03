@@ -1,6 +1,5 @@
-﻿using System.Runtime.Serialization;
-
-namespace NeverBounce.Exceptions;
+﻿namespace NeverBounce.Exceptions;
+using System.Runtime.Serialization;
 
 [Serializable]
 public class ThrottleException : Exception
