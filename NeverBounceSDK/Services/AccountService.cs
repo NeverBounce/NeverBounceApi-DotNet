@@ -13,6 +13,6 @@ public sealed class AccountService
 
     /// <summary>Check your account's balance and how many jobs are currently running</summary>
     /// <returns>AccountInfoResponseModel</returns>
-    public async Task<AccountInfoResponseModel> Info() => 
-        await this.client.RequestGet<AccountInfoResponseModel>("/account/info");
+    public async Task<AccountInfoResponseModel> Info() =>
+        await this.client.RequestGet<AccountInfoResponseModel>("account/info");
 }

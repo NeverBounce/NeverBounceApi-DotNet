@@ -17,7 +17,7 @@ public sealed class SingleService
     /// <param name="model">The model details to request</param>
     /// <returns>Result of checking the email</returns>
     public async Task<SingleResponseModel> Check(SingleRequestModel model) =>
-        await this.client.RequestGet<SingleResponseModel>("/single/check", model);
+        await this.client.RequestGet<SingleResponseModel>("single/check", model);
 
     /// <summary>Single verification allows you verify individual emails and gather additional information pertaining to the email.
     /// <para>Each verification performed over the Single endpoints cost 1 credit. 
