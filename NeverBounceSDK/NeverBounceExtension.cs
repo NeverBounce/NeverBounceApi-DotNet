@@ -72,7 +72,7 @@ public static class NeverBounceExtension
 
         // Ensure URL starts with https://
         if (h.StartsWith("http://", StringComparison.OrdinalIgnoreCase))
-            h = "https://" + h.Substring("http://".Length);
+            h = string.Concat("https://", h.AsSpan("http://".Length));
         else if (!h.StartsWith("https://", StringComparison.OrdinalIgnoreCase))
             h = "https://" + h;
 
