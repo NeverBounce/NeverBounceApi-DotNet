@@ -23,7 +23,6 @@ public class TestHttpClient
             new StringContent(
                 "{\"status\": \"auth_failure\", \"message\": \"The key provided is invalid\", \"execution_time\":100}");
         responseMessage.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-        clientMock.Setup(http => http.DefaultRequestHeaders).Returns(new HttpClient().DefaultRequestHeaders);
         clientMock.Setup(http => http.GetAsync(It.IsAny<Uri>())).Returns(Task.FromResult(responseMessage));
 
         var httpClient = new NeverBounceHttpClient(clientMock.Object, fakeSettings);
@@ -40,7 +39,6 @@ public class TestHttpClient
         var responseMessage = new HttpResponseMessage(HttpStatusCode.OK);
         responseMessage.Content = new StringContent("{notvalid json}");
         responseMessage.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-        clientMock.Setup(http => http.DefaultRequestHeaders).Returns(new HttpClient().DefaultRequestHeaders);
         clientMock.Setup(http => http.GetAsync(It.IsAny<Uri>())).Returns(Task.FromResult(responseMessage));
 
         var httpClient = new NeverBounceHttpClient(clientMock.Object, fakeSettings);
@@ -58,7 +56,6 @@ public class TestHttpClient
             new StringContent(
                 "{\"status\": \"bad_referrer\", \"message\": \"The originator of this request is not trusted\", \"execution_time\":100}");
         responseMessage.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-        clientMock.Setup(http => http.DefaultRequestHeaders).Returns(new HttpClient().DefaultRequestHeaders);
         clientMock.Setup(http => http.GetAsync(It.IsAny<Uri>())).Returns(Task.FromResult(responseMessage));
 
         var httpClient = new NeverBounceHttpClient(clientMock.Object, fakeSettings);
@@ -75,7 +72,6 @@ public class TestHttpClient
             new StringContent(
                 "{\"status\": \"general_failure\", \"message\": \"Something went wrong\", \"execution_time\":100}");
         responseMessage.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-        clientMock.Setup(http => http.DefaultRequestHeaders).Returns(new HttpClient().DefaultRequestHeaders);
         clientMock.Setup(http => http.GetAsync(It.IsAny<Uri>())).Returns(Task.FromResult(responseMessage));
 
         var httpClient = new NeverBounceHttpClient(clientMock.Object, fakeSettings);
@@ -89,7 +85,6 @@ public class TestHttpClient
     public void TestHttpStatusCode400ErrorHandling()
     {
         var clientMock = new Mock<IHttpServiceEndpoint>();
-        clientMock.Setup(http => http.DefaultRequestHeaders).Returns(new HttpClient().DefaultRequestHeaders);
         clientMock.Setup(http => http.GetAsync(It.IsAny<Uri>()))
             .Returns(Task.FromResult(new HttpResponseMessage(HttpStatusCode.NotFound)));
 
@@ -102,7 +97,6 @@ public class TestHttpClient
     public void TestHttpStatusCode500ErrorHandling()
     {
         var clientMock = new Mock<IHttpServiceEndpoint>();
-        clientMock.Setup(http => http.DefaultRequestHeaders).Returns(new HttpClient().DefaultRequestHeaders);
         clientMock.Setup(http => http.GetAsync(It.IsAny<Uri>()))
             .Returns(Task.FromResult(new HttpResponseMessage(HttpStatusCode.ServiceUnavailable)));
 
@@ -118,7 +112,6 @@ public class TestHttpClient
         var responseMessage = new HttpResponseMessage(HttpStatusCode.OK);
         responseMessage.Content = new StringContent("{\"status\": \"success\", \"execution_time\":100}");
         responseMessage.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-        clientMock.Setup(http => http.DefaultRequestHeaders).Returns(new HttpClient().DefaultRequestHeaders);
         clientMock.Setup(http => http.GetAsync(It.IsAny<Uri>())).Returns(Task.FromResult(responseMessage));
 
         var httpClient = new NeverBounceHttpClient(clientMock.Object, fakeSettings);
@@ -138,7 +131,6 @@ public class TestHttpClient
         var responseMessage = new HttpResponseMessage(HttpStatusCode.OK);
         responseMessage.Content = new StringContent("Hello!");
         responseMessage.Content.Headers.ContentType = new MediaTypeHeaderValue("text/html");
-        clientMock.Setup(http => http.DefaultRequestHeaders).Returns(new HttpClient().DefaultRequestHeaders);
         clientMock.Setup(http => http.GetAsync(It.IsAny<Uri>())).Returns(Task.FromResult(responseMessage));
 
         var httpClient = new NeverBounceHttpClient(clientMock.Object, fakeSettings);
@@ -154,7 +146,6 @@ public class TestHttpClient
         var responseMessage = new HttpResponseMessage(HttpStatusCode.OK);
         responseMessage.Content = new StringContent("Hello!");
         responseMessage.Content.Headers.ContentType = new MediaTypeHeaderValue("text/csv");
-        clientMock.Setup(http => http.DefaultRequestHeaders).Returns(new HttpClient().DefaultRequestHeaders);
         clientMock.Setup(http => http.GetAsync(It.IsAny<Uri>())).Returns(Task.FromResult(responseMessage));
 
         var httpClient = new NeverBounceHttpClient(clientMock.Object, fakeSettings);
@@ -172,7 +163,6 @@ public class TestHttpClient
             new StringContent(
                 "{\"status\": \"temp_unavail\", \"message\": \"Something went wrong\", \"execution_time\":100}");
         responseMessage.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-        clientMock.Setup(http => http.DefaultRequestHeaders).Returns(new HttpClient().DefaultRequestHeaders);
         clientMock.Setup(http => http.GetAsync(It.IsAny<Uri>())).Returns(Task.FromResult(responseMessage));
 
         var httpClient = new NeverBounceHttpClient(clientMock.Object, fakeSettings);
@@ -189,7 +179,6 @@ public class TestHttpClient
             new StringContent(
                 "{\"status\": \"throttle_triggered\", \"message\": \"Too many requests in a short amount of time\", \"execution_time\":100}");
         responseMessage.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-        clientMock.Setup(http => http.DefaultRequestHeaders).Returns(new HttpClient().DefaultRequestHeaders);
         clientMock.Setup(http => http.GetAsync(It.IsAny<Uri>())).Returns(Task.FromResult(responseMessage));
 
         var httpClient = new NeverBounceHttpClient(clientMock.Object, fakeSettings);
@@ -201,7 +190,6 @@ public class TestHttpClient
     public void TestToQueryStringSimple()
     {
         var clientMock = new Mock<IHttpServiceEndpoint>();
-        clientMock.Setup(http => http.DefaultRequestHeaders).Returns(new HttpClient().DefaultRequestHeaders);
         var httpClient = new NeverBounceHttpClient(clientMock.Object, fakeSettings);
 
         var query = new SingleRequestModel("support@neverbounce.com");
