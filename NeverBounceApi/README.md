@@ -12,6 +12,9 @@ Example project for using NeverBounce in .NET, a command-line interface implemen
   - If the file is local it will parse and be uploaded as an array.
 - `neverbounce.cli jobs download <job ID>` download the results of a job.
   - `neverbounce.cli jobs download <job ID> --file:<output file>` optionally populate a file with the result.
+- `neverbounce.cli jobs parse <job ID>` parse a bulk job.
+- `neverbounce.cli jobs start <job ID>` start a bulk job - this will use credits.
+  - `neverbounce.cli jobs start <job ID> --run-sample` run a sample for a bulk job.
 
 ## Config
 Configuration is held in an `appsettings.json` file:
