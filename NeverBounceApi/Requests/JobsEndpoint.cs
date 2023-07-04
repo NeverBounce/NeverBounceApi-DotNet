@@ -48,27 +48,6 @@ public static class JobsEndpoint
         }
     }
 
-
-    class ExampleSendModel : ICreateRequestInputRecord { 
-        public int ID { get; set; }
-        public string Email { get; set; }
-        public string Name { get; set; }
-    }
-
-    public static async Task<int> CreateSuppliedData(NeverBounceService sdk)
-    {
-        var data = new ExampleSendModel[] {
-            new ExampleSendModel { ID = 3, Email = "support@neverbounce.com", Name = "Fred McValid" },
-            new ExampleSendModel { ID = 4, Email = "invalid@neverbounce.com", Name = "Bob McInvalid" },
-        };
-        return await sdk.Jobs.Create(data, name: "Created From dotNET array", autoParse: true);
-    }
-
-    public static async Task<int> CreateRemoteUrl(NeverBounceService sdk)
-    {
-        return await sdk.Jobs.Create("https://example.com/file.csv", name: "Created From dotNET file.csv", autoParse: true);
-    }
-
     public static async Task<string> Parse(NeverBounceService sdk)
     {
         return await sdk.Jobs.Parse(290561);
