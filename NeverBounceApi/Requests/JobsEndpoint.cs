@@ -1,104 +1,161 @@
-﻿// Author: Mike Mollick <mike@neverbounce.com>
-//
-// Copyright (c) 2017 NeverBounce
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy
-// of this software and associated documentation files (the "Software"), to deal
-// in the Software without restriction, including without limitation the rights
-// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-// copies of the Software, and to permit persons to whom the Software is
-// furnished to do so, subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in
-// all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-// THE SOFTWARE.
-
-using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿namespace NeverBounce.Api;
 using NeverBounce;
 using NeverBounce.Models;
+using System.Text;
 
-namespace NeverBounceSdkExamples.Requests
+public static class JobsEndpoint
 {
-    public class JobsEndpoint
+    public static async Task Search(NeverBounceService neverBounceService, int page)
     {
-        public static async Task<JobSearchResponseModel> Search(NeverBounceSdk sdk)
-        {
-            var model = new JobSearchRequestModel();
-            model.job_id = 288025;
-            return await sdk.Jobs.Search(model);
-        }
+        var result = await neverBounceService.Jobs.Search(new() { Page = page, ItemsPerPage = 100 });
 
-        public static async Task<JobCreateResponseModel> CreateSuppliedData(NeverBounceSdk sdk)
-        {
-            var model = new JobCreateSuppliedDataRequestModel();
-            model.filename = "Created From dotNET.csv";
-            model.auto_parse = true;
-            model.auto_start = false;
-            var data = new List<object>();
-            data.Add(new {id = "3", email = "support@neverbounce.com", name = "Fred McValid"});
-            data.Add(new {id = "4", email = "invalid@neverbounce.com", name = "Bob McInvalid"});
-            model.input = data;
-            return await sdk.Jobs.CreateFromSuppliedData(model);
-        }
+        Console.WriteLine($"Jobs: {result.TotalResults} on {page}/{result.TotalPages} pages");
+        if (result.Results is null) return;
 
-        public static async Task<JobCreateResponseModel> CreateRemoteUrl(NeverBounceSdk sdk)
+        foreach(var j in result.Results)
         {
-            var model = new JobCreateRemoteUrlRequestModel();
-            model.filename = "Created From dotNET.csv";
-            model.auto_parse = true;
-            model.auto_start = false;
-            model.input = "https://example.com/file.csv";
-            return await sdk.Jobs.CreateFromRemoteUrl(model);
-        }
+            if (j.JobStatus == JobStatus.Failed)
+                Console.WriteLine($"\t{j.ID} {j.Filename} FAILED {j.FailureReason}");
+            else
+            {
+                Console.WriteLine($"\t{j.ID} {j.Filename}: {j.JobStatus} {j.BounceEstimate}%");
+                Console.WriteLine($"\t\tBounce estimate {j.BounceEstimate}%");
 
-        public static async Task<JobParseResponseModel> Parse(NeverBounceSdk sdk)
-        {
-            var model = new JobParseRequestModel();
-            model.job_id = 290561;
-            return await sdk.Jobs.Parse(model);
+                if(j.JobStatus != JobStatus.Complete)
+                    Console.WriteLine($"\t\tProgress {j.PercentComplete}%");
+            }
         }
+        
+    }
 
-        public static async Task<JobStartResponseModel> Start(NeverBounceSdk sdk)
-        {
-            var model = new JobStartRequestModel();
-            model.job_id = 290561;
-            return await sdk.Jobs.Start(model);
-        }
+    public static async Task Create(NeverBounceService neverBounceService, string file) {
+        int jobID;
+        if (file.StartsWith("https://", StringComparison.OrdinalIgnoreCase) ||
+            file.StartsWith("http://", StringComparison.OrdinalIgnoreCase))
+            jobID = await neverBounceService.Jobs.Create(file, file, autoParse: false, autoStart: false, runSample: true);
+        else
+            jobID = await neverBounceService.Jobs.Create(ParseCsvFile(file), file, autoParse: false, autoStart: false, runSample: true);
 
-        public static async Task<JobStatusResponseModel> Status(NeverBounceSdk sdk)
-        {
-            var model = new JobStatusRequestModel();
-            model.job_id = 290561;
-            return await sdk.Jobs.Status(model);
-        }
+        Console.WriteLine($"Job created: {jobID}");
+    }
 
-        public static async Task<JobResultsResponseModel> Results(NeverBounceSdk sdk)
+    static IEnumerable<IEnumerable<object>> ParseCsvFile(string file) {
+        // Brute force dumb CSV parser, example code only
+        using var reader = new StreamReader(file);
+        while (!reader.EndOfStream)
         {
-            var model = new JobResultsRequestModel();
-            model.job_id = 290561;
-            return await sdk.Jobs.Results(model);
+            string? line = reader.ReadLine();
+            if (line is not null)
+                yield return line.Split(',').Select(s => s.Trim(' ', '"'));
         }
+    }
 
-        public static async Task<string> Download(NeverBounceSdk sdk)
-        {
-            var model = new JobDownloadRequestModel();
-            model.job_id = 290561;
-            return await sdk.Jobs.Download(model);
-        }
+    public static async Task Parse(NeverBounceService neverBounceService, int jobID)
+    {
+        var queue = await neverBounceService.Jobs.Parse(jobID);
+        Console.WriteLine($"Parse started for {jobID}, queue {queue}");
+    }
 
-        public static async Task<JobDeleteResponseModel> Delete(NeverBounceSdk sdk)
-        {
-            var model = new JobDeleteRequestModel();
-            model.job_id = 290561;
-            return await sdk.Jobs.Delete(model);
+    public static async Task Start(NeverBounceService neverBounceService, int jobID, bool runSample = false)
+    {
+        var queue = await neverBounceService.Jobs.Start(jobID, runSample);
+        Console.WriteLine($"{(runSample ? "Sample" : "Run")} started for {jobID}, queue {queue}");
+    }
+
+    public static async Task Status(NeverBounceService neverBounceService, int jobID)
+    {
+        var jobStatus = await neverBounceService.Jobs.Status(jobID);
+        Console.WriteLine($"{jobStatus.ID} {jobStatus.Filename}");
+        Console.WriteLine($"\t{jobStatus.Status}");
+
+        if (jobStatus.Total is not null) {
+            Console.WriteLine($"\tTotals:");
+            Console.WriteLine($"\t\tProcessed {jobStatus.Total.Processed ?? 0}");
+
+            if (jobStatus.Total.Valid > 0)
+                Console.WriteLine($"\t\tValid {jobStatus.Total.Valid}");
+
+            if (jobStatus.Total.Invalid > 0)
+                Console.WriteLine($"\t\tInvalid {jobStatus.Total.Invalid}");
+
+            if (jobStatus.Total.Invalid > 0)
+                Console.WriteLine($"\t\tBillable {jobStatus.Total.Invalid}");
+
+            if (jobStatus.Total.BadSyntax > 0)
+                Console.WriteLine($"\t\tBad syntax {jobStatus.Total.BadSyntax}");
+
+            if (jobStatus.Total.Catchall > 0)
+                Console.WriteLine($"\t\tCatch-all {jobStatus.Total.Catchall}");
+
+            if (jobStatus.Total.Disposable > 0)
+                Console.WriteLine($"\t\tDisposable {jobStatus.Total.Disposable}");
+
+            if (jobStatus.Total.Duplicates > 0)
+                Console.WriteLine($"\t\tDuplicates {jobStatus.Total.Duplicates}");
+
+            if (jobStatus.Total.Unknown > 0)
+                Console.WriteLine($"\t\tUnknown {jobStatus.Total.Unknown}");
         }
+    }
+
+    public static async Task Results(NeverBounceService neverBounceService, int jobID, int page)
+    {
+        var jobResults = await neverBounceService.Jobs.Results(jobID, page, 100);
+        Console.WriteLine($"Total results: {jobResults.TotalResults} on {page}/{jobResults.TotalPages} pages");
+
+        if (jobResults.Results is not null)
+            foreach (var r in jobResults.Results) {
+                var v = r.Verification;
+                if (v is not null)
+                {
+                    Console.WriteLine($"\tEmail: {v.AddressInfo?.OriginalEmail}");
+                    Console.WriteLine($"\t\t{SingleEndpoint.ResultCodeDescription(v.Result)}");
+
+                    if (v.Flags?.Any() ?? false)
+                        Console.WriteLine($"\t\tFlags: {string.Join(", ", v.Flags)}");
+                }
+                else if(r.Data is not null) {
+                    foreach(var pair in r.Data)
+                        Console.WriteLine($"\t\t{pair.Key}: {pair.Value}");
+                }
+            }
+    }
+
+    public static async Task Download(NeverBounceService neverBounceService, int jobID, string? fileName)
+    {
+        await using var stream = await neverBounceService.Jobs.Download(jobID);
+
+        using var reader = new StreamReader(stream, Encoding.UTF8);
+        if (fileName is not null)
+        {
+            Console.WriteLine("Downloading result...");
+
+            using var writer = new StreamWriter(fileName, false, Encoding.UTF8);
+            while (!reader.EndOfStream)
+            {
+                string? line = await reader.ReadLineAsync();
+                if (line is not null)
+                    await writer.WriteLineAsync("\t" + line);
+            }
+            await writer.FlushAsync();
+
+            Console.WriteLine($"\tSaved to {fileName}");
+        }
+        else {
+            Console.WriteLine("Download result:");
+            while (!reader.EndOfStream)
+            {
+                string? line = await reader.ReadLineAsync();
+                if (line is not null)
+                    Console.WriteLine("\t" + line);
+            }
+        }
+    }
+
+    public static async Task Delete(NeverBounceService neverBounceService, int jobID)
+    {
+        await neverBounceService.Jobs.Delete(jobID);
+        // if no exception then it should have worked
+        Console.WriteLine($"Job {jobID} deleted");
     }
 }

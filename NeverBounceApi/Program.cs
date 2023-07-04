@@ -1,77 +1,33 @@
-﻿// Author: Mike Mollick <mike@neverbounce.com>
-//
-// Copyright (c) 2017 NeverBounce
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy
-// of this software and associated documentation files (the "Software"), to deal
-// in the Software without restriction, including without limitation the rights
-// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-// copies of the Software, and to permit persons to whom the Software is
-// furnished to do so, subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in
-// all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-// THE SOFTWARE.
-
-using System;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using NeverBounce;
-using NeverBounceSdkExamples.Requests;
+using NeverBounce.Cli;
+using NeverBounce.Exceptions;
+using System.Text;
 
-namespace NeverBounceSdkExamples
-{
-    internal class Program
-    {
-        private static void Main(string[] args)
-        {
-            var sdk = new NeverBounceSdk("api_key");
-            
-            // https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/await
-            
-            var response = AccountEndpoint.Info(sdk).Result;
-            //var response = POEEndpoints.Confirm(sdk).Result;
-            //var response = SingleEndpoints.Check(sdk).Result;
-            //var response = JobsEndpoint.Search(sdk).Result;
-            //var response = JobsEndpoint.CreateSuppliedData(sdk).Result;
-            //var response = JobsEndpoint.CreateRemoteUrl(sdk).Result;
-            //var response = JobsEndpoint.Parse(sdk).Result;
-            //var response = JobsEndpoint.Start(sdk).Result;
-            //var response = JobsEndpoint.Status(sdk).Result;
-            //var response = JobsEndpoint.Results(sdk).Result;
-            //var response = JobsEndpoint.Download(sdk).Result;
-            //var response = JobsEndpoint.Delete(sdk).Result;
+// Bug workaround: https://developercommunity.visualstudio.com/content/problem/176587/unicode-characters-in-output-window.html
+// and https://stackoverflow.com/questions/51483609/in-net-core-using-ilogger-how-do-i-log-unicode-chars
+Console.OutputEncoding = Encoding.UTF8;
 
-            var_dump(response);
-            Console.ReadLine();
-        }
+// Init .NET DI host
+var builder = Host.CreateDefaultBuilder(args);
 
-        public static void var_dump(object obj)
-        {
-            Console.WriteLine("{0,-18} {1}", "Name", "Value");
-            var ln = @"-------------------------------------   
-               ----------------------------";
-            Console.WriteLine(ln);
+#if DEBUG
+// For this example force a dev environment
+builder.UseEnvironment(Environments.Development);
+#endif
 
-            var t = obj.GetType();
-            var props = t.GetProperties();
+// Add service with configuration
+builder.ConfigureServices((host, s) => s.AddNeverBounceService(host.Configuration));
 
-            for (var i = 0; i < props.Length; i++)
-                try
-                {
-                    Console.WriteLine("{0,-18} {1}",
-                        props[i].Name, props[i].GetValue(obj, null));
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine(e);
-                }
-            Console.WriteLine();
-        }
-    }
-}
+// Build the host
+using var host = builder.Build();
+await host.StartAsync();
+
+// Get the never bounce service from DI
+// In another DI service you can just add a NeverBounceService parameter to the constructor
+// Or in a controller you can add [FromServices] attribute
+var neverBounceService = host.Services.GetRequiredService<NeverBounceService>();
+
+// This does all the argument parsing and calls the endpoint utility methods
+await CommandLineInterface.Parse(neverBounceService, args);

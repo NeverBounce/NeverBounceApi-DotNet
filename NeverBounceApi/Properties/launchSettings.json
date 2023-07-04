@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "NeverBounceCliExample": {
+      "commandName": "Project",
+      "commandLineArgs": "account"
+    }
+  }
+}

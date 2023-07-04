@@ -1,11 +1,11 @@
 language: csharp
-solution: NeverBounceSDK.sln
+solution: NeverBounce.sln
 install:
-- nuget restore NeverBounceSDK.sln
+- nuget restore NeverBounce.sln
 - nuget install NUnit.Runners -Version 3.7.0 -OutputDirectory testrunner
 script:
-- xbuild /p:Configuration=Release NeverBounceSDK.sln
-- mono testrunner/NUnit.ConsoleRunner.3.7.0/tools/nunit3-console.exe ./NeverBounceSDKTests/bin/Release/NeverBounceSDKTests.dll
+- xbuild /p:Configuration=Release NeverBounce.sln
+- mono testrunner/NUnit.ConsoleRunner.3.7.0/tools/nunit3-console.exe ./NeverBounceSDKTests/bin/Release/NeverBounce.Tests.dll
 notifications:
   email: false
   slack:
