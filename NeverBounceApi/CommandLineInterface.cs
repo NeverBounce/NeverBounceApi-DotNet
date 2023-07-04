@@ -37,11 +37,23 @@ static class CommandLineInterface
             jobCommand.AddOption(pageOption);
             jobCommand.SetHandler(async (pageValue) => await JobsEndpoint.Search(neverBounceService, pageValue), pageOption);
 
-            var createCommand = new Command("create", "Create a batch to verify multiple emails together, the same way you would verify lists in the dashboard.");
-            var fileArgument = new Argument<string>("file", "The file to upload or set");
-            createCommand.AddArgument(fileArgument);
-            createCommand.SetHandler(async (fileValue) => await JobsEndpoint.Create(neverBounceService, fileValue), fileArgument);
-            jobCommand.Add(createCommand);
+            {   // Create uploads a file or points to a file online
+                var createCommand = new Command("create", "Create a batch to verify multiple emails together, the same way you would verify lists in the dashboard.");
+                var fileArgument = new Argument<string>("file", "The file to upload or set");
+                createCommand.AddArgument(fileArgument);
+                createCommand.SetHandler(async (fileValue) => await JobsEndpoint.Create(neverBounceService, fileValue), fileArgument);
+                jobCommand.Add(createCommand);
+            }
+
+            {
+                var downloadCommand = new Command("download", "Download the CSV data for the job");
+                var jobArgument = new Argument<int>("job", "The ID of the job to download");
+                downloadCommand.AddArgument(jobArgument);
+                var fileOption = new Option<string>("--file", "Optional file to write the results to, if not passed output will be the console.");
+                downloadCommand.AddOption(fileOption);
+                downloadCommand.SetHandler(async (jobArgument, fileValue) => await JobsEndpoint.Download(neverBounceService, jobArgument, fileValue), jobArgument, fileOption);
+                jobCommand.Add(downloadCommand);
+            }
 
             rootCommand.Add(jobCommand);
         }

@@ -13,10 +13,10 @@ public static class JobsEndpoint
         foreach(var j in result.Results)
         {
             if (j.JobStatus == JobStatus.Failed)
-                Console.WriteLine($"\t{j.Filename} FAILED {j.FailureReason}");
+                Console.WriteLine($"\t{j.ID} {j.Filename} FAILED {j.FailureReason}");
             else
             {
-                Console.WriteLine($"\t{j.Filename}: {j.JobStatus} {j.BounceEstimate}%");
+                Console.WriteLine($"\t{j.ID} {j.Filename}: {j.JobStatus} {j.BounceEstimate}%");
                 Console.WriteLine($"\t\tBounce estimate {j.BounceEstimate}%");
 
                 if(j.JobStatus != JobStatus.Complete)
@@ -89,11 +89,35 @@ public static class JobsEndpoint
         return await sdk.Jobs.Results(290561);
     }
 
-    public static async Task<string> Download(NeverBounceService sdk)
+    public static async Task Download(NeverBounceService neverBounceService, int jobID, string? fileName)
     {
-        await using var stream = await sdk.Jobs.Download(290561);
-        using TextReader reader = new StreamReader(stream, Encoding.UTF8);
-        return await reader.ReadToEndAsync();
+        await using var stream = await neverBounceService.Jobs.Download(jobID);
+
+        using var reader = new StreamReader(stream, Encoding.UTF8);
+        if (fileName is not null)
+        {
+            Console.WriteLine("Downloading result...");
+
+            using var writer = new StreamWriter(fileName, false, Encoding.UTF8);
+            while (!reader.EndOfStream)
+            {
+                string? line = await reader.ReadLineAsync();
+                if (line is not null)
+                    await writer.WriteLineAsync("\t" + line);
+            }
+            await writer.FlushAsync();
+
+            Console.WriteLine($"\tSaved to {fileName}");
+        }
+        else {
+            Console.WriteLine("Download result:");
+            while (!reader.EndOfStream)
+            {
+                string? line = await reader.ReadLineAsync();
+                if (line is not null)
+                    Console.WriteLine("\t" + line);
+            }
+        }
     }
 
     public static async Task Delete(NeverBounceService sdk)

@@ -30,7 +30,7 @@ var neverBounceService = host.Services.GetRequiredService<NeverBounceService>();
 
 await CommandLineInterface.Parse(neverBounceService, args);
 
-Console.ReadLine();
+// Console.ReadLine();
 
         
 // var response = AccountEndpoint.Info(sdk).Result;
