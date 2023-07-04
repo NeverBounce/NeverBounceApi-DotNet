@@ -130,6 +130,7 @@ static class CommandLineInterface
                 Console.Error.WriteLine(nbX.Message);
             }
         });
+
         commandLineBuilder.UseDefaults();
         var parser = commandLineBuilder.Build();
         return await parser.InvokeAsync(args);
