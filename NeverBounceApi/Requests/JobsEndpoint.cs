@@ -9,7 +9,7 @@ public static class JobsEndpoint
     {
         var result = await neverBounceService.Jobs.Search(new() { Page = page, ItemsPerPage = 100 });
 
-        Console.WriteLine($"Jobs: {result.TotalResults} in {result.TotalPages} pages");
+        Console.WriteLine($"Jobs: {result.TotalResults} on {page}/{result.TotalPages} pages");
         foreach(var j in result.Results)
         {
             if (j.JobStatus == JobStatus.Failed)
@@ -68,22 +68,55 @@ public static class JobsEndpoint
 
         if (jobStatus.Total is not null) {
             Console.WriteLine($"\tTotals:");
-
             Console.WriteLine($"\t\tProcessed {jobStatus.Total.Processed ?? 0}");
-            Console.WriteLine($"\t\tValid {jobStatus.Total.Valid ?? 0}");
-            Console.WriteLine($"\t\tInvalid {jobStatus.Total.Invalid ?? 0}");
-            Console.WriteLine($"\t\tBillable {jobStatus.Total.Billable ?? 0}");
-            Console.WriteLine($"\t\tBad syntax {jobStatus.Total.BadSyntax ?? 0}");
-            Console.WriteLine($"\t\tCatch-all {jobStatus.Total.Catchall ?? 0}");
-            Console.WriteLine($"\t\tDisposable {jobStatus.Total.Disposable ?? 0}");
-            Console.WriteLine($"\t\tDuplicates {jobStatus.Total.Duplicates ?? 0}");
-            Console.WriteLine($"\t\tUnknown {jobStatus.Total.Unknown ?? 0}");
+
+            if (jobStatus.Total.Valid > 0)
+                Console.WriteLine($"\t\tValid {jobStatus.Total.Valid}");
+
+            if (jobStatus.Total.Invalid > 0)
+                Console.WriteLine($"\t\tInvalid {jobStatus.Total.Invalid}");
+
+            if (jobStatus.Total.Invalid > 0)
+                Console.WriteLine($"\t\tBillable {jobStatus.Total.Invalid}");
+
+            if (jobStatus.Total.BadSyntax > 0)
+                Console.WriteLine($"\t\tBad syntax {jobStatus.Total.BadSyntax}");
+
+            if (jobStatus.Total.Catchall > 0)
+                Console.WriteLine($"\t\tCatch-all {jobStatus.Total.Catchall}");
+
+            if (jobStatus.Total.Disposable > 0)
+                Console.WriteLine($"\t\tDisposable {jobStatus.Total.Disposable}");
+
+            if (jobStatus.Total.Duplicates > 0)
+                Console.WriteLine($"\t\tDuplicates {jobStatus.Total.Duplicates}");
+
+            if (jobStatus.Total.Unknown > 0)
+                Console.WriteLine($"\t\tUnknown {jobStatus.Total.Unknown}");
         }
     }
 
-    public static async Task<JobResultsResponseModel> Results(NeverBounceService sdk)
+    public static async Task Results(NeverBounceService neverBounceService, int jobID, int page)
     {
-        return await sdk.Jobs.Results(290561);
+        var jobResults = await neverBounceService.Jobs.Results(jobID, page, 100);
+        Console.WriteLine($"Total results: {jobResults.TotalResults} on {page}/{jobResults.TotalPages} pages");
+
+        if (jobResults.Results is not null)
+            foreach (var r in jobResults.Results) {
+                var v = r.Verification;
+                if (v is not null)
+                {
+                    Console.WriteLine($"\tEmail: {v.AddressInfo?.OriginalEmail}");
+                    Console.WriteLine($"\t\t{SingleEndpoint.ResultCodeDescription(v.Result)}");
+
+                    if (v.Flags?.Any() ?? false)
+                        Console.WriteLine($"\t\tFlags: {string.Join(", ", v.Flags)}");
+                }
+                else if(r.Data is not null) {
+                    foreach(var pair in r.Data)
+                        Console.WriteLine($"\t\t{pair.Key}: {pair.Value}");
+                }
+            }
     }
 
     public static async Task Download(NeverBounceService neverBounceService, int jobID, string? fileName)
@@ -117,8 +150,10 @@ public static class JobsEndpoint
         }
     }
 
-    public static async Task Delete(NeverBounceService sdk)
+    public static async Task Delete(NeverBounceService neverBounceService, int jobID)
     {
-        await sdk.Jobs.Delete(290561);
+        await neverBounceService.Jobs.Delete(jobID);
+        // if no exception then it should have worked
+        Console.WriteLine($"Job {jobID} deleted");
     }
 }

@@ -9,7 +9,6 @@ static class CommandLineInterface
     public static async Task<int> Parse(NeverBounceService neverBounceService, string[] args)
     {
         // See https://learn.microsoft.com/en-us/dotnet/standard/commandline/
-
         var rootCommand = new RootCommand("Command-line interface to access NeverBounce");
 
         {   // Get account info with "account"
@@ -28,14 +27,14 @@ static class CommandLineInterface
             rootCommand.Add(checkCommand);
         }
 
-        {
-            // The bulk endpoint provides high-speed validation on a list of email addresses.
+        {   // The bulk endpoint provides high-speed validation on a list of email addresses.
             var jobCommand = new Command("jobs", "List or find current jobs");
 
-            // Default option is to search jobs
-            var pageOption = new Option<int>("--page", () => 1, "1-indexed page to show, jobs shown 100 per page");
-            jobCommand.AddOption(pageOption);
-            jobCommand.SetHandler(async page => await JobsEndpoint.Search(neverBounceService, page), pageOption);
+            {   // Default option is to search jobs
+                var pageOption = new Option<int>("--page", () => 1, "1-indexed page to show, jobs shown 100 per page");
+                jobCommand.AddOption(pageOption);
+                jobCommand.SetHandler(async page => await JobsEndpoint.Search(neverBounceService, page), pageOption);
+            }
 
             {   // Create uploads a file or points to a file online
                 var createCommand = new Command("create", "Create a batch to verify multiple emails together, the same way you would verify lists in the dashboard.");
@@ -73,12 +72,30 @@ static class CommandLineInterface
                 jobCommand.Add(startCommand);
             }
 
-            {   // Parse a batch job that has been created with auto_parse disabled
+            {   // Get the current status of a job
                 var statusCommand = new Command("status", "Get the current state of a job");
                 var jobArgument = new Argument<int>("job", "The ID of the job to get the state of");
                 statusCommand.AddArgument(jobArgument);
                 statusCommand.SetHandler(async job => await JobsEndpoint.Status(neverBounceService, job), jobArgument);
                 jobCommand.Add(statusCommand);
+            }
+
+            {   // Parse a batch job that has been created with auto_parse disabled
+                var resultsCommand = new Command("results", "Get the results of a job");
+                var jobArgument = new Argument<int>("job", "The ID of the job to get the results from");
+                resultsCommand.AddArgument(jobArgument); 
+                var pageOption = new Option<int>("--page", () => 1, "1-indexed page to show, results shown 100 per page");
+                resultsCommand.AddOption(pageOption);
+                resultsCommand.SetHandler(async (job, page) => await JobsEndpoint.Results(neverBounceService, job, page), jobArgument, pageOption);
+                jobCommand.Add(resultsCommand);
+            }
+
+            {   // Remove a job
+                var deleteCommand = new Command("delete", "Delete a job, this cannot be reversed");
+                var jobArgument = new Argument<int>("job", "The ID of the job to remove");
+                deleteCommand.AddArgument(jobArgument);
+                deleteCommand.SetHandler(async job => await JobsEndpoint.Delete(neverBounceService, job), jobArgument);
+                jobCommand.Add(deleteCommand);
             }
 
             rootCommand.Add(jobCommand);
