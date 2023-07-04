@@ -15,6 +15,7 @@ Example project for using NeverBounce in .NET, a command-line interface implemen
 - `neverbounce.cli jobs parse <job ID>` parse a bulk job.
 - `neverbounce.cli jobs start <job ID>` start a bulk job - this will use credits.
   - `neverbounce.cli jobs start <job ID> --run-sample` run a sample for a bulk job.
+- `neverbounce.cli jobs status <job ID>` get the current status of a job.
 
 ## Config
 Configuration is held in an `appsettings.json` file:
