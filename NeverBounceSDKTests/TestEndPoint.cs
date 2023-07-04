@@ -11,7 +11,7 @@ using static TestUtility;
 [TestFixture]
 public class TestEndPoint
 {
-    
+
     [Test]
     public void TestAuthFailureHandling()
     {
@@ -23,10 +23,11 @@ public class TestEndPoint
             }
             """);
         var resp = Assert.ThrowsAsync<NeverBounceServiceException>(async () =>
-            await httpClient.RequestGet<ResponseModel>( "/500", null));
-        StringAssert.Contains("The key provided is invalid", resp.Message);
-        StringAssert.Contains("(auth_failure)", resp.Message);
-        Assert.AreEqual(ResponseStatus.AuthFailure, resp.Reason);
+            await httpClient.RequestGet<ResponseModel>("/500", null));
+        Assert.IsNotNull(resp);
+        StringAssert.Contains("The key provided is invalid", resp!.Message);
+        StringAssert.Contains("(auth_failure)", resp!.Message);
+        Assert.AreEqual(ResponseStatus.AuthFailure, resp!.Reason);
     }
 
     [Test]
@@ -34,8 +35,9 @@ public class TestEndPoint
     {
         var httpClient = CreateMockEndpoint("{notvalid json}");
         var resp = Assert.ThrowsAsync<NeverBounceParseException>(async () =>
-            await httpClient.RequestGet<ResponseModel>( "/500", null));
-        StringAssert.Contains("{notvalid json}", resp.Message);
+            await httpClient.RequestGet<ResponseModel>("/500", null));
+        Assert.IsNotNull(resp);
+        StringAssert.Contains("{notvalid json}", resp!.Message);
     }
 
     [Test]
@@ -49,8 +51,9 @@ public class TestEndPoint
             }
             """);
         var resp = Assert.ThrowsAsync<NeverBounceServiceException>(async () =>
-            await httpClient.RequestGet<ResponseModel>( "/500", null));
-        Assert.AreEqual(ResponseStatus.BadReferrer, resp.Reason);
+            await httpClient.RequestGet<ResponseModel>("/500", null));
+        Assert.IsNotNull(resp);
+        Assert.AreEqual(ResponseStatus.BadReferrer, resp!.Reason);
     }
 
     [Test]
@@ -64,10 +67,11 @@ public class TestEndPoint
             }
             """);
         var resp = Assert.ThrowsAsync<NeverBounceServiceException>(async () =>
-            await httpClient.RequestGet<ResponseModel>( "/500", null));
-        StringAssert.Contains("Something went wrong", resp.Message);
-        StringAssert.Contains("(general_failure)", resp.Message);
-        Assert.AreEqual(ResponseStatus.GeneralFailure, resp.Reason);
+            await httpClient.RequestGet<ResponseModel>("/500", null));
+        Assert.IsNotNull(resp);
+        StringAssert.Contains("Something went wrong", resp!.Message);
+        StringAssert.Contains("(general_failure)", resp!.Message);
+        Assert.AreEqual(ResponseStatus.GeneralFailure, resp!.Reason);
     }
 
     [Test]
@@ -75,9 +79,10 @@ public class TestEndPoint
     {
         var httpClient = CreateMockEndpoint(new HttpResponseMessage(HttpStatusCode.NotFound));
         var resp = Assert.ThrowsAsync<NeverBounceResponseException>(async () =>
-            await httpClient.RequestGetContent( "/404", null));
+            await httpClient.RequestGetContent("/404", null));
 
-        Assert.AreEqual(HttpStatusCode.NotFound, resp.Status);
+        Assert.IsNotNull(resp);
+        Assert.AreEqual(HttpStatusCode.NotFound, resp!.Status);
     }
 
     [Test]
@@ -85,9 +90,10 @@ public class TestEndPoint
     {
         var httpClient = CreateMockEndpoint(new HttpResponseMessage(HttpStatusCode.ServiceUnavailable));
         var resp = Assert.ThrowsAsync<NeverBounceResponseException>(async () =>
-            await httpClient.RequestGetContent( "/500", null));
+            await httpClient.RequestGetContent("/500", null));
 
-        Assert.AreEqual(HttpStatusCode.ServiceUnavailable, resp.Status);
+        Assert.IsNotNull(resp);
+        Assert.AreEqual(HttpStatusCode.ServiceUnavailable, resp!.Status);
     }
 
     [Test]
@@ -100,12 +106,13 @@ public class TestEndPoint
             }
             """;
         var httpClient = CreateMockEndpoint(content);
-        var resp = httpClient.RequestGetContent( "/", null).Result.ReadAsStringAsync().Result;
+        var resp = httpClient.RequestGetContent("/", null).Result.ReadAsStringAsync().Result;
 
         Assert.AreEqual(content, resp);
         var token = JObject.Parse(resp);
-        Assert.AreEqual("success", token.SelectToken("status").ToString());
-        Assert.AreEqual(123, (int) token.SelectToken("execution_time"));
+        Assert.IsNotNull(token);
+        Assert.AreEqual("success", token!.SelectToken("status")?.ToString());
+        Assert.AreEqual(123, token!.SelectToken("execution_time")?.Value<int>());
     }
 
     [Test]
@@ -114,18 +121,19 @@ public class TestEndPoint
         var httpClient = CreateMockEndpoint("""
             { "status": "success" }
             """);
-        var resp = httpClient.RequestGet<ResponseModel>( "/", null).Result;
-        Assert.AreEqual(ResponseStatus.Success, resp.Status);
+        var resp = httpClient.RequestGet<ResponseModel>("/", null).Result;
+        Assert.AreEqual(ResponseStatus.Success, resp!.Status);
     }
-    
+
     [Test]
     public void TestMismatchedContentTypeThrowsError()
     {
-        var httpClient = CreateMockEndpoint(new HttpResponseMessage(HttpStatusCode.OK) {
+        var httpClient = CreateMockEndpoint(new HttpResponseMessage(HttpStatusCode.OK)
+        {
             Content = new StringContent("Hello!", new MediaTypeHeaderValue("text/csv"))
         });
         var resp = Assert.ThrowsAsync<NeverBounceResponseException>(async () =>
-            await httpClient.RequestGet<ResponseModel>( "/", null));
+            await httpClient.RequestGet<ResponseModel>("/", null));
     }
 
     [Test]
@@ -139,8 +147,9 @@ public class TestEndPoint
             }
             """);
         var resp = Assert.ThrowsAsync<NeverBounceServiceException>(async () =>
-            await httpClient.RequestGet<ResponseModel>( "/500", null));
-        Assert.AreEqual(ResponseStatus.TempUnavail, resp.Reason);
+            await httpClient.RequestGet<ResponseModel>("/500", null));
+        Assert.IsNotNull(resp);
+        Assert.AreEqual(ResponseStatus.TempUnavail, resp!.Reason);
     }
 
     [Test]
@@ -154,7 +163,8 @@ public class TestEndPoint
             }
             """);
         var resp = Assert.ThrowsAsync<NeverBounceServiceException>(async () =>
-            await httpClient.RequestGet<ResponseModel>( "/500", null));
-        Assert.AreEqual(ResponseStatus.ThrottleTriggered, resp.Reason);
+            await httpClient.RequestGet<ResponseModel>("/500", null));
+        Assert.IsNotNull(resp);
+        Assert.AreEqual(ResponseStatus.ThrottleTriggered, resp!.Reason);
     }
 }
