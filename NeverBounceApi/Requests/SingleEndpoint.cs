@@ -3,10 +3,10 @@ using NeverBounce.Models;
 
 static class SingleEndpoint
 {
-    public static async Task Check(NeverBounceService sdk, string email)
+    public static async Task Check(NeverBounceService neverBounceService, string email)
     {
         Console.WriteLine($"Checking bounce status of: {email}");
-        var result = await sdk.CheckSingle(email, true, true);
+        var result = await neverBounceService.CheckSingle(email, true, true);
 
         Console.WriteLine($"\tResult: {ResultCodeDescription(result.Result)}");
 
