@@ -29,27 +29,5 @@ await host.StartAsync();
 // Or in a controller you can add [FromServices] attribute
 var neverBounceService = host.Services.GetRequiredService<NeverBounceService>();
 
-try
-{
-    // This does all the argument parsing and calls the endpoint utility methods
-    // Any exceptions they throw can be handled here
-    await CommandLineInterface.Parse(neverBounceService, args);
-
-    // We only handle expected exceptions here:
-}
-catch (NeverBounceParseException parseX) {
-    Console.Error.WriteLine("Exception parsing JSON response:");
-    Console.Error.WriteLine(parseX.Message);
-}
-catch (NeverBounceResponseException httpX)
-{
-    Console.Error.WriteLine("Unhandled HTTP status code:");
-    Console.Error.WriteLine($"HTTP Status code: {httpX.Status}");
-    Console.Error.WriteLine(httpX.Message);
-}
-catch (NeverBounceServiceException nbX)
-{
-    Console.Error.WriteLine("Error returned from NeverBounce service:");
-    Console.Error.WriteLine($"HTTP Status code: {nbX.Reason}");
-    Console.Error.WriteLine(nbX.Message);
-}
+// This does all the argument parsing and calls the endpoint utility methods
+await CommandLineInterface.Parse(neverBounceService, args);

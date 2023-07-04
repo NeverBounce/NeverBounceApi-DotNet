@@ -1,7 +1,9 @@
 ﻿namespace NeverBounce.Cli;
-
 using NeverBounce.Api;
+using NeverBounce.Exceptions;
 using System.CommandLine;
+using System.CommandLine.Builder;
+using System.CommandLine.Parsing;
 using System.Threading.Tasks;
 
 static class CommandLineInterface
@@ -101,6 +103,35 @@ static class CommandLineInterface
             rootCommand.Add(jobCommand);
         }
 
-        return await rootCommand.InvokeAsync(args);
+        var commandLineBuilder = new CommandLineBuilder(rootCommand);
+
+        // Handle expected exceptions here:
+        commandLineBuilder.AddMiddleware(async (context, next) =>
+        {
+            try
+            {
+                await next(context);
+            }
+            catch (NeverBounceParseException parseX)
+            {
+                Console.Error.WriteLine("Exception parsing JSON response:");
+                Console.Error.WriteLine(parseX.Message);
+            }
+            catch (NeverBounceResponseException httpX)
+            {
+                Console.Error.WriteLine("Unhandled HTTP status code:");
+                Console.Error.WriteLine($"HTTP Status code: {httpX.Status}");
+                Console.Error.WriteLine(httpX.Message);
+            }
+            catch (NeverBounceServiceException nbX)
+            {
+                Console.Error.WriteLine("Error returned from NeverBounce service:");
+                Console.Error.WriteLine($"NeverBounce error: {nbX.Reason}");
+                Console.Error.WriteLine(nbX.Message);
+            }
+        });
+        commandLineBuilder.UseDefaults();
+        var parser = commandLineBuilder.Build();
+        return await parser.InvokeAsync(args);
     }
 }
