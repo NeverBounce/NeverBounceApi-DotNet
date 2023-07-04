@@ -1,7 +1,6 @@
 ﻿namespace NeverBounceTests;
 using NeverBounce.Exceptions;
 using NeverBounce.Models;
-using NeverBounce.Utilities;
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;
 using System.Net;
