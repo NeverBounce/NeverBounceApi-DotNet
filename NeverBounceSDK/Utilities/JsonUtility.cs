@@ -24,7 +24,8 @@ static class JsonUtility
         JsonSettings.Converters.Add(new JsonStringEnumConverter(namingPolicy));
     }
 
-    /// <summary>Serialise the given object and add the key as an extra property.</summary>
+    /// <summary>Serialise the given object and add the key as an extra property.
+    /// <para>Applies snake_case formatting of properties and enums expected by NeverBounce.</para></summary>
     /// <typeparam name="T">The type to serialise.</typeparam>
     /// <param name="model">The instance to serialise.</param>
     /// <param name="key">The key to inject.</param>
