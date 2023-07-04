@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Hosting;
 using NeverBounce;
 using NeverBounce.Cli;
+using NeverBounce.Exceptions;
 using System.Text;
 
 // Bug workaround: https://developercommunity.visualstudio.com/content/problem/176587/unicode-characters-in-output-window.html
@@ -28,20 +29,27 @@ await host.StartAsync();
 // Or in a controller you can add [FromServices] attribute
 var neverBounceService = host.Services.GetRequiredService<NeverBounceService>();
 
-await CommandLineInterface.Parse(neverBounceService, args);
+try
+{
+    // This does all the argument parsing and calls the endpoint utility methods
+    // Any exceptions they throw can be handled here
+    await CommandLineInterface.Parse(neverBounceService, args);
 
-// Console.ReadLine();
-
-        
-// var response = AccountEndpoint.Info(sdk).Result;
-//var response = POEEndpoints.Confirm(sdk).Result;
-//var response = SingleEndpoints.Check(sdk).Result;
-//var response = JobsEndpoint.Search(sdk).Result;
-//var response = JobsEndpoint.CreateSuppliedData(sdk).Result;
-//var response = JobsEndpoint.CreateRemoteUrl(sdk).Result;
-//var response = JobsEndpoint.Parse(sdk).Result;
-//var response = JobsEndpoint.Start(sdk).Result;
-//var response = JobsEndpoint.Status(sdk).Result;
-//var response = JobsEndpoint.Results(sdk).Result;
-//var response = JobsEndpoint.Download(sdk).Result;
-//var response = JobsEndpoint.Delete(sdk).Result;
+    // We only handle expected exceptions here:
+}
+catch (NeverBounceParseException parseX) {
+    Console.Error.WriteLine("Exception parsing JSON response:");
+    Console.Error.WriteLine(parseX.Message);
+}
+catch (NeverBounceResponseException httpX)
+{
+    Console.Error.WriteLine("Unhandled HTTP status code:");
+    Console.Error.WriteLine($"HTTP Status code: {httpX.Status}");
+    Console.Error.WriteLine(httpX.Message);
+}
+catch (NeverBounceServiceException nbX)
+{
+    Console.Error.WriteLine("Error returned from NeverBounce service:");
+    Console.Error.WriteLine($"HTTP Status code: {nbX.Reason}");
+    Console.Error.WriteLine(nbX.Message);
+}
