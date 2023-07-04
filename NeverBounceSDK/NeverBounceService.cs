@@ -54,7 +54,24 @@ public sealed class NeverBounceService
     /// <param name="cancellationToken">Optional token to cancel long requests</param>
     /// <returns>Current credits and running jobs.</returns>
     public async Task<AccountInfoResponseModel> Account(CancellationToken? cancellationToken = null) =>
-        await this.client.RequestGet<AccountInfoResponseModel>("account/info", cancellationToken);
+        await this.client.RequestGet<AccountInfoResponseModel>("account/info", cancellationToken: cancellationToken);
+
+    #endregion
+
+    #region /poe/confirm
+
+    /// <summary>This endpoint provides an extra layer of protection by confirming that the email you received was verified by NeverBounce. 
+    /// In most use cases the widget on its own provides enough protection against bad emails. 
+    /// However, an advanced user can disable or modify the script, as is the case with any client-side script. 
+    /// If you have control over the server-side script that processes the form request you can use this endpoint to confirm that the email supplied was verified.
+    /// <para>Every verification performed by the widget is accompanied by a "transaction id" and "confirmation token". 
+    /// These are both accessible from the Result Object and in the form as the nb-transaction-id and nb-confirmation-token fields. 
+    /// These two parameters can be passed to this endpoint alongside the email that was submitted to confirm if this is the same email we verified or not.</para></summary>
+    /// <param name="model">Model details from verification</param>
+    /// <param name="cancellationToken">Optional token to cancel long requests</param>
+    /// <returns>True if the verification token is confirmed, false otherwise.</returns>
+    public async Task<bool> Confirm(ConfirmRequestModel model, CancellationToken? cancellationToken = null) =>
+        (await this.client.RequestGet<ConfirmResponseModel>("poe/confirm", model, cancellationToken)).TokenConfirmed;
 
     #endregion
 }
