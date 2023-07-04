@@ -3,7 +3,6 @@ using Microsoft.Extensions.Logging;
 using NeverBounce.Exceptions;
 using NeverBounce.Models;
 using System.Net;
-using System.Net.NetworkInformation;
 using System.Text;
 using static QueryStringUtility;
 

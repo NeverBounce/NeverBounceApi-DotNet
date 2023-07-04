@@ -1,9 +1,8 @@
 ﻿namespace NeverBounce.Utilities;
 using NeverBounce.Models;
 using NeverBounce.Exceptions;
-using System.Threading.Tasks;
 
-public interface INeverBounceEndpoint
+interface INeverBounceEndpoint
 {
     /// <summary>This method makes the HTTP request to the API, but makes no attempt to parse it (other than checking HTTP status codes).</summary>
     /// <param name="endpoint">The endpoint to request</param>

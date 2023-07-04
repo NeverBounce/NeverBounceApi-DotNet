@@ -18,7 +18,7 @@ public sealed class NeverBounceService
     /// <param name="key">The api key to use to make the requests</param>
     /// <param name="httpEndpoint">Configured HTTP endpoint</param>
     /// <param name="loggerFactory">Optional logger</param>
-    public NeverBounceService(IHttpServiceEndpoint httpEndpoint, string key, ILoggerFactory? loggerFactory)
+    internal NeverBounceService(IHttpServiceEndpoint httpEndpoint, string key, ILoggerFactory? loggerFactory)
     {
         this.client = new NeverBounceEndpoint(httpEndpoint, key, loggerFactory);
         this.Jobs = new JobsService(this.client);

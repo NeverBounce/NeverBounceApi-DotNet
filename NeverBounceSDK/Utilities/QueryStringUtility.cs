@@ -1,11 +1,5 @@
-﻿using System;
+﻿namespace NeverBounce.Utilities;
 using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace NeverBounce.Utilities;
 
 static class QueryStringUtility
 {
@@ -64,6 +58,7 @@ static class QueryStringUtility
     {
         if (pair.Value is null) return null;
 
+        // Apply snake_case conversion from .NET CapitalCase property names
         string caseFix = SnakeCase.Convert(pair.Key);
 
         string key = parentProperty is not null

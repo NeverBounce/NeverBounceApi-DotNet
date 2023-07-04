@@ -1,20 +1,15 @@
 ﻿namespace NeverBounce.Utilities;
-using System.Net.Http.Headers;
 using System.Threading;
 
-
-class HttpServiceEndpoint : IHttpServiceEndpoint
+sealed class HttpServiceEndpoint : IHttpServiceEndpoint
 {
     readonly HttpClient client;
     
-    public HttpServiceEndpoint(HttpClient client)
-    {
-        this.client = client;
-    }
+    public HttpServiceEndpoint(HttpClient client) { this.client = client; }
 
-    public Task<HttpResponseMessage> GetAsync(string? uri, CancellationToken cancellationToken) =>
+    Task<HttpResponseMessage> IHttpServiceEndpoint.GetAsync(string? uri, CancellationToken cancellationToken) =>
         this.client.GetAsync(uri, cancellationToken);
    
-    public Task<HttpResponseMessage> PostAsync(string? uri, HttpContent content, CancellationToken cancellationToken) => 
+    Task<HttpResponseMessage> IHttpServiceEndpoint.PostAsync(string? uri, HttpContent content, CancellationToken cancellationToken) => 
         this.client.PostAsync(uri, content, cancellationToken);
 }
