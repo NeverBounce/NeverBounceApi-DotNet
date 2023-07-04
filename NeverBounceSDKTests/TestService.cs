@@ -11,9 +11,7 @@ public class TestService
     public void TestNeverBounceSdkSetup()
     {
         var nb = CreateMockClient("");
-        Assert.IsNotNull(nb.Account);
         Assert.IsNotNull(nb.Jobs);
-        Assert.IsNotNull(nb.Single);
     }
     
     [Test]
@@ -27,7 +25,7 @@ public class TestService
             """);
 
         var resp = Assert.ThrowsAsync<NeverBounceServiceException>(async () =>
-            await nb.Account.Info());
+            await nb.Account());
 
         StringAssert.Contains("We were unable to authenticate your request", resp.Message);
         StringAssert.Contains("(auth_failure)", resp.Message);

@@ -28,7 +28,7 @@ await host.StartAsync();
 var neverBounceService = host.Services.GetRequiredService<NeverBounceService>();
 
 // Call the account info endpoint
-var info = await neverBounceService.Account.Info();
+var info = await neverBounceService.Account();
 
 var c = info.CreditsInfo;
 Console.WriteLine($"Free credits: remaining {c?.FreeCreditsRemaining ?? 0}, used {c?.FreeCreditsUsed ?? 0}");
