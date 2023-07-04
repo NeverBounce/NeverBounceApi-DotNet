@@ -27,8 +27,9 @@ public class TestService
         var resp = Assert.ThrowsAsync<NeverBounceServiceException>(async () =>
             await nb.Account());
 
+        Assert.IsNotNull(resp);
         StringAssert.Contains("We were unable to authenticate your request", resp.Message);
-        StringAssert.Contains("(auth_failure)", resp.Message);
-        Assert.AreEqual(ResponseStatus.AuthFailure, resp.Reason);
+        StringAssert.Contains("(auth_failure)", resp!.Message);
+        Assert.AreEqual(ResponseStatus.AuthFailure, resp!.Reason);
     }
 }
