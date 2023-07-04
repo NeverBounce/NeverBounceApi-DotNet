@@ -48,14 +48,16 @@ public static class JobsEndpoint
         }
     }
 
-    public static async Task<string> Parse(NeverBounceService sdk)
+    public static async Task Parse(NeverBounceService neverBounceService, int jobID)
     {
-        return await sdk.Jobs.Parse(290561);
+        var queue = await neverBounceService.Jobs.Parse(jobID);
+        Console.WriteLine($"Parse started for {jobID}, queue {queue}");
     }
 
-    public static async Task<string> Start(NeverBounceService sdk)
+    public static async Task Start(NeverBounceService neverBounceService, int jobID, bool runSample = false)
     {
-        return await sdk.Jobs.Start(290561);
+        var queue = await neverBounceService.Jobs.Start(jobID, runSample);
+        Console.WriteLine($"{(runSample ? "Sample" : "Run")} started for {jobID}, queue {queue}");
     }
 
     public static async Task<JobStatusResponseModel> Status(NeverBounceService sdk)

@@ -24,7 +24,7 @@ static class CommandLineInterface
             checkCommand.AddAlias("check"); // or "check support@neverbounce.com"
             var emailArgument = new Argument<string>("email", "The email to check.");
             checkCommand.AddArgument(emailArgument);
-            checkCommand.SetHandler(async (emailValue) => await SingleEndpoint.Check(neverBounceService, emailValue), emailArgument);
+            checkCommand.SetHandler(async email => await SingleEndpoint.Check(neverBounceService, email), emailArgument);
             rootCommand.Add(checkCommand);
         }
 
@@ -35,24 +35,42 @@ static class CommandLineInterface
             // Default option is to search jobs
             var pageOption = new Option<int>("--page", () => 1, "1-indexed page to show, jobs shown 100 per page");
             jobCommand.AddOption(pageOption);
-            jobCommand.SetHandler(async (pageValue) => await JobsEndpoint.Search(neverBounceService, pageValue), pageOption);
+            jobCommand.SetHandler(async page => await JobsEndpoint.Search(neverBounceService, page), pageOption);
 
             {   // Create uploads a file or points to a file online
                 var createCommand = new Command("create", "Create a batch to verify multiple emails together, the same way you would verify lists in the dashboard.");
                 var fileArgument = new Argument<string>("file", "The file to upload or set");
                 createCommand.AddArgument(fileArgument);
-                createCommand.SetHandler(async (fileValue) => await JobsEndpoint.Create(neverBounceService, fileValue), fileArgument);
+                createCommand.SetHandler(async file => await JobsEndpoint.Create(neverBounceService, file), fileArgument);
                 jobCommand.Add(createCommand);
             }
 
-            {
+            {   // Download the CSV data for the job
                 var downloadCommand = new Command("download", "Download the CSV data for the job");
                 var jobArgument = new Argument<int>("job", "The ID of the job to download");
                 downloadCommand.AddArgument(jobArgument);
                 var fileOption = new Option<string>("--file", "Optional file to write the results to, if not passed output will be the console.");
                 downloadCommand.AddOption(fileOption);
-                downloadCommand.SetHandler(async (jobArgument, fileValue) => await JobsEndpoint.Download(neverBounceService, jobArgument, fileValue), jobArgument, fileOption);
+                downloadCommand.SetHandler(async (job, file) => await JobsEndpoint.Download(neverBounceService, job, file), jobArgument, fileOption);
                 jobCommand.Add(downloadCommand);
+            }
+
+            {   // Parse a batch job that has been created with auto_parse disabled
+                var parseCommand = new Command("parse", "Parse a job created with auto_parse disabled. ");
+                var jobArgument = new Argument<int>("job", "The ID of the job to parse");
+                parseCommand.AddArgument(jobArgument);
+                parseCommand.SetHandler(async job => await JobsEndpoint.Parse(neverBounceService, job), jobArgument);
+                jobCommand.Add(parseCommand);
+            }
+
+            {   // Start a batch job that has been created with auto_start disabled
+                var startCommand = new Command("start", "Start a job created with auto_start disabled. ");
+                var jobArgument = new Argument<int>("job", "The ID of the job to start");
+                startCommand.AddArgument(jobArgument);
+                var runSampleOption = new Option<bool>("--run-sample", "Should this job be run as a sample?");
+                startCommand.AddOption(runSampleOption);
+                startCommand.SetHandler(async (job, runSample) => await JobsEndpoint.Start(neverBounceService, job, runSample), jobArgument, runSampleOption);
+                jobCommand.Add(startCommand);
             }
 
             rootCommand.Add(jobCommand);
