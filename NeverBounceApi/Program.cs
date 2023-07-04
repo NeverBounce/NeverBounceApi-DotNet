@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using NeverBounce;
+using NeverBounce.Cli;
 using System.Text;
 
 // Bug workaround: https://developercommunity.visualstudio.com/content/problem/176587/unicode-characters-in-output-window.html
@@ -27,15 +28,7 @@ await host.StartAsync();
 // Or in a controller you can add [FromServices] attribute
 var neverBounceService = host.Services.GetRequiredService<NeverBounceService>();
 
-// Call the account info endpoint
-var info = await neverBounceService.Account();
-
-var c = info.CreditsInfo;
-Console.WriteLine($"Free credits: remaining {c?.FreeCreditsRemaining ?? 0}, used {c?.FreeCreditsUsed ?? 0}");
-Console.WriteLine($"Paid credits: remaining {c?.PaidCreditsRemaining ?? 0}, used {c?.PaidCreditsUsed ?? 0}");
-
-var j = info.JobCounts;
-Console.WriteLine($"Jobs: pending {j?.Queued ?? 0}, processing {j?.Processing ?? 0}, completed {j?.Completed ?? 0}, under review {j?.UnderReview ?? 0}");
+await CommandLineInterface.Parse(neverBounceService, args);
 
 Console.ReadLine();
 

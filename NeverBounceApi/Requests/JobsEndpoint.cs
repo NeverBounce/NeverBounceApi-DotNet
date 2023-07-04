@@ -1,4 +1,5 @@
-﻿using NeverBounce;
+﻿namespace NeverBounce.Api;
+using NeverBounce;
 using NeverBounce.Models;
 using System.Text;
 

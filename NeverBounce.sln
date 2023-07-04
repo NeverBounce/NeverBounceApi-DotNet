@@ -5,9 +5,16 @@ VisualStudioVersion = 17.6.33723.286
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NeverBounce", "NeverBounceSDK\NeverBounce.csproj", "{F3A4D952-0692-49D3-A78A-1D417E23BD40}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NeverBounceCliExample", "NeverBounceApi\NeverBounceCliExample.csproj", "{B613EFA9-6151-4265-AC0D-D2B1718A7D11}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NeverBounce.Cli", "NeverBounceApi\NeverBounce.Cli.csproj", "{B613EFA9-6151-4265-AC0D-D2B1718A7D11}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NeverBounce.Tests", "NeverBounceSDKTests\NeverBounce.Tests.csproj", "{94D33EC6-FCD8-4DE5-AAAC-68F07FBDE1E3}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{45722E57-7E6D-48BC-AC8C-9B1A1B1786F3}"
+	ProjectSection(SolutionItems) = preProject
+		LICENSE = LICENSE
+		neverbounce_white_square_64.png = neverbounce_white_square_64.png
+		README.md = README.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
