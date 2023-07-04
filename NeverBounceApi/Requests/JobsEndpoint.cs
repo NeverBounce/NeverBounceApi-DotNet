@@ -60,9 +60,25 @@ public static class JobsEndpoint
         Console.WriteLine($"{(runSample ? "Sample" : "Run")} started for {jobID}, queue {queue}");
     }
 
-    public static async Task<JobStatusResponseModel> Status(NeverBounceService sdk)
+    public static async Task Status(NeverBounceService neverBounceService, int jobID)
     {
-        return await sdk.Jobs.Status(290561);
+        var jobStatus = await neverBounceService.Jobs.Status(jobID);
+        Console.WriteLine($"{jobStatus.ID} {jobStatus.Filename}");
+        Console.WriteLine($"\t{jobStatus.Status}");
+
+        if (jobStatus.Total is not null) {
+            Console.WriteLine($"\tTotals:");
+
+            Console.WriteLine($"\t\tProcessed {jobStatus.Total.Processed ?? 0}");
+            Console.WriteLine($"\t\tValid {jobStatus.Total.Valid ?? 0}");
+            Console.WriteLine($"\t\tInvalid {jobStatus.Total.Invalid ?? 0}");
+            Console.WriteLine($"\t\tBillable {jobStatus.Total.Billable ?? 0}");
+            Console.WriteLine($"\t\tBad syntax {jobStatus.Total.BadSyntax ?? 0}");
+            Console.WriteLine($"\t\tCatch-all {jobStatus.Total.Catchall ?? 0}");
+            Console.WriteLine($"\t\tDisposable {jobStatus.Total.Disposable ?? 0}");
+            Console.WriteLine($"\t\tDuplicates {jobStatus.Total.Duplicates ?? 0}");
+            Console.WriteLine($"\t\tUnknown {jobStatus.Total.Unknown ?? 0}");
+        }
     }
 
     public static async Task<JobResultsResponseModel> Results(NeverBounceService sdk)

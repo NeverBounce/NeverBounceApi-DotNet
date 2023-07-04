@@ -46,7 +46,7 @@ static class CommandLineInterface
             }
 
             {   // Download the CSV data for the job
-                var downloadCommand = new Command("download", "Download the CSV data for the job");
+                var downloadCommand = new Command("download", "Download the CSV data for the job.");
                 var jobArgument = new Argument<int>("job", "The ID of the job to download");
                 downloadCommand.AddArgument(jobArgument);
                 var fileOption = new Option<string>("--file", "Optional file to write the results to, if not passed output will be the console.");
@@ -56,7 +56,7 @@ static class CommandLineInterface
             }
 
             {   // Parse a batch job that has been created with auto_parse disabled
-                var parseCommand = new Command("parse", "Parse a job created with auto_parse disabled. ");
+                var parseCommand = new Command("parse", "Parse a job created with auto_parse disabled.");
                 var jobArgument = new Argument<int>("job", "The ID of the job to parse");
                 parseCommand.AddArgument(jobArgument);
                 parseCommand.SetHandler(async job => await JobsEndpoint.Parse(neverBounceService, job), jobArgument);
@@ -64,13 +64,21 @@ static class CommandLineInterface
             }
 
             {   // Start a batch job that has been created with auto_start disabled
-                var startCommand = new Command("start", "Start a job created with auto_start disabled. ");
+                var startCommand = new Command("start", "Start a job created with auto_start disabled.");
                 var jobArgument = new Argument<int>("job", "The ID of the job to start");
                 startCommand.AddArgument(jobArgument);
                 var runSampleOption = new Option<bool>("--run-sample", "Should this job be run as a sample?");
                 startCommand.AddOption(runSampleOption);
                 startCommand.SetHandler(async (job, runSample) => await JobsEndpoint.Start(neverBounceService, job, runSample), jobArgument, runSampleOption);
                 jobCommand.Add(startCommand);
+            }
+
+            {   // Parse a batch job that has been created with auto_parse disabled
+                var statusCommand = new Command("status", "Get the current state of a job");
+                var jobArgument = new Argument<int>("job", "The ID of the job to get the state of");
+                statusCommand.AddArgument(jobArgument);
+                statusCommand.SetHandler(async job => await JobsEndpoint.Status(neverBounceService, job), jobArgument);
+                jobCommand.Add(statusCommand);
             }
 
             rootCommand.Add(jobCommand);
