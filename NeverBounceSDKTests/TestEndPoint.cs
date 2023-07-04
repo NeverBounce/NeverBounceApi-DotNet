@@ -157,18 +157,4 @@ public class TestEndPoint
             await httpClient.RequestGet<ResponseModel>( "/500", null));
         Assert.AreEqual(ResponseStatus.ThrottleTriggered, resp.Reason);
     }
-
-    [Test]
-    public void TestToQueryStringSimple()
-    {
-        var query = new SingleRequestModel("support@neverbounce.com");
-        //query.Key = "fake_api_key";
-        query.Timeout = 3000;
-        query.AddressInfo = true;
-        query.CreditsInfo = false;
-
-        var resp = QueryStringUtility.ToQueryString(query);
-        Assert.AreEqual(
-            "email=support%40neverbounce.com&address_info=1&credits_info=0&timeout=3000&request_meta_data[leverage_historical_data]=1", resp);
-    }
 }

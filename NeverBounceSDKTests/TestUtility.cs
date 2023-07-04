@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 static class TestUtility
 {
-    public static NeverBounceService CreateMockClient(string strContent)
+    internal static NeverBounceService CreateMockClient(string strContent)
     {
         var clientMock = new Mock<IHttpServiceEndpoint>();
         var response = new HttpResponseMessage(HttpStatusCode.OK)
