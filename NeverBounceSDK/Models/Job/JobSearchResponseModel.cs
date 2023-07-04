@@ -7,9 +7,9 @@ public class JobSearchResponseModel : ResponseModel
 
     public int TotalPages { get; set; }
 
-    public JobSearchQuery Query { get; set; }
+    public JobSearchQuery? Query { get; set; }
 
-    public IEnumerable<JobStatusResponseModel> Results { get; set; }
+    public IEnumerable<JobStatusResponseModel>? Results { get; set; }
 }
 
 public class JobSearchQuery

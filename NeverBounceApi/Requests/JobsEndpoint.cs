@@ -10,6 +10,8 @@ public static class JobsEndpoint
         var result = await neverBounceService.Jobs.Search(new() { Page = page, ItemsPerPage = 100 });
 
         Console.WriteLine($"Jobs: {result.TotalResults} on {page}/{result.TotalPages} pages");
+        if (result.Results is null) return;
+
         foreach(var j in result.Results)
         {
             if (j.JobStatus == JobStatus.Failed)
