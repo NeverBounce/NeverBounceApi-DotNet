@@ -24,9 +24,19 @@ static class JsonUtility
         JsonSettings.Converters.Add(new JsonStringEnumConverter(namingPolicy));
     }
 
+    /// <summary>Serialise the given object and add the key as an extra property.</summary>
+    /// <typeparam name="T">The type to serialise.</typeparam>
+    /// <param name="model">The instance to serialise.</param>
+    /// <param name="key">The key to inject.</param>
+    /// <returns>The serialised JSON string.</returns>
     public static string Serialise<T>(T model, string key) =>
         string.Concat("{\"key\":\"", key, "\",", JsonSerializer.Serialize<T>(model, JsonSettings).AsSpan(1));
 
+    /// <summary>Parse JSON from the NeverBounce service, with snake_case property names.</summary>
+    /// <typeparam name="T">The type to deserialise to.</typeparam>
+    /// <param name="data">The JSON text data to parse</param>
+    /// <returns>The result of a successful parse, or throws an exception. Never null.</returns>
+    /// <exception cref="NeverBounceParseException">Thrown if JSON parsing throws an exception (see inner exception) or the result of the parse is null.</exception>
     public static T Deserialise<T>(string data) {
         T? parsed;
         try { parsed = JsonSerializer.Deserialize<T>(data, JsonSettings); }
