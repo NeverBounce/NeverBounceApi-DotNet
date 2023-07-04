@@ -4,7 +4,7 @@ using NeverBounce.Models;
 using NeverBounce.Services;
 using NeverBounce.Utilities;
 
-public class NeverBounceService
+public sealed class NeverBounceService
 {
     readonly INeverBounceEndpoint client;
 

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace NeverBounce.Utilities;
 
-public static class QueryStringUtility
+static class QueryStringUtility
 {
     /// <summary>Creates a urlencoded query string of the parameters</summary>
     /// <param name="request">The request parameters to encode</param>

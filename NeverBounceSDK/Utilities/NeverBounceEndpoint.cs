@@ -7,7 +7,7 @@ using System.Net.NetworkInformation;
 using System.Text;
 using static QueryStringUtility;
 
-public sealed class NeverBounceEndpoint: INeverBounceEndpoint
+sealed class NeverBounceEndpoint: INeverBounceEndpoint
 {
     const int MAX_POST_BYTES = 25 * 1024 * 1024;
     const int MAX_LOG_BYTES = 1024;
