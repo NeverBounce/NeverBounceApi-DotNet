@@ -26,9 +26,9 @@ sealed class NeverBounceEndpoint: INeverBounceEndpoint
         this.logger = loggerFactory?.CreateLogger<NeverBounceEndpoint>();
     }
 
-    public async Task<HttpContent> RequestGetContent(string endpoint, object? model, CancellationToken? cancellationToken)
+    async Task<HttpContent> RequestGetContentRaw(string endpoint, object? model, CancellationToken? cancellationToken)
     {
-        string getRequest =  $"{endpoint}?key={Uri.EscapeDataString(this.key)}";
+        string getRequest = $"{endpoint}?key={Uri.EscapeDataString(this.key)}";
         if (model is not null) getRequest += "&" + ToQueryString(model);
 
         this.logger?.LogInformation("GET request to NeverBounce {EndPoint}", getRequest);
@@ -38,9 +38,30 @@ sealed class NeverBounceEndpoint: INeverBounceEndpoint
         return response.Content;
     }
 
+
+    public async Task<HttpContent> RequestGetContent(string endpoint, object? model, CancellationToken? cancellationToken)
+    {
+        var content = await this.RequestGetContentRaw(endpoint, model, cancellationToken);
+
+        string? contentType = content.Headers.ContentType?.ToString();
+        if (contentType?.Contains("application/json", StringComparison.OrdinalIgnoreCase) ?? false) {
+            // We're expecting a stream and got JSON instead, usually this will be an error message
+            string data = await content.ReadAsStringAsync();
+            if (string.IsNullOrWhiteSpace(data))
+                throw new NeverBounceResponseException(HttpStatusCode.OK, "No message content");
+
+            this.logger?.LogWarning("Unexpected response: {JSON}", data);
+
+            // Parse the result for errors
+            CheckServiceStatus(JsonUtility.Deserialise<ResponseModel>(data));
+        }
+
+        return content;
+    }
+
     public async Task<T> RequestGet<T>(string endpoint, object? model, CancellationToken? cancellationToken) 
         where T : notnull, ResponseModel => 
-        await ParseResponse<T>(await this.RequestGetContent(endpoint, model, cancellationToken));
+        await ParseResponse<T>(await this.RequestGetContentRaw(endpoint, model, cancellationToken));
 
     public async Task<T> RequestPost<T>(string endpoint, object model, CancellationToken? cancellationToken) 
         where T : notnull, ResponseModel
@@ -129,19 +150,26 @@ sealed class NeverBounceEndpoint: INeverBounceEndpoint
 
         // Handle application/json responses
         var parsed = JsonUtility.Deserialise<T>(data);
+        return CheckServiceStatus(parsed);
+    }
 
+    /// <summary>Handle non 'success' statuses that return with HTTP success codes but an error message in the body</summary>
+    /// <param name="response">Response body</param>
+    /// <exception cref="NeverBounceServiceException">Thrown if the parsed content contains an error status</exception>
+    static T CheckServiceStatus<T>(T response)
+        where T : notnull, ResponseModel
+    {
         // Handle non 'success' statuses that return with HTTP success codes but an error message in the body
-        var status = parsed.Status;
-        if (status != ResponseStatus.Success)
-            throw new NeverBounceServiceException(status, $"""
-                {(status == ResponseStatus.AuthFailure ?
-                    "We were unable to authenticate your request" :
-                    "We were unable to complete your request ")} ({SnakeCase.Convert(status.ToString())})
-                {parsed.Message}
-                """);
+        var status = response.Status;
+        if (status == ResponseStatus.Success)
+            return response;
 
-        // Return response data for passthrough/marshalling
-        return parsed;
+        throw new NeverBounceServiceException(status, $"""
+            {(status == ResponseStatus.AuthFailure ?
+                "We were unable to authenticate your request" :
+                "We were unable to complete your request ")} ({SnakeCase.Convert(status.ToString())})
+            {response.Message}
+            """);
     }
 
     /// <summary>Convert a size in bytes to more readable KB, MB or GB</summary>
